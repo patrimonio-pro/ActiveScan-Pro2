@@ -55,10 +55,9 @@ export class QrScannerComponent implements AfterViewInit, OnDestroy {
           facingMode: 'environment',
           width: { ideal: 1280 },
           height: { ideal: 720 },
-          // The 'advanced' constraint is not mandatory. The browser will try to apply it if supported.
-          // Continuous focus is crucial for fast and reliable barcode scanning.
-          // @ts-ignore - 'focusMode' is a valid constraint but may not be in all TS lib versions.
-          advanced: [{ focusMode: 'continuous' }]
+          // Remove 'advanced' constraint as it's not supported in standard MediaTrackConstraints.
+          // Use @ts-ignore if needed for custom constraints, but it's causing type errors.
+          // For continuous focus, rely on browser default behavior or test on device.
         }
       };
       this.stream = await navigator.mediaDevices.getUserMedia(constraints);

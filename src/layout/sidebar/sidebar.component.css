@@ -6,9 +6,17 @@
 
 h1 {
   color: #e6eef8;
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   font-weight: italic bold;
   font-style: oblique;
-  font-family:cursive;
-  margin-right: 1em;
+  font-family:'Courier New', Courier, monospace;
+  margin-right: 0.5em;
+}
+
+@media screen and(max-width: 768px){
+  .h-10 {
+    width: 8rem;
+    height: 8rem;
+  }
+  
 }
