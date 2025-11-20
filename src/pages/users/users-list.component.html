@@ -1,0 +1,181 @@
+<div>
+  <h3 class="text-3xl font-medium text-gray-700 dark:text-gray-200">Gestão de Usuários</h3>
+  <p class="mt-2 text-gray-600 dark:text-gray-400">Visualize e gerencie os usuários cadastrados no sistema.</p>
+
+  @if (isLoading()) {
+    <div class="mt-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md text-center">
+      <p class="text-gray-500 dark:text-gray-400">Carregando usuários...</p>
+    </div>
+  } @else if (error()) {
+    <div class="mt-6 p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+      {{ error() }}
+    </div>
+  } @else {
+    <div class="mt-6 flex flex-col">
+      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+          <div class="shadow overflow-hidden border-b border-gray-200 dark:border-gray-700 sm:rounded-lg">
+            <table class="min-w-full">
+              <thead class="bg-gray-50 dark:bg-gray-700 hidden md:table-header-group">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nome / Razão Social</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tipo</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Permissões</th>
+                  <th scope="col" class="relative px-6 py-3">
+                    <span class="sr-only">Ações</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="block md:table-row-group">
+                @for (user of users(); track user.user_id) {
+                  <tr class="block md:table-row p-4 mb-4 border rounded-lg shadow-md md:p-0 md:border-none md:shadow-none md:mb-0 md:border-b dark:border-gray-700">
+                    <td class="block md:table-cell md:px-6 md:py-4 align-middle" data-label="Nome">{{ user.nome }}</td>
+                    <td class="block md:table-cell md:px-6 md:py-4 align-middle" data-label="Email">{{ user.email }}</td>
+                    <td class="block md:table-cell md:px-6 md:py-4 align-middle" data-label="Tipo">
+                      @if(user.tipo === 'Pessoa Física') {
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100">
+                          Pessoa Física
+                        </span>
+                      } @else {
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100">
+                          Pessoa Jurídica
+                        </span>
+                      }
+                    </td>
+                    <td class="block md:table-cell md:px-6 md:py-4 align-middle" data-label="Permissões">
+                      @if (user.permissoes) {
+                        <div class="flex flex-wrap gap-1 justify-end md:justify-start">
+                          @for(permission of user.permissoes.split(','); track permission) {
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" [class]="getPermissionClass(permission)">
+                              {{ getPermissionLabel(permission) }}
+                            </span>
+                          }
+                        </div>
+                      } @else {
+                        <span class="text-xs italic">Nenhuma</span>
+                      }
+                    </td>
+                    <td class="block md:table-cell md:px-6 md:py-4 align-middle actions-cell">
+                      <button (click)="openManageModal(user)" class="w-full font-semibold text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                        Gerenciar
+                      </button>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr class="md:table-row">
+                    <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                      Nenhum usuário encontrado.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Permission Management Modal -->
+  @if (isManageModalOpen() && selectedUser(); as user) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md m-4">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between p-4 border-b dark:border-gray-600">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            Gerenciar Usuário
+          </h3>
+          <button (click)="closeManageModal()" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
+        <!-- Modal Body -->
+        <div class="p-6">
+          <div class="mb-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Usuário:</p>
+            <p class="font-medium text-gray-800 dark:text-gray-200">{{ user.nome }} ({{ user.email }})</p>
+          </div>
+
+          @if (isLoadingPermissions()) {
+            <div class="text-center py-4">
+              <p class="text-gray-500 dark:text-gray-400">Carregando permissões...</p>
+            </div>
+          } @else {
+            <!-- Permissions Section -->
+            <div class="border-t dark:border-gray-600 pt-4">
+              <h4 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Permissões</h4>
+              <div class="space-y-2">
+                @for (permission of allPermissions(); track permission.id) {
+                  <div class="flex items-center justify-between p-3 rounded-lg" [class.bg-gray-100]="!hasPermission()(permission.id)" [class.dark:bg-gray-700]="!hasPermission()(permission.id)" [class.bg-indigo-50]="hasPermission()(permission.id)" [class.dark:bg-indigo-900/50]="hasPermission()(permission.id)">
+                    <span class="font-medium text-gray-800 dark:text-gray-200">{{ getPermissionLabel(permission.descricao) }}</span>
+                    @if (hasPermission()(permission.id)) {
+                      <button (click)="togglePermission(permission)" [disabled]="isLoadingPermissions()" class="px-3 py-1 text-xs font-medium text-white bg-red-600 rounded-md hover:bg-red-700 disabled:bg-red-400">
+                        Remover
+                      </button>
+                    } @else {
+                      <button (click)="togglePermission(permission)" [disabled]="isLoadingPermissions()" class="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded-md hover:bg-green-700 disabled:bg-green-400">
+                        Adicionar
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+            
+            <!-- Password Reset Section -->
+            <div class="border-t dark:border-gray-600 pt-4 mt-6">
+              <h4 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Gestão de Senha</h4>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                Isto irá gerar uma nova senha temporária e forçar o usuário a alterá-la no próximo login.
+              </p>
+                @if (resetPasswordError()) {
+                  <div class="p-3 mb-3 text-xs text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+                    {{ resetPasswordError() }}
+                  </div>
+                }
+              <button (click)="resetPassword()" [disabled]="isResettingPassword()" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:bg-orange-400">
+                @if(isResettingPassword()) {
+                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  <span>Resetando...</span>
+                } @else {
+                  <span>Resetar Senha</span>
+                }
+              </button>
+            </div>
+          }
+        </div>
+        <!-- Modal Footer -->
+        <div class="flex items-center p-4 border-t dark:border-gray-600">
+          <button (click)="closeManageModal()" type="button" class="ml-auto px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Temporary Password Display Modal -->
+  @if (isTempPasswordModalOpen()) {
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-60">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md m-4 p-6 text-center">
+        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-800">
+          <svg class="h-6 w-6 text-green-600 dark:text-green-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+        </div>
+        <h3 class="text-lg mt-4 font-semibold text-gray-900 dark:text-white">Senha Resetada com Sucesso!</h3>
+        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          A senha temporária abaixo foi gerada. Forneça esta senha ao usuário. Ele será solicitado a alterá-la no primeiro login.
+        </p>
+        <div class="my-4 p-3 font-mono text-lg text-indigo-800 bg-indigo-100 dark:bg-gray-700 dark:text-indigo-300 rounded-md break-all relative">
+          <span>{{ tempPassword() }}</span>
+          <button (click)="copyToClipboard(tempPassword())" class="absolute top-2 right-2 p-1 text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          </button>
+        </div>
+        <button (click)="closeTempPasswordModal()" type="button" class="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
+            Fechar
+        </button>
+      </div>
+    </div>
+  }
+</div>

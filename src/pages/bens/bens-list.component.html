@@ -1,0 +1,157 @@
+<div class="relative min-h-[calc(100vh-200px)]">
+  <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h3 class="text-3xl font-medium text-gray-700 dark:text-gray-200">Gestão de Bens</h3>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">Visualize e gerencie os bens patrimoniais.</p>
+    </div>
+    <a routerLink="/bens/novo" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+      Adicionar Bem
+    </a>
+  </div>
+
+  <!-- Search and Filter -->
+  <div class="mt-6 flex items-center gap-4">
+    <input 
+      type="text" 
+      placeholder="Buscar por plaqueta, código ou descrição..."
+      [value]="searchTerm()"
+      (input)="onSearch($event)"
+      class="flex-grow px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+    >
+    <button 
+      (click)="toggleShowFavorites()"
+      title="Mostrar apenas favoritos"
+      class="flex-shrink-0 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors"
+      [class.bg-yellow-400]="showFavoritesOnly()"
+      [class.text-yellow-900]="showFavoritesOnly()"
+      [class.hover:bg-yellow-500]="showFavoritesOnly()"
+      [class.bg-gray-200]="!showFavoritesOnly()"
+      [class.text-gray-600]="!showFavoritesOnly()"
+      [class.hover:bg-gray-300]="!showFavoritesOnly()"
+      [class.dark:bg-gray-600]="!showFavoritesOnly()"
+      [class.dark:text-gray-200]="!showFavoritesOnly()"
+      [class.dark:hover:bg-gray-500]="!showFavoritesOnly()"
+      [class.dark:bg-yellow-500]="showFavoritesOnly()"
+      [class.dark:text-white]="showFavoritesOnly()"
+      [class.dark:hover:bg-yellow-600]="showFavoritesOnly()"
+    >
+      <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+      </svg>
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="mt-4 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md text-center">
+      <p class="text-gray-500 dark:text-gray-400">Carregando bens...</p>
+    </div>
+  } @else if (error()) {
+    <div class="mt-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+      {{ error() }}
+    </div>
+  } @else {
+    <!-- Assets Table -->
+    <div class="mt-4 flex flex-col">
+      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-6">
+        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-6">
+          <div class="shadow overflow-hidden border-b border-gray-200 dark:border-gray-700 sm:rounded-lg">
+            <table class="min-w-full">
+              <thead class="bg-gray-50 dark:bg-gray-700 hidden md:table-header-group">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left">
+                    <input 
+                      type="checkbox"
+                      class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:bg-gray-900 dark:border-gray-600"
+                      [checked]="isAllSelected()"
+                      (change)="toggleSelectAll($event)">
+                  </th>
+                  <th scope="col" class="px-2 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <svg class="w-5 h-5 mx-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Plaqueta</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell">Código</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Descrição</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Situação</th>
+                  <th scope="col" class="relative px-6 py-3">
+                    <span class="sr-only">Ações</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="block md:table-row-group">
+                @for (bem of bensFiltrados(); track bem.id) {
+                  <tr 
+                    class="block md:table-row mb-4 md:mb-0 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md md:border-0 md:shadow-none md:border-b animate-fade-in transition-colors duration-200"
+                    [class.bg-white]="!selectedBens().has(bem.id)"
+                    [class.dark:bg-gray-800]="!selectedBens().has(bem.id)"
+                    [class.bg-indigo-50]="selectedBens().has(bem.id)"
+                    [class.dark:bg-indigo-900/50]="selectedBens().has(bem.id)">
+                    <td class="block md:table-cell p-3 md:px-6 md:py-4 align-middle" data-label="Selecionar">
+                      <input 
+                        type="checkbox"
+                        class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 dark:bg-gray-900 dark:border-gray-600"
+                        [checked]="selectedBens().has(bem.id)"
+                        (change)="toggleSelectBem(bem.id)">
+                    </td>
+                    <td class="block md:table-cell p-3 md:px-2 md:py-4 align-middle text-center" data-label="Favorito">
+                      <button (click)="toggleFavorito(bem, $event)" class="text-gray-400 hover:text-yellow-500 transition-colors focus:outline-none">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" 
+                          [class.text-yellow-400]="bem.favorito"
+                          [attr.fill]="bem.favorito ? 'currentColor' : 'none'"
+                          stroke="currentColor" 
+                          stroke-width="1.5">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      </button>
+                    </td>
+                    <td class="block md:table-cell p-3 md:px-6 md:py-4 align-middle" data-label="Plaqueta">{{ bem.numero_patrimonio }}</td>
+                    <td class="block md:table-cell p-3 md:px-6 md:py-4 align-middle hidden md:table-cell" data-label="Código">{{ bem.codigo }}</td>
+                    <td class="block md:table-cell p-3 md:px-6 md:py-4 align-middle max-w-sm" data-label="Descrição">{{ bem.descricao }}</td>
+                    <td class="block md:table-cell p-3 md:px-6 md:py-4 align-middle" data-label="Situação">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" [class]="getStatusClass(bem.situacao)">
+                        {{ bem.situacao | titlecase }}
+                      </span>
+                    </td>
+                    <td class="block md:table-cell p-3 md:px-6 md:py-4 align-middle actions-cell">
+                       <a [routerLink]="['/bens', bem.id]" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 font-semibold">Ver Detalhes</a>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr class="md:table-row">
+                    <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                      @if (searchTerm() && !showFavoritesOnly()) {
+                        Nenhum bem encontrado com o termo "{{ searchTerm() }}".
+                      } @else if (showFavoritesOnly()) {
+                         Nenhum bem favorito encontrado.
+                      } @else {
+                        Nenhum bem cadastrado.
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Floating Action/Export Bar -->
+  @if (selectedBens().size > 0) {
+    <div class="fixed bottom-0 inset-x-0 z-50 sm:bottom-6 sm:right-6 sm:w-auto sm:left-auto bg-white dark:bg-gray-800 p-4 border-t sm:border border-gray-200 dark:border-gray-700 sm:rounded-lg shadow-2xl flex flex-col sm:flex-row items-center gap-4 animate-fade-in-up">
+      <span class="text-sm font-medium text-gray-700 dark:text-gray-200 shrink-0">
+        {{ selectedBens().size }} item(s) selecionado(s)
+      </span>
+      <div class="hidden sm:block h-6 border-l border-gray-300 dark:border-gray-600"></div>
+      <div class="flex items-center flex-wrap justify-center gap-2">
+        <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Exportar:</span>
+        <button (click)="exportData('csv')" title="Comma-Separated Values" class="px-3 py-1 text-xs font-medium text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800">CSV</button>
+        <button (click)="exportData('json')" title="JavaScript Object Notation" class="px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800">JSON</button>
+        <button (click)="exportData('excel')" title="Microsoft Excel (via CSV)" class="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-gray-800">EXCEL</button>
+        <button (click)="exportData('xml')" title="Extensible Markup Language" class="px-3 py-1 text-xs font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-offset-gray-800">XML</button>
+        <button (click)="exportData('pdf')" title="Portable Document Format" class="px-3 py-1 text-xs font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800">PDF</button>
+        <button (click)="exportData('whatsapp')" title="Compartilhar no WhatsApp" class="px-3 py-1 text-xs font-medium text-white bg-emerald-500 rounded-md hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 dark:focus:ring-offset-gray-800">WhatsApp</button>
+      </div>
+    </div>
+  }
+</div>

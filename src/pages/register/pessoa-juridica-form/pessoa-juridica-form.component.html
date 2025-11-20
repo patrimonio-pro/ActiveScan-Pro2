@@ -1,0 +1,103 @@
+<form [formGroup]="pjForm" (ngSubmit)="onSubmit()" class="space-y-4">
+  <!-- Auth Fields -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label for="pj-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Corporativo</label>
+      <input type="email" id="pj-email" formControlName="email" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+    <div>
+      <label for="pj-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Senha</label>
+      <input type="password" id="pj-password" formControlName="password" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+  </div>
+
+  <hr class="border-gray-200 dark:border-gray-600 my-6">
+
+  <!-- Company Data -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label for="razao_social" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Razão Social</label>
+      <input type="text" id="razao_social" formControlName="razao_social" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+     <div>
+      <label for="cnpj" class="block text-sm font-medium text-gray-700 dark:text-gray-300">CNPJ</label>
+      <input type="text" id="cnpj" formControlName="cnpj" required maxlength="18" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+  </div>
+   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label for="nome_fantasia" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome Fantasia</label>
+      <input type="text" id="nome_fantasia" formControlName="nome_fantasia" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+    <div>
+      <label for="telefone_com" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefone Comercial</label>
+      <input type="tel" id="telefone_com" formControlName="telefone_comercial" required maxlength="18" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+  </div>
+  <div>
+    <label for="responsavel_le" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Responsável Legal</label>
+    <input type="text" id="responsavel_le" formControlName="responsavel_legal" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label for="inscricao_esta" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Inscrição Estadual</label>
+      <input type="text" id="inscricao_esta" formControlName="inscricao_estadual" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+    <div>
+      <label for="inscricao_mun" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Inscrição Municipal</label>
+      <input type="text" id="inscricao_mun" formControlName="inscricao_municipal" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+  </div>
+
+  <hr class="border-gray-200 dark:border-gray-600 my-6">
+
+  <!-- Address -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label for="pj-cep" class="block text-sm font-medium text-gray-700 dark:text-gray-300">CEP</label>
+      <input type="text" id="pj-cep" formControlName="cep" required maxlength="9" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+  </div>
+  <div>
+    <label for="pj-logradouro" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Logradouro</label>
+    <input type="text" id="pj-logradouro" formControlName="logradouro" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label for="pj-numero" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Número</label>
+      <input type="text" id="pj-numero" formControlName="numero" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+     <div>
+      <label for="pj-bairro" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Bairro</label>
+      <input type="text" id="pj-bairro" formControlName="bairro" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label for="pj-cidade" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Cidade</label>
+      <input type="text" id="pj-cidade" formControlName="cidade" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+    <div>
+      <label for="pj-uf" class="block text-sm font-medium text-gray-700 dark:text-gray-300">UF</label>
+      <input type="text" id="pj-uf" formControlName="uf" required maxlength="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="mt-4 p-3 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <div class="pt-4">
+    <button type="submit" [disabled]="pjForm.invalid || loading()" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 disabled:cursor-not-allowed">
+       @if(loading()) {
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      }
+      <span>Cadastrar</span>
+    </button>
+  </div>
+</form>

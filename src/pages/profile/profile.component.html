@@ -1,0 +1,204 @@
+<div class="max-w-4xl mx-auto">
+  <h3 class="text-3xl font-medium text-gray-700 dark:text-gray-200">Meu Perfil</h3>
+  <p class="mt-2 text-gray-600 dark:text-gray-400">Gerencie suas informações pessoais e de conta.</p>
+
+  @if (isLoading()) {
+    <div class="mt-8 text-center p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+      <p class="text-gray-500 dark:text-gray-400">Carregando perfil...</p>
+    </div>
+  } @else if (error() && !isEditing()) {
+    <div class="mt-8 p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+      {{ error() }}
+    </div>
+  } @else if (detailedProfile(); as profile) {
+    <div class="mt-6 bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+      
+      @if (successMessage()) {
+        <div class="p-4 m-6 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
+          {{ successMessage() }}
+        </div>
+      }
+      
+      <!-- VIEW/EDIT MODE -->
+      @if (isEditing()) {
+        <!-- EDIT MODE -->
+        <form [formGroup]="profileForm" (ngSubmit)="onSave()" class="p-6 space-y-6">
+          <!-- Common Fields -->
+          <div>
+            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Email</label>
+            <p class="text-gray-800 dark:text-gray-200">{{ userProfile()?.email }}</p>
+          </div>
+
+          <!-- Pessoa Fisica Fields -->
+          @if (isPessoaFisica(profile)) {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4 dark:border-gray-600">
+              <div>
+                <label for="nome_completo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome Completo</label>
+                <input id="nome_completo" type="text" formControlName="nome_completo" class="mt-1 block w-full input-style">
+              </div>
+              <div>
+                <label for="cpf" class="block text-sm font-medium text-gray-700 dark:text-gray-300">CPF</label>
+                <input id="cpf" type="text" formControlName="cpf" class="mt-1 block w-full input-style">
+              </div>
+              <div>
+                <label for="data_nascimento" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Data de Nascimento</label>
+                <input id="data_nascimento" type="date" formControlName="data_nascimento" class="mt-1 block w-full input-style">
+              </div>
+              <div>
+                <label for="telefone_celular" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefone Celular</label>
+                <input id="telefone_celular" type="tel" formControlName="telefone_celular" class="mt-1 block w-full input-style">
+              </div>
+              <div>
+                <label for="sexo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Sexo</label>
+                <select id="sexo" formControlName="sexo" class="mt-1 block w-full input-style">
+                  <option value="masculino">Masculino</option>
+                  <option value="feminino">Feminino</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+            </div>
+          } @else {
+             <!-- Pessoa Juridica Fields -->
+             @if (!isPessoaFisica(profile)) {
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4 dark:border-gray-600">
+                  <div>
+                    <label for="razao_social" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Razão Social</label>
+                    <input id="razao_social" type="text" formControlName="razao_social" class="mt-1 block w-full input-style">
+                  </div>
+                   <div>
+                    <label for="cnpj" class="block text-sm font-medium text-gray-700 dark:text-gray-300">CNPJ</label>
+                    <input id="cnpj" type="text" formControlName="cnpj" class="mt-1 block w-full input-style">
+                  </div>
+                  <div>
+                    <label for="nome_fantasia" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome Fantasia</label>
+                    <input id="nome_fantasia" type="text" formControlName="nome_fantasia" class="mt-1 block w-full input-style">
+                  </div>
+                  <div>
+                    <label for="telefone_comercial" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Telefone Comercial</label>
+                    <input id="telefone_comercial" type="tel" formControlName="telefone_comercial" class="mt-1 block w-full input-style">
+                  </div>
+                   <div>
+                    <label for="responsavel_legal" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Responsável Legal</label>
+                    <input id="responsavel_legal" type="text" formControlName="responsavel_legal" class="mt-1 block w-full input-style">
+                  </div>
+                </div>
+             }
+          }
+          <!-- Address Fields (common) -->
+          <fieldset class="space-y-4 border-t border-gray-200 dark:border-gray-600 pt-4">
+             <legend class="text-base font-medium text-gray-900 dark:text-gray-100">Endereço</legend>
+             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label for="cep" class="block text-sm font-medium text-gray-700 dark:text-gray-300">CEP</label>
+                  <input type="text" id="cep" formControlName="cep" class="mt-1 block w-full input-style">
+                </div>
+             </div>
+             <div>
+                <label for="logradouro" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Logradouro</label>
+                <input type="text" id="logradouro" formControlName="logradouro" class="mt-1 block w-full input-style">
+             </div>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="numero" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Número</label>
+                  <input type="text" id="numero" formControlName="numero" class="mt-1 block w-full input-style">
+                </div>
+                 <div>
+                  <label for="bairro" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Bairro</label>
+                  <input type="text" id="bairro" formControlName="bairro" class="mt-1 block w-full input-style">
+                </div>
+             </div>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="cidade" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Cidade</label>
+                  <input type="text" id="cidade" formControlName="cidade" class="mt-1 block w-full input-style">
+                </div>
+                <div>
+                  <label for="uf" class="block text-sm font-medium text-gray-700 dark:text-gray-300">UF</label>
+                  <input type="text" id="uf" formControlName="uf" maxlength="2" class="mt-1 block w-full input-style">
+                </div>
+             </div>
+          </fieldset>
+          
+          @if (error()) {
+            <div class="p-3 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+              {{ error() }}
+            </div>
+          }
+
+           <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 flex justify-end space-x-3">
+             <button type="button" (click)="setEditing(false)" class="px-4 py-2 btn-secondary">Cancelar</button>
+             <button type="submit" [disabled]="profileForm.invalid" class="px-4 py-2 btn-primary">Salvar Alterações</button>
+           </div>
+        </form>
+      } @else {
+        <!-- VIEW MODE -->
+        <div class="p-6">
+          <dl class="divide-y divide-gray-200 dark:divide-gray-700">
+            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ userProfile()?.email }}</dd>
+            </div>
+            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Tipo de Conta</dt>
+              <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ userProfile()?.tipo }}</dd>
+            </div>
+            @if (isPessoaFisica(profile)) {
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nome Completo</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ profile.nome_completo }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">CPF</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ profile.cpf }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Telefone</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ profile.telefone_celular }}</dd>
+              </div>
+            } @else {
+              @if (!isPessoaFisica(profile)) {
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Razão Social</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ profile.razao_social }}</dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">CNPJ</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ profile.cnpj }}</dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Telefone</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ profile.telefone_comercial }}</dd>
+                </div>
+                <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Responsável Legal</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ profile.responsavel_legal }}</dd>
+                </div>
+              }
+            }
+          </dl>
+        </div>
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+          <button (click)="setEditing(true)" class="px-4 py-2 btn-primary">Editar Perfil</button>
+        </div>
+      }
+    </div>
+
+    <!-- Delete Account Section -->
+    <div class="mt-8 p-6 bg-white dark:bg-gray-800 border-2 border-red-200 dark:border-red-800/50 rounded-lg shadow-md">
+       <h4 class="text-xl font-semibold text-red-700 dark:text-red-300">Zona de Perigo</h4>
+       <p class="mt-2 text-gray-600 dark:text-gray-400">
+         A exclusão da sua conta é uma ação permanente e removerá todos os seus dados do sistema, incluindo bens, inventários e permissões.
+       </p>
+       <div class="mt-4">
+         <button (click)="onDeleteAccount()" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800">
+           Deletar Minha Conta
+         </button>
+       </div>
+    </div>
+
+  } @else {
+    <div class="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md text-center">
+      <p class="text-gray-500 dark:text-gray-400">Perfil não encontrado.</p>
+    </div>
+  }
+</div>

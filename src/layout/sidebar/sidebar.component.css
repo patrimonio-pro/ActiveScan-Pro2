@@ -1,0 +1,14 @@
+.h-10 {
+  width: 12rem;
+  height: 10rem;
+  border-radius: 0rem;
+}
+
+h1 {
+  color: #e6eef8;
+  font-size: 1.6rem;
+  font-weight: italic bold;
+  font-style: oblique;
+  font-family:cursive;
+  margin-right: 1em;
+}

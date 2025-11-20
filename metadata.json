@@ -1,0 +1,7 @@
+{
+  "name": "ActiveScan Pro - Gestão de Inventário",
+  "description": "Um sistema completo de administração e inventário patrimonial integrado ao Supabase, com funcionalidades online e offline, leitor de QR code, geolocalização e dashboards.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

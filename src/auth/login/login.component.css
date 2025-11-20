@@ -1,0 +1,22 @@
+.mx-auto.h-12.w-auto {
+  width: 15rem;
+  height: 12rem;
+  border-radius: 3rem;
+  
+  /* Fundo com blur + gradiente suave + borda sutil */
+  background: rgba(249, 249, 249, 0.737);           /* tom bem escuro com transparência */
+  backdrop-filter: blur(10px);                  /* efeito vidro fosco */
+  border: 1px solid rgba(254, 254, 254, 0.824);   /* borda roxa suave (opcional) */
+  
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    inset 0 0 60px rgba(0, 0, 0, 0.3);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.w-full.max-w-md.p-8.space-y-6.bg-white{
+border: solid 1px rgba(136, 136, 136, 0.65)
+}

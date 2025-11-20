@@ -1,0 +1,23 @@
+<svg viewBox="0 0 284 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Speed lines -->
+  <path d="M4 23H44" stroke="#0ea5e9" stroke-width="4"/>
+  <path d="M4 30H54" stroke="#0ea5e9" stroke-width="4"/>
+  <path d="M4 37H44" stroke="#0ea5e9" stroke-width="4"/>
+  <rect x="0" y="21" width="4" height="4" fill="#0ea5e9"/>
+  <rect x="0" y="35" width="4" height="4" fill="#0ea5e9"/>
+  
+  <!-- Shield with building cutouts using a compound path -->
+  <path 
+    fill-rule="evenodd" 
+    clip-rule="evenodd"
+    d="M50 10 L98 10 L108 20 V 42 L84 55 L50 42 V 20 Z M63 42 H 68 V 53 H 63 Z M71 36 H 76 V 53 H 71 Z M79 40 H 84 V 53 H 79 Z" 
+    fill="#0ea5e9"
+  />
+  
+  <!-- Arrow -->
+  <path d="M98 25 L115 32.5 L98 40 Z" fill="#0ea5e9"/>
+  
+  <!-- Text -->
+  <text x="125" y="35" style="font: bold 30px sans-serif; fill: #1f2937;">ActiveScan</text>
+  <text x="125" y="56" style="font: 22px sans-serif; fill: #1f2937;">PRO</text>
+</svg>

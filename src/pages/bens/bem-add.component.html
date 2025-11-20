@@ -1,0 +1,10 @@
+<div class="max-w-4xl mx-auto">
+  <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+     @if (error()) {
+      <div class="m-6 p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+        {{ error() }}
+      </div>
+    }
+    <app-bem-form (save)="handleAdicionarBem($event)" (cancel)="handleCancelar()"></app-bem-form>
+  </div>
+</div>

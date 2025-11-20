@@ -1,0 +1,27 @@
+.h8{
+    height: 3rem;
+    width: 11.5rem;
+    border-radius: 15px;
+}
+
+
+@media (max-width: 500px) {
+    .h8{
+        height: 2.9rem;
+        width: 7rem;
+        border-radius: 15px;
+        margin-left: -10px;
+    }
+
+    .flex.items-center.bg-indigo-100.text-indigo-800.text-xs.font-semibold.mr-3{
+         height: 1.9rem;
+         width: 2.7rem;
+         
+    }
+
+    .w-4.h-4{
+        width: 0.8rem;
+        height: 0.8rem;
+        margin-right: -0.4rem;
+    }
+}

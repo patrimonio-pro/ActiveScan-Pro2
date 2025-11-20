@@ -1,0 +1,15 @@
+/* index.css — arquivo mínimo para evitar 404/MIME errors
+   O projeto usa o CDN do Tailwind (em index.html). Este arquivo evita retornos 404
+   e permite adicionar estilos globais simples.
+*/
+html, body {
+  height: 100%;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* Exemplo de fallback simples (será sobrescrito pelo Tailwind se carregado) */
+body {
+  background-color: #0f172a; /* cor escura padrão até o app inicializar */
+  color: #e6eef8;
+}

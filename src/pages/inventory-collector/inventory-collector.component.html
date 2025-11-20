@@ -1,0 +1,163 @@
+<ng-container>
+  <div class="max-w-4xl mx-auto">
+    <h3 class="text-3xl font-medium text-gray-700 dark:text-gray-200">Coletor de Inventário</h3>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">Use os botões abaixo para inventariar os bens.</p>
+
+    <!-- Collector Actions -->
+    <div class="mt-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Scan Button -->
+        <button (click)="onScan()" [disabled]="status() !== 'idle'" class="flex flex-col items-center justify-center p-6 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 disabled:cursor-wait transition-colors">
+          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          <span class="mt-2 text-lg font-semibold">
+            @if (status() === 'scanning') {
+              Lendo QR Code...
+            } @else {
+              Escanear Plaqueta
+            }
+          </span>
+        </button>
+        
+        <!-- Import Button -->
+        <div class="flex flex-col">
+          <button (click)="onImportClick()" [disabled]="status() !== 'idle'" class="w-full flex flex-col items-center justify-center p-6 text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-purple-400 disabled:cursor-wait transition-colors">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            <span class="mt-2 text-lg font-semibold">
+              @if (status() === 'importing') {
+                Importando...
+              } @else {
+                Importar Dados
+              }
+            </span>
+          </button>
+          <p class="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+            Aceita: .csv, .json, .xml, .xlsx, .xls
+          </p>
+        </div>
+
+        <!-- Sync Button -->
+        <button (click)="onSync()" [disabled]="status() !== 'idle' || unsyncedCount() === 0" class="relative flex flex-col items-center justify-center p-6 text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-green-400 disabled:cursor-not-allowed transition-colors">
+          @if (unsyncedCount() > 0) {
+              <span class="absolute top-2 right-2 px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full">{{ unsyncedCount() }}</span>
+          }
+          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 20h5v-5M20 4h-5v5"></path></svg>
+          <span class="mt-2 text-lg font-semibold">
+              @if (status() === 'syncing') {
+                Sincronizando...
+              } @else {
+                Sincronizar Dados
+              }
+          </span>
+        </button>
+      </div>
+      
+      <!-- Hidden file input is now outside the grid container -->
+      <input type="file" #fileInput hidden multiple (change)="onFileSelected($event)" accept=".csv,.json,.xml,.xlsx,.xls">
+
+      <!-- Status Messages -->
+      <div class="mt-4 text-center text-gray-600 dark:text-gray-400 min-h-[2rem]">
+        @if (status() === 'importing') {
+          <span>Processando arquivos, por favor aguarde...</span>
+        }
+        @if (status() === 'checking_bem') {
+          <span>Verificando plaqueta no banco de dados...</span>
+        }
+        @if (status() === 'locating') {
+          <span>Obtendo geolocalização...</span>
+        }
+        @if (status() === 'saving') {
+          <span>Salvando item localmente...</span>
+        }
+        @if (lastScan()) {
+          <span>Última leitura: <strong>{{ lastScan() }}</strong>. Aguarde...</span>
+        }
+        @if (syncMessage()) {
+          <span class="font-bold" [class.text-green-600]="!syncMessage()?.includes('Falha')" [class.dark:text-green-400]="!syncMessage()?.includes('Falha')" [class.text-red-600]="syncMessage()?.includes('Falha')" [class.dark:text-red-400]="syncMessage()?.includes('Falha')">{{ syncMessage() }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Import Results -->
+    @if (importResults().length > 0) {
+      <div class="mt-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <div class="flex justify-between items-center mb-2">
+          <h4 class="text-lg font-medium text-gray-700 dark:text-gray-200">Resultados da Importação</h4>
+          <button (click)="clearImportResults()" class="text-sm text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 focus:outline-none font-semibold">Limpar</button>
+        </div>
+        <ul class="space-y-2 max-h-48 overflow-y-auto pr-2">
+          @for (result of importResults(); track result.fileName + result.message) {
+            <li class="p-3 rounded-md flex items-start space-x-3" [class.bg-green-50]="result.status === 'success'" [class.dark:bg-green-900/50]="result.status === 'success'" [class.bg-red-50]="result.status === 'error'" [class.dark:bg-red-900/50]="result.status === 'error'">
+              <div class="flex-shrink-0">
+                  @if (result.status === 'success') {
+                      <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                  } @else {
+                      <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                  }
+              </div>
+              <div>
+                  <p class="font-semibold text-sm text-gray-800 dark:text-gray-200">{{ result.fileName }}</p>
+                  <p class="text-sm" [class.text-green-800]="result.status === 'success'" [class.dark:text-green-300]="result.status === 'success'" [class.text-red-800]="result.status === 'error'" [class.dark:text-red-300]="result.status === 'error'">
+                    {{ result.message }}
+                  </p>
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- Collected Items List -->
+    <div class="mt-8">
+      <h4 class="text-xl font-medium text-gray-700 dark:text-gray-200">Itens Coletados (Offline)</h4>
+      @if (collectedItems().length === 0) {
+        <p class="mt-2 p-4 text-center bg-white dark:bg-gray-800 rounded-lg shadow-md text-gray-500 dark:text-gray-400">Nenhum item coletado ainda.</p>
+      } @else {
+        <div class="mt-4 flex flex-col">
+          <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+              <div class="shadow overflow-hidden border-b border-gray-200 dark:border-gray-700 sm:rounded-lg">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                  <thead class="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Plaqueta</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Data/Hora</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Conciliação</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Sincronia</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    @for (item of collectedItems(); track item.id) {
+                      <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ item.plaqueta_lida }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ item.data_coleta | date:'dd/MM/yy HH:mm' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                          @if (item.status_conciliacao === 'conciliado') {
+                            <span class="text-green-600 dark:text-green-400">Conciliado</span>
+                          } @else {
+                            <span class="text-yellow-600 dark:text-yellow-400">Não Encontrado</span>
+                          }
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                          @if (item.is_synced) {
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">Sincronizado</span>
+                          } @else {
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100">Pendente</span>
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- QR Scanner Component -->
+  @if (isScanning()) {
+    <app-qr-scanner (scanSuccess)="onScanSuccess($event)" (scanCancel)="onScanCancel()"></app-qr-scanner>
+  }
+</ng-container>

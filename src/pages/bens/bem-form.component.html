@@ -1,0 +1,189 @@
+<form [formGroup]="bemForm" (ngSubmit)="onSubmit()" class="flex flex-col w-full h-full">
+  <!-- Header -->
+  <div class="p-6 pb-2 flex-shrink-0">
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">
+      {{ isEditing ? 'Editar Bem' : 'Adicionar Novo Bem' }}
+    </h2>
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="py-4 flex-grow overflow-y-auto modal-content-body">
+    <div class="px-6 space-y-6">
+      <!-- Dados Principais -->
+      <fieldset class="space-y-4 border-t border-gray-200 dark:border-gray-600 pt-4">
+        <legend class="text-lg font-medium text-gray-900 dark:text-gray-100">Dados Principais</legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="numero_patrimonio" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Plaqueta / N° Patrimônio</label>
+            <input type="text" id="numero_patrimonio" formControlName="numero_patrimonio" required class="mt-1 block w-full rounded-md shadow-sm sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" [class.border-red-500]="bemForm.get('numero_patrimonio')?.invalid && bemForm.get('numero_patrimonio')?.touched" [class.border-gray-300]="!bemForm.get('numero_patrimonio')?.invalid || !bemForm.get('numero_patrimonio')?.touched">
+            @if (bemForm.get('numero_patrimonio')?.hasError('required') && bemForm.get('numero_patrimonio')?.touched) {
+              <p class="mt-1 text-xs text-red-500">A plaqueta é obrigatória.</p>
+            }
+          </div>
+          <div>
+            <label for="codigo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Código</label>
+            <input type="text" id="codigo" formControlName="codigo" required class="mt-1 block w-full rounded-md shadow-sm sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" [class.border-red-500]="bemForm.get('codigo')?.invalid && bemForm.get('codigo')?.touched" [class.border-gray-300]="!bemForm.get('codigo')?.invalid || !bemForm.get('codigo')?.touched">
+             @if (bemForm.get('codigo')?.hasError('required') && bemForm.get('codigo')?.touched) {
+              <p class="mt-1 text-xs text-red-500">O código é obrigatório.</p>
+            }
+          </div>
+        </div>
+        <div>
+          <label for="descricao" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descrição</label>
+          <textarea id="descricao" formControlName="descricao" rows="3" required class="mt-1 block w-full rounded-md shadow-sm sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white" [class.border-red-500]="bemForm.get('descricao')?.invalid && bemForm.get('descricao')?.touched" [class.border-gray-300]="!bemForm.get('descricao')?.invalid || !bemForm.get('descricao')?.touched"></textarea>
+           @if (bemForm.get('descricao')?.hasError('required') && bemForm.get('descricao')?.touched) {
+              <p class="mt-1 text-xs text-red-500">A descrição é obrigatória.</p>
+            }
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="situacao" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Situação</label>
+              <select id="situacao" formControlName="situacao" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                <option value="ativo">Ativo</option>
+                <option value="inativo">Inativo</option>
+                <option value="em_manutencao">Em Manutenção</option>
+                <option value="baixado">Baixado</option>
+              </select>
+            </div>
+            <div>
+              <label for="categoria" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Categoria</label>
+              <input type="text" id="categoria" formControlName="categoria" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            </div>
+          </div>
+      </fieldset>
+
+      <!-- Detalhes Adicionais -->
+      <fieldset class="space-y-4 border-t border-gray-200 dark:border-gray-600 pt-4">
+        <legend class="text-lg font-medium text-gray-900 dark:text-gray-100">Detalhes Adicionais</legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="fabricante" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fabricante</label>
+            <input type="text" id="fabricante" formControlName="fabricante" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+          </div>
+          <div>
+            <label for="modelo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Modelo</label>
+            <input type="text" id="modelo" formControlName="modelo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="numero_serie" class="block text-sm font-medium text-gray-700 dark:text-gray-300">N° de Série</label>
+            <input type="text" id="numero_serie" formControlName="numero_serie" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+          </div>
+          <div>
+            <label for="data_aquisicao" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Data de Aquisição</label>
+            <input type="date" id="data_aquisicao" formControlName="data_aquisicao" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            @if (bemForm.get('data_aquisicao')?.hasError('futureDate') && bemForm.get('data_aquisicao')?.touched) {
+              <p class="mt-1 text-xs text-red-500">A data de aquisição não pode ser no futuro.</p>
+            }
+          </div>
+        </div>
+        <div>
+            <label for="valor" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Valor de Aquisição (R$)</label>
+            <input type="number" id="valor" formControlName="valor" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            @if (bemForm.get('valor')?.hasError('min') && bemForm.get('valor')?.touched) {
+              <p class="mt-1 text-xs text-red-500">O valor não pode ser negativo.</p>
+            }
+        </div>
+        <div>
+            <label for="estado_conservacao_dep" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Estado de Conservação (DEP)  <span class="font-bold text-indigo-600 dark:text-indigo-400">{{ bemForm.get('estado_conservacao_dep')?.value }}</span>
+            </label>
+            <input 
+                type="range" 
+                id="estado_conservacao_dep" 
+                formControlName="estado_conservacao_dep" 
+                min="0" 
+                max="10" 
+                step="1"
+                class="mt-2 block w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-600 accent-indigo-600">
+        </div>
+      </fieldset>
+      
+      <!-- Fotos do Bem -->
+      <fieldset class="space-y-4 border-t border-gray-200 dark:border-gray-600 pt-4">
+        <legend class="text-lg font-medium text-gray-900 dark:text-gray-100">Fotos do Bem</legend>
+
+        <div class="flex justify-between items-center">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fotos Adicionadas</label>
+          <span class="text-sm text-gray-500 dark:text-gray-400">{{ photoPreviews().length }} / 12</span>
+        </div>
+        
+        <div class="mt-2">
+            @if (photoPreviews().length > 0) {
+                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+                    @for (photo of photoPreviews(); track $index) {
+                        <div class="relative group">
+                            <img [src]="photo" alt="Prévia da foto do bem {{ $index + 1 }}" class="h-24 w-24 rounded-md object-cover border border-gray-200 dark:border-gray-600">
+                            <button (click)="deletePhoto(photo, $index)" type="button" class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-600 text-white rounded-full h-6 w-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            </button>
+                        </div>
+                    }
+                </div>
+            } @else {
+                <div class="flex items-center justify-center h-24 w-full rounded-md border-2 border-dashed border-gray-300 dark:border-gray-600">
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Nenhuma foto adicionada.</p>
+                </div>
+            }
+        </div>
+
+        <div class="mt-4">
+            <button type="button" (click)="openCamera()" [disabled]="photoPreviews().length >= 12" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 disabled:cursor-not-allowed">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Tirar Foto
+            </button>
+        </div>
+      </fieldset>
+
+      <!-- Outras Informações -->
+      <fieldset class="space-y-4 border-t border-gray-200 dark:border-gray-600 pt-4">
+        <legend class="text-lg font-medium text-gray-900 dark:text-gray-100">Outras Informações</legend>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="localizacao" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Localização</label>
+            <input type="text" id="localizacao" formControlName="localizacao" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+          </div>
+          <div>
+            <label for="responsavel" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Responsável</label>
+            <input type="text" id="responsavel" formControlName="responsavel" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+          </div>
+        </div>
+        <div>
+          <label for="observacoes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Observações</label>
+          <textarea id="observacoes" formControlName="observacoes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
+        </div>
+      </fieldset>
+      
+      @if (isEditing) {
+        <fieldset class="space-y-4 border-t border-gray-200 dark:border-gray-600 pt-4">
+          <legend class="text-lg font-medium text-gray-900 dark:text-gray-100">Histórico</legend>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="created_at" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Data de Criação</label>
+              <input type="text" id="created_at" formControlName="created_at" class="mt-1 block w-full rounded-md shadow-sm sm:text-sm bg-gray-100 dark:bg-gray-800 dark:text-gray-400 border-gray-300 dark:border-gray-600 cursor-not-allowed">
+            </div>
+            <div>
+              <label for="updated_at" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Última Atualização</label>
+              <input type="text" id="updated_at" formControlName="updated_at" class="mt-1 block w-full rounded-md shadow-sm sm:text-sm bg-gray-100 dark:bg-gray-800 dark:text-gray-400 border-gray-300 dark:border-gray-600 cursor-not-allowed">
+            </div>
+          </div>
+        </fieldset>
+      }
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="p-6 pt-4 mt-auto flex justify-end space-x-4 flex-shrink-0 border-t border-gray-200 dark:border-gray-700">
+    <button type="button" (click)="onCancel()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white dark:bg-gray-600 dark:text-gray-200 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none">
+      Cancelar
+    </button>
+    <button type="submit" [disabled]="bemForm.invalid" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 disabled:cursor-not-allowed">
+      Salvar
+    </button>
+  </div>
+</form>
+
+@if (isCameraOpen()) {
+  <app-camera (photo)="onPhotoTaken($event)" (cancel)="closeCamera()"></app-camera>
+}

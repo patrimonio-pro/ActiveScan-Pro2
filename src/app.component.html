@@ -1,0 +1,51 @@
+<ng-container>
+  <!-- Global Error Overlay -->
+  @if (globalError(); as error) {
+    <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-75">
+      <div class="w-full max-w-lg p-6 mx-4 bg-red-100 dark:bg-gray-800 border-2 border-red-500 dark:border-red-600 rounded-lg shadow-2xl text-red-800 dark:text-red-200">
+        <div class="flex items-start">
+          <div class="shrink-0">
+            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <div class="ml-4">
+            <h3 class="text-xl font-bold">Erro na Aplicação</h3>
+            <p class="mt-2 text-sm text-red-700 dark:text-red-300">{{ error }}</p>
+          </div>
+        </div>
+        <div class="mt-6 text-right">
+          <button (click)="clearError()" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (isLoggedIn()) {
+    <div class="h-screen bg-gray-100 font-sans dark:bg-gray-900">
+      
+      <!-- Sidebar is positioned 'fixed' and is out of flow -->
+      <app-sidebar></app-sidebar>
+
+      <!-- Backdrop overlay -->
+      @if (isSidebarOpen()) {
+        <div (click)="closeSidebar()" class="fixed inset-0 z-30 bg-black bg-opacity-50"></div>
+      }
+
+      <!-- Main content container -->
+      <div class="flex h-full flex-col">
+        <!-- Header -->
+        <app-header></app-header>
+
+        <!-- Page content -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto">
+          <div class="container mx-auto px-6 py-8">
+            <router-outlet></router-outlet>
+          </div>
+        </main>
+      </div>
+    </div>
+  } @else {
+    <router-outlet></router-outlet>
+  }
+</ng-container>

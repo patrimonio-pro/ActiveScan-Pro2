@@ -1,0 +1,78 @@
+@media (max-width: 767px) {
+  /* For mobile view, add labels before cell content */
+  tbody td[data-label]::before {
+    content: attr(data-label);
+    font-weight: 600;
+    float: left;
+    color: #6b7280; /* Tailwind gray-500 */
+  }
+
+  /* Right-align the content of the cell */
+  tbody td {
+    text-align: right;
+    border-top: 1px solid #e5e7eb; /* Tailwind gray-200 */
+  }
+  
+  .dark tbody td {
+      border-top-color: #374151; /* Tailwind gray-700 */
+  }
+
+  /* First cell in the card has no top border */
+  tbody tr td:first-child {
+      border-top: none;
+  }
+
+  /* Special handling for some cells to look better */
+  tbody td[data-label="Selecionar"],
+  tbody td[data-label="Favorito"] {
+    text-align: left;
+  }
+  
+  tbody td[data-label="Favorito"] button {
+    margin-left: auto; /* Push button to the right */
+  }
+
+  /* Center actions and give it more space */
+  tbody td.actions-cell {
+    text-align: center;
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  tbody td.actions-cell a {
+      display: block;
+      width: 100%;
+  }
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0; /* Começa invisível para a animação funcionar */
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out forwards;
+}

@@ -1,0 +1,16 @@
+{
+  "name": "ActiveScan Pro",
+  "short_name": "ActiveScan",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#1a202c",
+  "theme_color": "#1a202c",
+  "description": "Sistema de Administração e Inventário Patrimonial.",
+  "icons": [
+    {
+      "src": "/assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

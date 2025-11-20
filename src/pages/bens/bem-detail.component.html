@@ -1,0 +1,142 @@
+<div class="max-w-4xl mx-auto">
+  @if (isLoading()) {
+    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md text-center">
+      <p class="text-gray-500 dark:text-gray-400">Carregando detalhes do bem...</p>
+    </div>
+  } @else if (error()) {
+    <div class="p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+      {{ error() }}
+    </div>
+    <div class="mt-4">
+      <button (click)="goBack()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white dark:bg-gray-600 dark:text-gray-200 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700">
+        Voltar para a Lista
+      </button>
+    </div>
+  } @else if (bem(); as bemAtual) {
+    
+    @if (!isEditing()) {
+      <!-- View Mode -->
+      <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+        <div class="p-6">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="text-3xl font-bold text-gray-800 dark:text-white">{{ bemAtual.descricao }}</h3>
+              <p class="mt-1 text-md text-gray-500 dark:text-gray-400">Plaqueta: {{ bemAtual.numero_patrimonio }}</p>
+            </div>
+            <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full" [class]="getStatusClass(bemAtual.situacao)">
+              {{ bemAtual.situacao | titlecase }}
+            </span>
+          </div>
+
+          <div class="mt-6 border-t border-gray-200 dark:border-gray-700">
+            <dl class="divide-y divide-gray-200 dark:divide-gray-700">
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Código</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ bemAtual.codigo }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Categoria</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ bemAtual.categoria || 'Não informado' }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Fabricante / Modelo</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ bemAtual.fabricante || 'N/A' }} / {{ bemAtual.modelo || 'N/A' }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nº de Série</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ bemAtual.numero_serie || 'Não informado' }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Aquisição</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ bemAtual.data_aquisicao ? (bemAtual.data_aquisicao | date:'dd/MM/yyyy') : 'Não informado' }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Valor</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ bemAtual.valor ? (bemAtual.valor | currency:'BRL') : 'Não informado' }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Localização</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ bemAtual.localizacao || 'Não informado' }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Responsável</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ bemAtual.responsavel || 'Não informado' }}</dd>
+              </div>
+               <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Estado de Conservação (DEP)</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                   @if (bemAtual.estado_conservacao_dep !== null && bemAtual.estado_conservacao_dep !== undefined) {
+                    <div class="flex items-center">
+                        <span class="font-semibold">{{ bemAtual.estado_conservacao_dep }} / 10</span>
+                        <div class="w-2/3 bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 ml-4">
+                            <div class="bg-indigo-600 h-2.5 rounded-full" [style.width.%]="bemAtual.estado_conservacao_dep * 10"></div>
+                        </div>
+                    </div>
+                  } @else {
+                    <span>Não informado</span>
+                  }
+                </dd>
+              </div>
+               <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Observações</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2 whitespace-pre-wrap">{{ bemAtual.observacoes || 'Nenhuma' }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Data de Criação</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ createdAtFormatted() }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Última Atualização</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">{{ updatedAtFormatted() }}</dd>
+              </div>
+              <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Fotos</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                  @if(bemAtual.foto_urls && bemAtual.foto_urls.length > 0) {
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                      @for(url of bemAtual.foto_urls; track url) {
+                        <a [href]="url" target="_blank" rel="noopener noreferrer">
+                          <img [src]="url" alt="Foto do bem" class="h-28 w-28 rounded-md object-cover hover:opacity-80 transition-opacity">
+                        </a>
+                      }
+                    </div>
+                  } @else {
+                    <span>Sem fotos</span>
+                  }
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-between">
+            <button (click)="goBack()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white dark:bg-gray-600 dark:text-gray-200 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700">
+                Voltar
+            </button>
+            <div class="space-x-3">
+                <button (click)="isEditing.set(true)" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                    Editar
+                </button>
+                <button (click)="handleExcluir()" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                    Excluir
+                </button>
+            </div>
+        </div>
+      </div>
+    } @else {
+      <!-- Edit Mode -->
+      <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg">
+        <app-bem-form [bem]="bemAtual" (save)="handleSalvar($event)" (cancel)="isEditing.set(false)"></app-bem-form>
+      </div>
+    }
+  } @else {
+     <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md text-center">
+        <p class="text-gray-500 dark:text-gray-400">Bem não encontrado.</p>
+        <div class="mt-4">
+            <button (click)="goBack()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white dark:bg-gray-600 dark:text-gray-200 border border-gray-300 dark:border-gray-500 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700">
+                Voltar para a Lista
+            </button>
+        </div>
+     </div>
+  }
+</div>

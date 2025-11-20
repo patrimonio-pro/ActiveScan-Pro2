@@ -1,0 +1,37 @@
+<!-- Sidebar -->
+<aside
+  class="fixed inset-y-0 left-0 z-40 flex h-screen w-64 flex-col bg-gray-800 text-gray-100 transition-transform duration-300 ease-in-out"
+  [class.translate-x-0]="isSidebarOpen()"
+  [class.-translate-x-full]="!isSidebarOpen()">
+
+  <!-- Sidebar Header -->
+  <div class="flex h-16 flex-shrink-0 items-center justify-center bg-gray-900 px-4">
+    <h1>ActiveScan Pro</h1>
+  </div>
+
+  <!-- Navigation Links -->
+  <nav class="flex-1 overflow-y-auto bg-gray-800 px-2 py-4">
+    @for(link of navLinks; track link.path) {
+      <a
+        [routerLink]="link.path"
+        routerLinkActive="bg-gray-700 text-white"
+        [routerLinkActiveOptions]="{exact: true}"
+        (click)="onNavLinkClick()"
+        class="flex items-center rounded-md px-4 py-2 mt-2 text-gray-400 hover:bg-gray-700 hover:text-white">
+        <span [innerHTML]="link.icon"></span>
+        <span class="mx-4 font-medium">{{ link.name }}</span>
+      </a>
+    }
+    @if(isAdmin()) {
+      <a
+        routerLink="/usuarios"
+        routerLinkActive="bg-gray-700 text-white"
+        [routerLinkActiveOptions]="{exact: true}"
+        (click)="onNavLinkClick()"
+        class="flex items-center rounded-md px-4 py-2 mt-2 text-gray-400 hover:bg-gray-700 hover:text-white">
+        <span [innerHTML]="getIcon('users')"></span>
+        <span class="mx-4 font-medium">Usuários</span>
+      </a>
+    }
+  </nav>
+</aside>
