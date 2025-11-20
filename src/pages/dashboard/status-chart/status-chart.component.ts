@@ -98,8 +98,7 @@ export class StatusChartComponent implements AfterViewInit {
     arcs.append('path')
         .attr('d', arcGenerator)
         .attr('fill', d => this.colorScale(d.data.label))
-        .attr('stroke', document.documentElement.classList.contains('dark') ? '#1f2937' : 'white')
-        .style('stroke-width', '4px');
+        .attr('stroke', document.documentElement.classList.contains('dark') ? '#000000' : '#000000')
 
     // Add labels
     arcs.append('text')

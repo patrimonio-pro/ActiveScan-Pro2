@@ -45,7 +45,7 @@ export class QrScannerComponent implements AfterViewInit, OnDestroy {
     this.codeReader = new BrowserMultiFormatReader(hints);
   }
 
-  async ngAfterViewInit() {
+    async ngAfterViewInit() {
     try {
       const videoElement = this.video().nativeElement;
       // Request higher resolution and continuous focus for better scanning accuracy.
@@ -64,6 +64,18 @@ export class QrScannerComponent implements AfterViewInit, OnDestroy {
       this.stream = await navigator.mediaDevices.getUserMedia(constraints);
       this.checkTorchSupport(); // Check for torch support after getting the stream
       videoElement.srcObject = this.stream;
+      videoElement.setAttribute('playsinline', 'true'); // Ensure inline playback on iOS
+
+      // Wait for metadata to load to ensure we have dimensions before decoding
+      await new Promise<void>((resolve) => {
+        if (videoElement.readyState >= 1) {
+            resolve();
+        } else {
+            videoElement.onloadedmetadata = () => resolve();
+        }
+      });
+
+      await videoElement.play();
       this.isLoading.set(false);
       
       this.codeReader.decodeContinuously(videoElement, (result, err) => {
@@ -74,7 +86,11 @@ export class QrScannerComponent implements AfterViewInit, OnDestroy {
         // This error is expected when no code is found in a frame. Using instanceof is a robust
         // way to filter these out and prevent spamming the console.
         if (err && !(err instanceof NotFoundException)) {
-          console.error('QR Scanner Error:', err);
+          const msg = err instanceof Error ? err.message : String(err);
+          // Suppress the specific "source width is 0" error if it happens momentarily
+          if (!msg.includes('source width is 0')) {
+             console.error('QR Scanner Error:', err);
+          }
         }
       });
 
