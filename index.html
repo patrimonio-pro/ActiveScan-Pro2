@@ -5,15 +5,20 @@
   <title>ActiveScan Pro</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <link rel="icon" type="image/png" href="/assets/favicon2.png">
-  
-  <link rel="manifest" href="/assets/manifest.json">
+
+  <!-- ✔ único manifest, no local correto -->
+  <link rel="manifest" href="/manifest.webmanifest">
+
   <meta name="theme-color" content="#1a202c">
+
   <script type="tailwind-config">
     { "darkMode": "class" }
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
-<script type="importmap">
+
+ <script type="importmap">
 {
   "imports": {
     "rxjs": "https://aistudiocdn.com/rxjs@^7.8.2?conditions=es2015",
@@ -40,7 +45,7 @@
   }
 }
 </script>
-  <link rel="manifest" href="manifest.webmanifest">
+
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
   <app-root></app-root>

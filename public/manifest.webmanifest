@@ -1,12 +1,13 @@
 {
+  "id": "/",
   "name": "ActiveScan Pro2",
   "short_name": "Patrimonial",
+  "description": "Aplicativo de administração de patrimônio",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "scope": "./",
-  "start_url": "./",
   "orientation": "portrait",
   "theme_color": "#0b4acb",
-  "description": "Aplicativo de administração de patrimônio",
   "background_color": "#ffffff",
   "icons": [
     {
