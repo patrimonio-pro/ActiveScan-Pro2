@@ -3,6 +3,7 @@ import { AuthService } from '../../auth/auth.service';
 import { ThemeService } from '../../services/theme.service';
 import { LayoutService } from '../layout.service';
 import { Router } from '@angular/router';
+import { PwaInstallService } from '../../services/pwa-install.service';
 
 @Component({
   selector: 'app-header',
@@ -17,6 +18,7 @@ export class HeaderComponent {
   private themeService: ThemeService = inject(ThemeService);
   private layoutService: LayoutService = inject(LayoutService);
   private router: Router = inject(Router);
+  pwa = inject(PwaInstallService);
 
   theme = this.themeService.theme;
   userEmail = computed(() => this.authService.currentUser()?.email ?? 'Usuário');

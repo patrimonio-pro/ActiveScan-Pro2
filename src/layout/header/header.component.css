@@ -4,6 +4,17 @@
     border-radius: 15px;
 }
 
+.pwa-install-btn {
+  background: #0275d8;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+
 
 @media (max-width: 500px) {
     .h8{
