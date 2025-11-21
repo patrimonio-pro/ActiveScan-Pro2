@@ -5,10 +5,10 @@ import { provideRouter, withHashLocation } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { APP_INITIALIZER, provideZonelessChangeDetection, isDevMode } from '@angular/core';
 
-import { AppComponent } from './src/app.component';
-import { APP_ROUTES } from './src/app.routes';
-import { AuthService } from './src/auth/auth.service';
-import { authInterceptor } from './src/auth/auth.interceptor';
+import { AppComponent } from './app.component';
+import { APP_ROUTES } from './app.routes';
+import { AuthService } from './auth/auth.service';
+import { authInterceptor } from './auth/auth.interceptor';
 import { provideServiceWorker } from '@angular/service-worker';
 
 function initializeAuth(authService: AuthService): () => Promise<void> {

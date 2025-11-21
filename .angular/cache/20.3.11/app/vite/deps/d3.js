@@ -1,4 +1,6 @@
-import "./chunk-R327OCYJ.js";
+import {
+  __yieldStar
+} from "./chunk-H6NRAODO.js";
 
 // node_modules/d3-array/src/ascending.js
 function ascending(a4, b) {
@@ -914,7 +916,7 @@ function medianIndex(values, valueof) {
 // node_modules/d3-array/src/merge.js
 function* flatten2(arrays) {
   for (const array4 of arrays) {
-    yield* array4;
+    yield* __yieldStar(array4);
   }
 }
 function merge(arrays) {

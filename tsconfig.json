@@ -24,8 +24,12 @@
       ]
     }
   },
+  "include": [
+  "src/**/*",
+  "src/polyfills.ts"
+  ],
   "files": [
-    "./index.tsx"
+    "src/index.tsx"
   ],
   "angularCompilerOptions": {
     "disableTypeScriptVersionCheck": true

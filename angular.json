@@ -6,58 +6,51 @@
     "app": {
       "projectType": "application",
       "root": "",
-      "sourceRoot": "./",
+      "sourceRoot": ".",           
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": {
-              "base": "./dist",
-              "browser": "."
-            },
-            "browser": "index.tsx",
+            "browser": "src/index.tsx",          
+            "index": "src/index.html",
             "tsConfig": "tsconfig.json",
+            "polyfills": ["src/polyfills.ts"],
+            "outputPath": "dist/app",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "/assets"
-              }
-            ]
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest",
+              "src/ngsw-config.json"
+            ],
+         
+            "styles": ["src/index.css"]      
           },
           "configurations": {
             "production": {
               "outputHashing": "all",
-              "serviceWorker": "ngsw-config.json"
+              "optimization": true,
+              "sourceMap": false,
+              "serviceWorker": true,
+              "ngswConfigPath": "src/ngsw-config.json"
             },
             "development": {
               "optimization": false,
-              "extractLicenses": false,
               "sourceMap": true
             }
-          },
-          "defaultConfiguration": "production"
+          }
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": {
-            "port": 3000
-          },
+          "options": { "port": 3000 },
           "configurations": {
-            "production": {
-              "buildTarget": "app:build:production"
-            },
-            "development": {
-              "buildTarget": "app:build:development"
-            }
+            "development": { "buildTarget": "app:build:development" },
+            "production": { "buildTarget": "app:build:production" }
           },
           "defaultConfiguration": "development"
         }
       }
     }
   },
-  "cli": {
-    "analytics": false
-  }
+  "cli": { "analytics": false }
 }

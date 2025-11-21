@@ -1,7 +1,7 @@
 import {
   Title
-} from "./chunk-FUALDCUC.js";
-import "./chunk-5WJRELML.js";
+} from "./chunk-3MD77JKR.js";
+import "./chunk-RW6PVZLK.js";
 import {
   HashLocationStrategy,
   LOCATION_INITIALIZED,
@@ -9,7 +9,7 @@ import {
   LocationStrategy,
   PathLocationStrategy,
   ViewportScroller
-} from "./chunk-ERYYDOT7.js";
+} from "./chunk-J5WZLXZ2.js";
 import "./chunk-WGQN7DY4.js";
 import {
   APP_BOOTSTRAP_LISTENER,
@@ -84,7 +84,7 @@ import {
   ɵɵloadQuery,
   ɵɵqueryRefresh,
   ɵɵsanitizeUrlOrResourceUrl
-} from "./chunk-EHTHBEAO.js";
+} from "./chunk-DTDD5TS3.js";
 import {
   BehaviorSubject,
   ConnectableObservable,
@@ -119,12 +119,13 @@ import {
   takeUntil,
   tap,
   throwError
-} from "./chunk-NOWK7HKE.js";
-import "./chunk-BXSU4DDX.js";
+} from "./chunk-OKNUAD7J.js";
+import "./chunk-FUTMI6NS.js";
 import {
+  __async,
   __spreadProps,
   __spreadValues
-} from "./chunk-R327OCYJ.js";
+} from "./chunk-H6NRAODO.js";
 
 // node_modules/@angular/router/fesm2022/router2.mjs
 var PRIMARY_OUTLET = "primary";
@@ -5590,8 +5591,8 @@ var RouterScroller = class _RouterScroller {
     });
   }
   scheduleScrollEvent(routerEvent, anchor) {
-    this.zone.runOutsideAngular(async () => {
-      await new Promise((resolve) => {
+    this.zone.runOutsideAngular(() => __async(this, null, function* () {
+      yield new Promise((resolve) => {
         setTimeout(resolve);
         if (typeof requestAnimationFrame !== "undefined") {
           requestAnimationFrame(resolve);
@@ -5600,7 +5601,7 @@ var RouterScroller = class _RouterScroller {
       this.zone.run(() => {
         this.transitions.events.next(new Scroll(routerEvent, this.lastSource === "popstate" ? this.store[this.restoredId] : null, anchor));
       });
-    });
+    }));
   }
   /** @docs-private */
   ngOnDestroy() {

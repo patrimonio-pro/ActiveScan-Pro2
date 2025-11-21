@@ -3,12 +3,13 @@ import {
   __rest,
   init_tslib_es6,
   tslib_es6_exports
-} from "./chunk-BXSU4DDX.js";
+} from "./chunk-FUTMI6NS.js";
 import {
+  __async,
   __commonJS,
   __toCommonJS,
   __toESM
-} from "./chunk-R327OCYJ.js";
+} from "./chunk-H6NRAODO.js";
 
 // node_modules/@supabase/postgrest-js/dist/cjs/PostgrestError.js
 var require_PostgrestError = __commonJS({
@@ -113,7 +114,7 @@ var require_PostgrestBuilder = __commonJS({
           headers: this.headers,
           body: JSON.stringify(this.body),
           signal: this.signal
-        }).then(async (res2) => {
+        }).then((res2) => __async(this, null, function* () {
           var _a2, _b, _c, _d;
           let error = null;
           let data = null;
@@ -122,7 +123,7 @@ var require_PostgrestBuilder = __commonJS({
           let statusText = res2.statusText;
           if (res2.ok) {
             if (this.method !== "HEAD") {
-              const body = await res2.text();
+              const body = yield res2.text();
               if (body === "") {
               } else if (this.headers.get("Accept") === "text/csv") {
                 data = body;
@@ -157,7 +158,7 @@ var require_PostgrestBuilder = __commonJS({
               }
             }
           } else {
-            const body = await res2.text();
+            const body = yield res2.text();
             try {
               error = JSON.parse(body);
               if (Array.isArray(error) && res2.status === 404) {
@@ -193,7 +194,7 @@ var require_PostgrestBuilder = __commonJS({
             statusText
           };
           return postgrestResponse;
-        });
+        }));
         if (!this.shouldThrowOnError) {
           res = res.catch((fetchError) => {
             var _a2, _b, _c, _d, _e, _f;
@@ -2492,7 +2493,7 @@ var RealtimeChannel = class _RealtimeChannel {
       this.updateJoinPayload(Object.assign({ config }, accessTokenPayload));
       this.joinedOnce = true;
       this._rejoin(timeout);
-      this.joinPush.receive("ok", async ({ postgres_changes: postgres_changes2 }) => {
+      this.joinPush.receive("ok", (_0) => __async(this, [_0], function* ({ postgres_changes: postgres_changes2 }) {
         var _a3;
         this.socket.setAuth();
         if (postgres_changes2 === void 0) {
@@ -2519,7 +2520,7 @@ var RealtimeChannel = class _RealtimeChannel {
           callback && callback(REALTIME_SUBSCRIBE_STATES.SUBSCRIBED);
           return;
         }
-      }).receive("error", (error) => {
+      })).receive("error", (error) => {
         this.state = CHANNEL_STATES.errored;
         callback === null || callback === void 0 ? void 0 : callback(REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR, new Error(JSON.stringify(Object.values(error).join(", ") || "error")));
         return;
@@ -2543,21 +2544,25 @@ var RealtimeChannel = class _RealtimeChannel {
    * Sends the supplied payload to the presence tracker so other subscribers can see that this
    * client is online. Use `untrack` to stop broadcasting presence for the same key.
    */
-  async track(payload, opts = {}) {
-    return await this.send({
-      type: "presence",
-      event: "track",
-      payload
-    }, opts.timeout || this.timeout);
+  track(_0) {
+    return __async(this, arguments, function* (payload, opts = {}) {
+      return yield this.send({
+        type: "presence",
+        event: "track",
+        payload
+      }, opts.timeout || this.timeout);
+    });
   }
   /**
    * Removes the current presence state for this client.
    */
-  async untrack(opts = {}) {
-    return await this.send({
-      type: "presence",
-      event: "untrack"
-    }, opts);
+  untrack() {
+    return __async(this, arguments, function* (opts = {}) {
+      return yield this.send({
+        type: "presence",
+        event: "untrack"
+      }, opts);
+    });
   }
   on(type, filter, callback) {
     if (this.state === CHANNEL_STATES.joined && type === REALTIME_LISTEN_TYPES.PRESENCE) {
@@ -2577,57 +2582,13 @@ var RealtimeChannel = class _RealtimeChannel {
    * @param opts Options including timeout
    * @returns Promise resolving to object with success status, and error details if failed
    */
-  async httpSend(event, payload, opts = {}) {
-    var _a2;
-    const authorization = this.socket.accessTokenValue ? `Bearer ${this.socket.accessTokenValue}` : "";
-    if (payload === void 0 || payload === null) {
-      return Promise.reject("Payload is required for httpSend()");
-    }
-    const options = {
-      method: "POST",
-      headers: {
-        Authorization: authorization,
-        apikey: this.socket.apiKey ? this.socket.apiKey : "",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        messages: [
-          {
-            topic: this.subTopic,
-            event,
-            payload,
-            private: this.private
-          }
-        ]
-      })
-    };
-    const response = await this._fetchWithTimeout(this.broadcastEndpointURL, options, (_a2 = opts.timeout) !== null && _a2 !== void 0 ? _a2 : this.timeout);
-    if (response.status === 202) {
-      return { success: true };
-    }
-    let errorMessage = response.statusText;
-    try {
-      const errorBody = await response.json();
-      errorMessage = errorBody.error || errorBody.message || errorMessage;
-    } catch (_b) {
-    }
-    return Promise.reject(new Error(errorMessage));
-  }
-  /**
-   * Sends a message into the channel.
-   *
-   * @param args Arguments to send to channel
-   * @param args.type The type of event to send
-   * @param args.event The name of the event being sent
-   * @param args.payload Payload to be sent
-   * @param opts Options to be used during the send process
-   */
-  async send(args, opts = {}) {
-    var _a2, _b;
-    if (!this._canPush() && args.type === "broadcast") {
-      console.warn("Realtime send() is automatically falling back to REST API. This behavior will be deprecated in the future. Please use httpSend() explicitly for REST delivery.");
-      const { event, payload: endpoint_payload } = args;
+  httpSend(_0, _1) {
+    return __async(this, arguments, function* (event, payload, opts = {}) {
+      var _a2;
       const authorization = this.socket.accessTokenValue ? `Bearer ${this.socket.accessTokenValue}` : "";
+      if (payload === void 0 || payload === null) {
+        return Promise.reject("Payload is required for httpSend()");
+      }
       const options = {
         method: "POST",
         headers: {
@@ -2640,35 +2601,83 @@ var RealtimeChannel = class _RealtimeChannel {
             {
               topic: this.subTopic,
               event,
-              payload: endpoint_payload,
+              payload,
               private: this.private
             }
           ]
         })
       };
-      try {
-        const response = await this._fetchWithTimeout(this.broadcastEndpointURL, options, (_a2 = opts.timeout) !== null && _a2 !== void 0 ? _a2 : this.timeout);
-        await ((_b = response.body) === null || _b === void 0 ? void 0 : _b.cancel());
-        return response.ok ? "ok" : "error";
-      } catch (error) {
-        if (error.name === "AbortError") {
-          return "timed out";
-        } else {
-          return "error";
-        }
+      const response = yield this._fetchWithTimeout(this.broadcastEndpointURL, options, (_a2 = opts.timeout) !== null && _a2 !== void 0 ? _a2 : this.timeout);
+      if (response.status === 202) {
+        return { success: true };
       }
-    } else {
-      return new Promise((resolve) => {
-        var _a3, _b2, _c;
-        const push = this._push(args.type, args, opts.timeout || this.timeout);
-        if (args.type === "broadcast" && !((_c = (_b2 = (_a3 = this.params) === null || _a3 === void 0 ? void 0 : _a3.config) === null || _b2 === void 0 ? void 0 : _b2.broadcast) === null || _c === void 0 ? void 0 : _c.ack)) {
-          resolve("ok");
+      let errorMessage = response.statusText;
+      try {
+        const errorBody = yield response.json();
+        errorMessage = errorBody.error || errorBody.message || errorMessage;
+      } catch (_b) {
+      }
+      return Promise.reject(new Error(errorMessage));
+    });
+  }
+  /**
+   * Sends a message into the channel.
+   *
+   * @param args Arguments to send to channel
+   * @param args.type The type of event to send
+   * @param args.event The name of the event being sent
+   * @param args.payload Payload to be sent
+   * @param opts Options to be used during the send process
+   */
+  send(_0) {
+    return __async(this, arguments, function* (args, opts = {}) {
+      var _a2, _b;
+      if (!this._canPush() && args.type === "broadcast") {
+        console.warn("Realtime send() is automatically falling back to REST API. This behavior will be deprecated in the future. Please use httpSend() explicitly for REST delivery.");
+        const { event, payload: endpoint_payload } = args;
+        const authorization = this.socket.accessTokenValue ? `Bearer ${this.socket.accessTokenValue}` : "";
+        const options = {
+          method: "POST",
+          headers: {
+            Authorization: authorization,
+            apikey: this.socket.apiKey ? this.socket.apiKey : "",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            messages: [
+              {
+                topic: this.subTopic,
+                event,
+                payload: endpoint_payload,
+                private: this.private
+              }
+            ]
+          })
+        };
+        try {
+          const response = yield this._fetchWithTimeout(this.broadcastEndpointURL, options, (_a2 = opts.timeout) !== null && _a2 !== void 0 ? _a2 : this.timeout);
+          yield (_b = response.body) === null || _b === void 0 ? void 0 : _b.cancel();
+          return response.ok ? "ok" : "error";
+        } catch (error) {
+          if (error.name === "AbortError") {
+            return "timed out";
+          } else {
+            return "error";
+          }
         }
-        push.receive("ok", () => resolve("ok"));
-        push.receive("error", () => resolve("error"));
-        push.receive("timeout", () => resolve("timed out"));
-      });
-    }
+      } else {
+        return new Promise((resolve) => {
+          var _a3, _b2, _c;
+          const push = this._push(args.type, args, opts.timeout || this.timeout);
+          if (args.type === "broadcast" && !((_c = (_b2 = (_a3 = this.params) === null || _a3 === void 0 ? void 0 : _a3.config) === null || _b2 === void 0 ? void 0 : _b2.broadcast) === null || _c === void 0 ? void 0 : _c.ack)) {
+            resolve("ok");
+          }
+          push.receive("ok", () => resolve("ok"));
+          push.receive("error", () => resolve("error"));
+          push.receive("timeout", () => resolve("timed out"));
+        });
+      }
+    });
   }
   /**
    * Updates the payload that will be sent the next time the channel joins (reconnects).
@@ -2727,12 +2736,14 @@ var RealtimeChannel = class _RealtimeChannel {
     this.bindings = {};
   }
   /** @internal */
-  async _fetchWithTimeout(url, options, timeout) {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
-    const response = await this.socket.fetch(url, Object.assign(Object.assign({}, options), { signal: controller.signal }));
-    clearTimeout(id);
-    return response;
+  _fetchWithTimeout(url, options, timeout) {
+    return __async(this, null, function* () {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+      const response = yield this.socket.fetch(url, Object.assign(Object.assign({}, options), { signal: controller.signal }));
+      clearTimeout(id);
+      return response;
+    });
   }
   /** @internal */
   _push(event, payload, timeout = this.timeout) {
@@ -3125,21 +3136,25 @@ Option 2: Install and provide the "ws" package:
    * Unsubscribes and removes a single channel
    * @param channel A RealtimeChannel instance
    */
-  async removeChannel(channel) {
-    const status = await channel.unsubscribe();
-    if (this.channels.length === 0) {
-      this.disconnect();
-    }
-    return status;
+  removeChannel(channel) {
+    return __async(this, null, function* () {
+      const status = yield channel.unsubscribe();
+      if (this.channels.length === 0) {
+        this.disconnect();
+      }
+      return status;
+    });
   }
   /**
    * Unsubscribes and removes all channels
    */
-  async removeAllChannels() {
-    const values_1 = await Promise.all(this.channels.map((channel) => channel.unsubscribe()));
-    this.channels = [];
-    this.disconnect();
-    return values_1;
+  removeAllChannels() {
+    return __async(this, null, function* () {
+      const values_1 = yield Promise.all(this.channels.map((channel) => channel.unsubscribe()));
+      this.channels = [];
+      this.disconnect();
+      return values_1;
+    });
   }
   /**
    * Logs the message.
@@ -3229,58 +3244,62 @@ Option 2: Install and provide the "ws" package:
    *
    * @param token A JWT string to override the token set on the client.
    */
-  async setAuth(token = null) {
-    this._authPromise = this._performAuth(token);
-    try {
-      await this._authPromise;
-    } finally {
-      this._authPromise = null;
-    }
+  setAuth(token = null) {
+    return __async(this, null, function* () {
+      this._authPromise = this._performAuth(token);
+      try {
+        yield this._authPromise;
+      } finally {
+        this._authPromise = null;
+      }
+    });
   }
   /**
    * Sends a heartbeat message if the socket is connected.
    */
-  async sendHeartbeat() {
-    var _a2;
-    if (!this.isConnected()) {
-      try {
-        this.heartbeatCallback("disconnected");
-      } catch (e) {
-        this.log("error", "error in heartbeat callback", e);
-      }
-      return;
-    }
-    if (this.pendingHeartbeatRef) {
-      this.pendingHeartbeatRef = null;
-      this.log("transport", "heartbeat timeout. Attempting to re-establish connection");
-      try {
-        this.heartbeatCallback("timeout");
-      } catch (e) {
-        this.log("error", "error in heartbeat callback", e);
-      }
-      this._wasManualDisconnect = false;
-      (_a2 = this.conn) === null || _a2 === void 0 ? void 0 : _a2.close(WS_CLOSE_NORMAL, "heartbeat timeout");
-      setTimeout(() => {
-        var _a3;
-        if (!this.isConnected()) {
-          (_a3 = this.reconnectTimer) === null || _a3 === void 0 ? void 0 : _a3.scheduleTimeout();
+  sendHeartbeat() {
+    return __async(this, null, function* () {
+      var _a2;
+      if (!this.isConnected()) {
+        try {
+          this.heartbeatCallback("disconnected");
+        } catch (e) {
+          this.log("error", "error in heartbeat callback", e);
         }
-      }, CONNECTION_TIMEOUTS.HEARTBEAT_TIMEOUT_FALLBACK);
-      return;
-    }
-    this.pendingHeartbeatRef = this._makeRef();
-    this.push({
-      topic: "phoenix",
-      event: "heartbeat",
-      payload: {},
-      ref: this.pendingHeartbeatRef
+        return;
+      }
+      if (this.pendingHeartbeatRef) {
+        this.pendingHeartbeatRef = null;
+        this.log("transport", "heartbeat timeout. Attempting to re-establish connection");
+        try {
+          this.heartbeatCallback("timeout");
+        } catch (e) {
+          this.log("error", "error in heartbeat callback", e);
+        }
+        this._wasManualDisconnect = false;
+        (_a2 = this.conn) === null || _a2 === void 0 ? void 0 : _a2.close(WS_CLOSE_NORMAL, "heartbeat timeout");
+        setTimeout(() => {
+          var _a3;
+          if (!this.isConnected()) {
+            (_a3 = this.reconnectTimer) === null || _a3 === void 0 ? void 0 : _a3.scheduleTimeout();
+          }
+        }, CONNECTION_TIMEOUTS.HEARTBEAT_TIMEOUT_FALLBACK);
+        return;
+      }
+      this.pendingHeartbeatRef = this._makeRef();
+      this.push({
+        topic: "phoenix",
+        event: "heartbeat",
+        payload: {},
+        ref: this.pendingHeartbeatRef
+      });
+      try {
+        this.heartbeatCallback("sent");
+      } catch (e) {
+        this.log("error", "error in heartbeat callback", e);
+      }
+      this._setAuthSafely("heartbeat");
     });
-    try {
-      this.heartbeatCallback("sent");
-    } catch (e) {
-      this.log("error", "error in heartbeat callback", e);
-    }
-    this._setAuthSafely("heartbeat");
   }
   /**
    * Sets a callback that receives lifecycle events for internal heartbeat messages.
@@ -3521,39 +3540,43 @@ Option 2: Install and provide the "ws" package:
    * Perform the actual auth operation
    * @internal
    */
-  async _performAuth(token = null) {
-    let tokenToSend;
-    if (token) {
-      tokenToSend = token;
-    } else if (this.accessToken) {
-      tokenToSend = await this.accessToken();
-    } else {
-      tokenToSend = this.accessTokenValue;
-    }
-    if (this.accessTokenValue != tokenToSend) {
-      this.accessTokenValue = tokenToSend;
-      this.channels.forEach((channel) => {
-        const payload = {
-          access_token: tokenToSend,
-          version: DEFAULT_VERSION
-        };
-        tokenToSend && channel.updateJoinPayload(payload);
-        if (channel.joinedOnce && channel._isJoined()) {
-          channel._push(CHANNEL_EVENTS.access_token, {
-            access_token: tokenToSend
-          });
-        }
-      });
-    }
+  _performAuth(token = null) {
+    return __async(this, null, function* () {
+      let tokenToSend;
+      if (token) {
+        tokenToSend = token;
+      } else if (this.accessToken) {
+        tokenToSend = yield this.accessToken();
+      } else {
+        tokenToSend = this.accessTokenValue;
+      }
+      if (this.accessTokenValue != tokenToSend) {
+        this.accessTokenValue = tokenToSend;
+        this.channels.forEach((channel) => {
+          const payload = {
+            access_token: tokenToSend,
+            version: DEFAULT_VERSION
+          };
+          tokenToSend && channel.updateJoinPayload(payload);
+          if (channel.joinedOnce && channel._isJoined()) {
+            channel._push(CHANNEL_EVENTS.access_token, {
+              access_token: tokenToSend
+            });
+          }
+        });
+      }
+    });
   }
   /**
    * Wait for any in-flight auth operations to complete
    * @internal
    */
-  async _waitForAuthIfNeeded() {
-    if (this._authPromise) {
-      await this._authPromise;
-    }
+  _waitForAuthIfNeeded() {
+    return __async(this, null, function* () {
+      if (this._authPromise) {
+        yield this._authPromise;
+      }
+    });
   }
   /**
    * Safely call setAuth with standardized error handling
@@ -3586,14 +3609,14 @@ Option 2: Install and provide the "ws" package:
    * @internal
    */
   _setupReconnectionTimer() {
-    this.reconnectTimer = new Timer(async () => {
-      setTimeout(async () => {
-        await this._waitForAuthIfNeeded();
+    this.reconnectTimer = new Timer(() => __async(this, null, function* () {
+      setTimeout(() => __async(this, null, function* () {
+        yield this._waitForAuthIfNeeded();
         if (!this.isConnected()) {
           this.connect();
         }
-      }, CONNECTION_TIMEOUTS.RECONNECT_DELAY);
-    }, this.reconnectAfterMs);
+      }), CONNECTION_TIMEOUTS.RECONNECT_DELAY);
+    }), this.reconnectAfterMs);
   }
   /**
    * Initialize client options with defaults
@@ -6919,9 +6942,9 @@ var resolveHeadersConstructor = () => {
 var fetchWithAuth = (supabaseKey, getAccessToken, customFetch) => {
   const fetch2 = resolveFetch4(customFetch);
   const HeadersConstructor = resolveHeadersConstructor();
-  return async (input, init) => {
+  return (input, init) => __async(null, null, function* () {
     var _a2;
-    const accessToken = (_a2 = await getAccessToken()) !== null && _a2 !== void 0 ? _a2 : supabaseKey;
+    const accessToken = (_a2 = yield getAccessToken()) !== null && _a2 !== void 0 ? _a2 : supabaseKey;
     let headers = new HeadersConstructor(init === null || init === void 0 ? void 0 : init.headers);
     if (!headers.has("apikey")) {
       headers.set("apikey", supabaseKey);
@@ -6930,7 +6953,7 @@ var fetchWithAuth = (supabaseKey, getAccessToken, customFetch) => {
       headers.set("Authorization", `Bearer ${accessToken}`);
     }
     return fetch2(input, Object.assign(Object.assign({}, init), { headers }));
-  };
+  });
 };
 
 // node_modules/@supabase/supabase-js/dist/module/lib/helpers.js
@@ -6947,7 +6970,9 @@ function applySettingDefaults(options, defaults) {
     realtime: Object.assign(Object.assign({}, DEFAULT_REALTIME_OPTIONS2), realtimeOptions),
     storage: {},
     global: Object.assign(Object.assign(Object.assign({}, DEFAULT_GLOBAL_OPTIONS2), globalOptions), { headers: Object.assign(Object.assign({}, (_a2 = DEFAULT_GLOBAL_OPTIONS2 === null || DEFAULT_GLOBAL_OPTIONS2 === void 0 ? void 0 : DEFAULT_GLOBAL_OPTIONS2.headers) !== null && _a2 !== void 0 ? _a2 : {}), (_b = globalOptions === null || globalOptions === void 0 ? void 0 : globalOptions.headers) !== null && _b !== void 0 ? _b : {}) }),
-    accessToken: async () => ""
+    accessToken: () => __async(null, null, function* () {
+      return "";
+    })
   };
   if (options.accessToken) {
     result.accessToken = options.accessToken;
@@ -7336,11 +7361,11 @@ var resolveFetch5 = (customFetch) => {
 var looksLikeFetchResponse = (maybeResponse) => {
   return typeof maybeResponse === "object" && maybeResponse !== null && "status" in maybeResponse && "ok" in maybeResponse && "json" in maybeResponse && typeof maybeResponse.json === "function";
 };
-var setItemAsync = async (storage, key, data) => {
-  await storage.setItem(key, JSON.stringify(data));
-};
-var getItemAsync = async (storage, key) => {
-  const value = await storage.getItem(key);
+var setItemAsync = (storage, key, data) => __async(null, null, function* () {
+  yield storage.setItem(key, JSON.stringify(data));
+});
+var getItemAsync = (storage, key) => __async(null, null, function* () {
+  const value = yield storage.getItem(key);
   if (!value) {
     return null;
   }
@@ -7349,10 +7374,10 @@ var getItemAsync = async (storage, key) => {
   } catch (_a2) {
     return value;
   }
-};
-var removeItemAsync = async (storage, key) => {
-  await storage.removeItem(key);
-};
+});
+var removeItemAsync = (storage, key) => __async(null, null, function* () {
+  yield storage.removeItem(key);
+});
 var Deferred = class _Deferred {
   constructor() {
     ;
@@ -7386,18 +7411,20 @@ function decodeJWT(token) {
   };
   return data;
 }
-async function sleep(time) {
-  return await new Promise((accept) => {
-    setTimeout(() => accept(null), time);
+function sleep(time) {
+  return __async(this, null, function* () {
+    return yield new Promise((accept) => {
+      setTimeout(() => accept(null), time);
+    });
   });
 }
 function retryable(fn, isRetryable) {
   const promise = new Promise((accept, reject) => {
     ;
-    (async () => {
+    (() => __async(null, null, function* () {
       for (let attempt = 0; attempt < Infinity; attempt++) {
         try {
-          const result = await fn(attempt);
+          const result = yield fn(attempt);
           if (!isRetryable(attempt, null, result)) {
             accept(result);
             return;
@@ -7409,7 +7436,7 @@ function retryable(fn, isRetryable) {
           }
         }
       }
-    })();
+    }))();
   });
   return promise;
 }
@@ -7431,32 +7458,38 @@ function generatePKCEVerifier() {
   crypto.getRandomValues(array);
   return Array.from(array, dec2hex).join("");
 }
-async function sha256(randomString) {
-  const encoder = new TextEncoder();
-  const encodedData = encoder.encode(randomString);
-  const hash = await crypto.subtle.digest("SHA-256", encodedData);
-  const bytes = new Uint8Array(hash);
-  return Array.from(bytes).map((c) => String.fromCharCode(c)).join("");
+function sha256(randomString) {
+  return __async(this, null, function* () {
+    const encoder = new TextEncoder();
+    const encodedData = encoder.encode(randomString);
+    const hash = yield crypto.subtle.digest("SHA-256", encodedData);
+    const bytes = new Uint8Array(hash);
+    return Array.from(bytes).map((c) => String.fromCharCode(c)).join("");
+  });
 }
-async function generatePKCEChallenge(verifier) {
-  const hasCryptoSupport = typeof crypto !== "undefined" && typeof crypto.subtle !== "undefined" && typeof TextEncoder !== "undefined";
-  if (!hasCryptoSupport) {
-    console.warn("WebCrypto API is not supported. Code challenge method will default to use plain instead of sha256.");
-    return verifier;
-  }
-  const hashed = await sha256(verifier);
-  return btoa(hashed).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+function generatePKCEChallenge(verifier) {
+  return __async(this, null, function* () {
+    const hasCryptoSupport = typeof crypto !== "undefined" && typeof crypto.subtle !== "undefined" && typeof TextEncoder !== "undefined";
+    if (!hasCryptoSupport) {
+      console.warn("WebCrypto API is not supported. Code challenge method will default to use plain instead of sha256.");
+      return verifier;
+    }
+    const hashed = yield sha256(verifier);
+    return btoa(hashed).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  });
 }
-async function getCodeChallengeAndMethod(storage, storageKey, isPasswordRecovery = false) {
-  const codeVerifier = generatePKCEVerifier();
-  let storedCodeVerifier = codeVerifier;
-  if (isPasswordRecovery) {
-    storedCodeVerifier += "/PASSWORD_RECOVERY";
-  }
-  await setItemAsync(storage, `${storageKey}-code-verifier`, storedCodeVerifier);
-  const codeChallenge = await generatePKCEChallenge(codeVerifier);
-  const codeChallengeMethod = codeVerifier === codeChallenge ? "plain" : "s256";
-  return [codeChallenge, codeChallengeMethod];
+function getCodeChallengeAndMethod(storage, storageKey, isPasswordRecovery = false) {
+  return __async(this, null, function* () {
+    const codeVerifier = generatePKCEVerifier();
+    let storedCodeVerifier = codeVerifier;
+    if (isPasswordRecovery) {
+      storedCodeVerifier += "/PASSWORD_RECOVERY";
+    }
+    yield setItemAsync(storage, `${storageKey}-code-verifier`, storedCodeVerifier);
+    const codeChallenge = yield generatePKCEChallenge(codeVerifier);
+    const codeChallengeMethod = codeVerifier === codeChallenge ? "plain" : "s256";
+    return [codeChallenge, codeChallengeMethod];
+  });
 }
 var API_VERSION_REGEX = /^2[0-9]{3}-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])$/i;
 function parseResponseAPIVersion(response) {
@@ -7556,37 +7589,39 @@ function deepClone(obj) {
 // node_modules/@supabase/auth-js/dist/module/lib/fetch.js
 var _getErrorMessage3 = (err) => err.msg || err.message || err.error_description || err.error || JSON.stringify(err);
 var NETWORK_ERROR_CODES = [502, 503, 504];
-async function handleError3(error) {
-  var _a2;
-  if (!looksLikeFetchResponse(error)) {
-    throw new AuthRetryableFetchError(_getErrorMessage3(error), 0);
-  }
-  if (NETWORK_ERROR_CODES.includes(error.status)) {
-    throw new AuthRetryableFetchError(_getErrorMessage3(error), error.status);
-  }
-  let data;
-  try {
-    data = await error.json();
-  } catch (e) {
-    throw new AuthUnknownError(_getErrorMessage3(e), e);
-  }
-  let errorCode = void 0;
-  const responseAPIVersion = parseResponseAPIVersion(error);
-  if (responseAPIVersion && responseAPIVersion.getTime() >= API_VERSIONS["2024-01-01"].timestamp && typeof data === "object" && data && typeof data.code === "string") {
-    errorCode = data.code;
-  } else if (typeof data === "object" && data && typeof data.error_code === "string") {
-    errorCode = data.error_code;
-  }
-  if (!errorCode) {
-    if (typeof data === "object" && data && typeof data.weak_password === "object" && data.weak_password && Array.isArray(data.weak_password.reasons) && data.weak_password.reasons.length && data.weak_password.reasons.reduce((a, i) => a && typeof i === "string", true)) {
-      throw new AuthWeakPasswordError(_getErrorMessage3(data), error.status, data.weak_password.reasons);
+function handleError3(error) {
+  return __async(this, null, function* () {
+    var _a2;
+    if (!looksLikeFetchResponse(error)) {
+      throw new AuthRetryableFetchError(_getErrorMessage3(error), 0);
     }
-  } else if (errorCode === "weak_password") {
-    throw new AuthWeakPasswordError(_getErrorMessage3(data), error.status, ((_a2 = data.weak_password) === null || _a2 === void 0 ? void 0 : _a2.reasons) || []);
-  } else if (errorCode === "session_not_found") {
-    throw new AuthSessionMissingError();
-  }
-  throw new AuthApiError(_getErrorMessage3(data), error.status || 500, errorCode);
+    if (NETWORK_ERROR_CODES.includes(error.status)) {
+      throw new AuthRetryableFetchError(_getErrorMessage3(error), error.status);
+    }
+    let data;
+    try {
+      data = yield error.json();
+    } catch (e) {
+      throw new AuthUnknownError(_getErrorMessage3(e), e);
+    }
+    let errorCode = void 0;
+    const responseAPIVersion = parseResponseAPIVersion(error);
+    if (responseAPIVersion && responseAPIVersion.getTime() >= API_VERSIONS["2024-01-01"].timestamp && typeof data === "object" && data && typeof data.code === "string") {
+      errorCode = data.code;
+    } else if (typeof data === "object" && data && typeof data.error_code === "string") {
+      errorCode = data.error_code;
+    }
+    if (!errorCode) {
+      if (typeof data === "object" && data && typeof data.weak_password === "object" && data.weak_password && Array.isArray(data.weak_password.reasons) && data.weak_password.reasons.length && data.weak_password.reasons.reduce((a, i) => a && typeof i === "string", true)) {
+        throw new AuthWeakPasswordError(_getErrorMessage3(data), error.status, data.weak_password.reasons);
+      }
+    } else if (errorCode === "weak_password") {
+      throw new AuthWeakPasswordError(_getErrorMessage3(data), error.status, ((_a2 = data.weak_password) === null || _a2 === void 0 ? void 0 : _a2.reasons) || []);
+    } else if (errorCode === "session_not_found") {
+      throw new AuthSessionMissingError();
+    }
+    throw new AuthApiError(_getErrorMessage3(data), error.status || 500, errorCode);
+  });
 }
 var _getRequestParams3 = (method, options, parameters, body) => {
   const params = { method, headers: (options === null || options === void 0 ? void 0 : options.headers) || {} };
@@ -7597,46 +7632,50 @@ var _getRequestParams3 = (method, options, parameters, body) => {
   params.body = JSON.stringify(body);
   return Object.assign(Object.assign({}, params), parameters);
 };
-async function _request(fetcher, method, url, options) {
-  var _a2;
-  const headers = Object.assign({}, options === null || options === void 0 ? void 0 : options.headers);
-  if (!headers[API_VERSION_HEADER_NAME]) {
-    headers[API_VERSION_HEADER_NAME] = API_VERSIONS["2024-01-01"].name;
-  }
-  if (options === null || options === void 0 ? void 0 : options.jwt) {
-    headers["Authorization"] = `Bearer ${options.jwt}`;
-  }
-  const qs = (_a2 = options === null || options === void 0 ? void 0 : options.query) !== null && _a2 !== void 0 ? _a2 : {};
-  if (options === null || options === void 0 ? void 0 : options.redirectTo) {
-    qs["redirect_to"] = options.redirectTo;
-  }
-  const queryString = Object.keys(qs).length ? "?" + new URLSearchParams(qs).toString() : "";
-  const data = await _handleRequest3(fetcher, method, url + queryString, {
-    headers,
-    noResolveJson: options === null || options === void 0 ? void 0 : options.noResolveJson
-  }, {}, options === null || options === void 0 ? void 0 : options.body);
-  return (options === null || options === void 0 ? void 0 : options.xform) ? options === null || options === void 0 ? void 0 : options.xform(data) : { data: Object.assign({}, data), error: null };
+function _request(fetcher, method, url, options) {
+  return __async(this, null, function* () {
+    var _a2;
+    const headers = Object.assign({}, options === null || options === void 0 ? void 0 : options.headers);
+    if (!headers[API_VERSION_HEADER_NAME]) {
+      headers[API_VERSION_HEADER_NAME] = API_VERSIONS["2024-01-01"].name;
+    }
+    if (options === null || options === void 0 ? void 0 : options.jwt) {
+      headers["Authorization"] = `Bearer ${options.jwt}`;
+    }
+    const qs = (_a2 = options === null || options === void 0 ? void 0 : options.query) !== null && _a2 !== void 0 ? _a2 : {};
+    if (options === null || options === void 0 ? void 0 : options.redirectTo) {
+      qs["redirect_to"] = options.redirectTo;
+    }
+    const queryString = Object.keys(qs).length ? "?" + new URLSearchParams(qs).toString() : "";
+    const data = yield _handleRequest3(fetcher, method, url + queryString, {
+      headers,
+      noResolveJson: options === null || options === void 0 ? void 0 : options.noResolveJson
+    }, {}, options === null || options === void 0 ? void 0 : options.body);
+    return (options === null || options === void 0 ? void 0 : options.xform) ? options === null || options === void 0 ? void 0 : options.xform(data) : { data: Object.assign({}, data), error: null };
+  });
 }
-async function _handleRequest3(fetcher, method, url, options, parameters, body) {
-  const requestParams = _getRequestParams3(method, options, parameters, body);
-  let result;
-  try {
-    result = await fetcher(url, Object.assign({}, requestParams));
-  } catch (e) {
-    console.error(e);
-    throw new AuthRetryableFetchError(_getErrorMessage3(e), 0);
-  }
-  if (!result.ok) {
-    await handleError3(result);
-  }
-  if (options === null || options === void 0 ? void 0 : options.noResolveJson) {
-    return result;
-  }
-  try {
-    return await result.json();
-  } catch (e) {
-    await handleError3(e);
-  }
+function _handleRequest3(fetcher, method, url, options, parameters, body) {
+  return __async(this, null, function* () {
+    const requestParams = _getRequestParams3(method, options, parameters, body);
+    let result;
+    try {
+      result = yield fetcher(url, Object.assign({}, requestParams));
+    } catch (e) {
+      console.error(e);
+      throw new AuthRetryableFetchError(_getErrorMessage3(e), 0);
+    }
+    if (!result.ok) {
+      yield handleError3(result);
+    }
+    if (options === null || options === void 0 ? void 0 : options.noResolveJson) {
+      return result;
+    }
+    try {
+      return yield result.json();
+    } catch (e) {
+      yield handleError3(e);
+    }
+  });
 }
 function _sessionResponse(data) {
   var _a2;
@@ -7730,43 +7769,47 @@ var GoTrueAdminApi = class {
    * @param jwt A valid, logged-in JWT.
    * @param scope The logout sope.
    */
-  async signOut(jwt, scope = SIGN_OUT_SCOPES[0]) {
-    if (SIGN_OUT_SCOPES.indexOf(scope) < 0) {
-      throw new Error(`@supabase/auth-js: Parameter scope must be one of ${SIGN_OUT_SCOPES.join(", ")}`);
-    }
-    try {
-      await _request(this.fetch, "POST", `${this.url}/logout?scope=${scope}`, {
-        headers: this.headers,
-        jwt,
-        noResolveJson: true
-      });
-      return { data: null, error: null };
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: null, error };
+  signOut(_0) {
+    return __async(this, arguments, function* (jwt, scope = SIGN_OUT_SCOPES[0]) {
+      if (SIGN_OUT_SCOPES.indexOf(scope) < 0) {
+        throw new Error(`@supabase/auth-js: Parameter scope must be one of ${SIGN_OUT_SCOPES.join(", ")}`);
       }
-      throw error;
-    }
+      try {
+        yield _request(this.fetch, "POST", `${this.url}/logout?scope=${scope}`, {
+          headers: this.headers,
+          jwt,
+          noResolveJson: true
+        });
+        return { data: null, error: null };
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: null, error };
+        }
+        throw error;
+      }
+    });
   }
   /**
    * Sends an invite link to an email address.
    * @param email The email address of the user.
    * @param options Additional options to be included when inviting.
    */
-  async inviteUserByEmail(email, options = {}) {
-    try {
-      return await _request(this.fetch, "POST", `${this.url}/invite`, {
-        body: { email, data: options.data },
-        headers: this.headers,
-        redirectTo: options.redirectTo,
-        xform: _userResponse
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: { user: null }, error };
+  inviteUserByEmail(_0) {
+    return __async(this, arguments, function* (email, options = {}) {
+      try {
+        return yield _request(this.fetch, "POST", `${this.url}/invite`, {
+          body: { email, data: options.data },
+          headers: this.headers,
+          redirectTo: options.redirectTo,
+          xform: _userResponse
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: { user: null }, error };
+        }
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Generates email links and OTPs to be sent via a custom email provider.
@@ -7775,51 +7818,55 @@ var GoTrueAdminApi = class {
    * @param options.data Optional user metadata. For signup only.
    * @param options.redirectTo The redirect url which should be appended to the generated link
    */
-  async generateLink(params) {
-    try {
-      const { options } = params, rest = __rest(params, ["options"]);
-      const body = Object.assign(Object.assign({}, rest), options);
-      if ("newEmail" in rest) {
-        body.new_email = rest === null || rest === void 0 ? void 0 : rest.newEmail;
-        delete body["newEmail"];
+  generateLink(params) {
+    return __async(this, null, function* () {
+      try {
+        const { options } = params, rest = __rest(params, ["options"]);
+        const body = Object.assign(Object.assign({}, rest), options);
+        if ("newEmail" in rest) {
+          body.new_email = rest === null || rest === void 0 ? void 0 : rest.newEmail;
+          delete body["newEmail"];
+        }
+        return yield _request(this.fetch, "POST", `${this.url}/admin/generate_link`, {
+          body,
+          headers: this.headers,
+          xform: _generateLinkResponse,
+          redirectTo: options === null || options === void 0 ? void 0 : options.redirectTo
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return {
+            data: {
+              properties: null,
+              user: null
+            },
+            error
+          };
+        }
+        throw error;
       }
-      return await _request(this.fetch, "POST", `${this.url}/admin/generate_link`, {
-        body,
-        headers: this.headers,
-        xform: _generateLinkResponse,
-        redirectTo: options === null || options === void 0 ? void 0 : options.redirectTo
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return {
-          data: {
-            properties: null,
-            user: null
-          },
-          error
-        };
-      }
-      throw error;
-    }
+    });
   }
   // User Admin API
   /**
    * Creates a new user.
    * This function should only be called on a server. Never expose your `service_role` key in the browser.
    */
-  async createUser(attributes) {
-    try {
-      return await _request(this.fetch, "POST", `${this.url}/admin/users`, {
-        body: attributes,
-        headers: this.headers,
-        xform: _userResponse
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: { user: null }, error };
+  createUser(attributes) {
+    return __async(this, null, function* () {
+      try {
+        return yield _request(this.fetch, "POST", `${this.url}/admin/users`, {
+          body: attributes,
+          headers: this.headers,
+          xform: _userResponse
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: { user: null }, error };
+        }
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Get a list of users.
@@ -7827,39 +7874,41 @@ var GoTrueAdminApi = class {
    * This function should only be called on a server. Never expose your `service_role` key in the browser.
    * @param params An object which supports `page` and `perPage` as numbers, to alter the paginated results.
    */
-  async listUsers(params) {
-    var _a2, _b, _c, _d, _e, _f, _g;
-    try {
-      const pagination = { nextPage: null, lastPage: 0, total: 0 };
-      const response = await _request(this.fetch, "GET", `${this.url}/admin/users`, {
-        headers: this.headers,
-        noResolveJson: true,
-        query: {
-          page: (_b = (_a2 = params === null || params === void 0 ? void 0 : params.page) === null || _a2 === void 0 ? void 0 : _a2.toString()) !== null && _b !== void 0 ? _b : "",
-          per_page: (_d = (_c = params === null || params === void 0 ? void 0 : params.perPage) === null || _c === void 0 ? void 0 : _c.toString()) !== null && _d !== void 0 ? _d : ""
-        },
-        xform: _noResolveJsonResponse
-      });
-      if (response.error)
-        throw response.error;
-      const users = await response.json();
-      const total = (_e = response.headers.get("x-total-count")) !== null && _e !== void 0 ? _e : 0;
-      const links = (_g = (_f = response.headers.get("link")) === null || _f === void 0 ? void 0 : _f.split(",")) !== null && _g !== void 0 ? _g : [];
-      if (links.length > 0) {
-        links.forEach((link) => {
-          const page = parseInt(link.split(";")[0].split("=")[1].substring(0, 1));
-          const rel = JSON.parse(link.split(";")[1].split("=")[1]);
-          pagination[`${rel}Page`] = page;
+  listUsers(params) {
+    return __async(this, null, function* () {
+      var _a2, _b, _c, _d, _e, _f, _g;
+      try {
+        const pagination = { nextPage: null, lastPage: 0, total: 0 };
+        const response = yield _request(this.fetch, "GET", `${this.url}/admin/users`, {
+          headers: this.headers,
+          noResolveJson: true,
+          query: {
+            page: (_b = (_a2 = params === null || params === void 0 ? void 0 : params.page) === null || _a2 === void 0 ? void 0 : _a2.toString()) !== null && _b !== void 0 ? _b : "",
+            per_page: (_d = (_c = params === null || params === void 0 ? void 0 : params.perPage) === null || _c === void 0 ? void 0 : _c.toString()) !== null && _d !== void 0 ? _d : ""
+          },
+          xform: _noResolveJsonResponse
         });
-        pagination.total = parseInt(total);
+        if (response.error)
+          throw response.error;
+        const users = yield response.json();
+        const total = (_e = response.headers.get("x-total-count")) !== null && _e !== void 0 ? _e : 0;
+        const links = (_g = (_f = response.headers.get("link")) === null || _f === void 0 ? void 0 : _f.split(",")) !== null && _g !== void 0 ? _g : [];
+        if (links.length > 0) {
+          links.forEach((link) => {
+            const page = parseInt(link.split(";")[0].split("=")[1].substring(0, 1));
+            const rel = JSON.parse(link.split(";")[1].split("=")[1]);
+            pagination[`${rel}Page`] = page;
+          });
+          pagination.total = parseInt(total);
+        }
+        return { data: Object.assign(Object.assign({}, users), pagination), error: null };
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: { users: [] }, error };
+        }
+        throw error;
       }
-      return { data: Object.assign(Object.assign({}, users), pagination), error: null };
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: { users: [] }, error };
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Get user by id.
@@ -7868,19 +7917,21 @@ var GoTrueAdminApi = class {
    *
    * This function should only be called on a server. Never expose your `service_role` key in the browser.
    */
-  async getUserById(uid) {
-    validateUUID(uid);
-    try {
-      return await _request(this.fetch, "GET", `${this.url}/admin/users/${uid}`, {
-        headers: this.headers,
-        xform: _userResponse
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: { user: null }, error };
+  getUserById(uid) {
+    return __async(this, null, function* () {
+      validateUUID(uid);
+      try {
+        return yield _request(this.fetch, "GET", `${this.url}/admin/users/${uid}`, {
+          headers: this.headers,
+          xform: _userResponse
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: { user: null }, error };
+        }
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Updates the user data.
@@ -7889,20 +7940,22 @@ var GoTrueAdminApi = class {
    *
    * This function should only be called on a server. Never expose your `service_role` key in the browser.
    */
-  async updateUserById(uid, attributes) {
-    validateUUID(uid);
-    try {
-      return await _request(this.fetch, "PUT", `${this.url}/admin/users/${uid}`, {
-        body: attributes,
-        headers: this.headers,
-        xform: _userResponse
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: { user: null }, error };
+  updateUserById(uid, attributes) {
+    return __async(this, null, function* () {
+      validateUUID(uid);
+      try {
+        return yield _request(this.fetch, "PUT", `${this.url}/admin/users/${uid}`, {
+          body: attributes,
+          headers: this.headers,
+          xform: _userResponse
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: { user: null }, error };
+        }
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Delete a user. Requires a `service_role` key.
@@ -7913,54 +7966,60 @@ var GoTrueAdminApi = class {
    *
    * This function should only be called on a server. Never expose your `service_role` key in the browser.
    */
-  async deleteUser(id, shouldSoftDelete = false) {
-    validateUUID(id);
-    try {
-      return await _request(this.fetch, "DELETE", `${this.url}/admin/users/${id}`, {
-        headers: this.headers,
-        body: {
-          should_soft_delete: shouldSoftDelete
-        },
-        xform: _userResponse
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: { user: null }, error };
-      }
-      throw error;
-    }
-  }
-  async _listFactors(params) {
-    validateUUID(params.userId);
-    try {
-      const { data, error } = await _request(this.fetch, "GET", `${this.url}/admin/users/${params.userId}/factors`, {
-        headers: this.headers,
-        xform: (factors) => {
-          return { data: { factors }, error: null };
+  deleteUser(id, shouldSoftDelete = false) {
+    return __async(this, null, function* () {
+      validateUUID(id);
+      try {
+        return yield _request(this.fetch, "DELETE", `${this.url}/admin/users/${id}`, {
+          headers: this.headers,
+          body: {
+            should_soft_delete: shouldSoftDelete
+          },
+          xform: _userResponse
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: { user: null }, error };
         }
-      });
-      return { data, error };
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: null, error };
+        throw error;
       }
-      throw error;
-    }
+    });
   }
-  async _deleteFactor(params) {
-    validateUUID(params.userId);
-    validateUUID(params.id);
-    try {
-      const data = await _request(this.fetch, "DELETE", `${this.url}/admin/users/${params.userId}/factors/${params.id}`, {
-        headers: this.headers
-      });
-      return { data, error: null };
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: null, error };
+  _listFactors(params) {
+    return __async(this, null, function* () {
+      validateUUID(params.userId);
+      try {
+        const { data, error } = yield _request(this.fetch, "GET", `${this.url}/admin/users/${params.userId}/factors`, {
+          headers: this.headers,
+          xform: (factors) => {
+            return { data: { factors }, error: null };
+          }
+        });
+        return { data, error };
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: null, error };
+        }
+        throw error;
       }
-      throw error;
-    }
+    });
+  }
+  _deleteFactor(params) {
+    return __async(this, null, function* () {
+      validateUUID(params.userId);
+      validateUUID(params.id);
+      try {
+        const data = yield _request(this.fetch, "DELETE", `${this.url}/admin/users/${params.userId}/factors/${params.id}`, {
+          headers: this.headers
+        });
+        return { data, error: null };
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: null, error };
+        }
+        throw error;
+      }
+    });
   }
   /**
    * Lists all OAuth clients with optional pagination.
@@ -7968,39 +8027,41 @@ var GoTrueAdminApi = class {
    *
    * This function should only be called on a server. Never expose your `service_role` key in the browser.
    */
-  async _listOAuthClients(params) {
-    var _a2, _b, _c, _d, _e, _f, _g;
-    try {
-      const pagination = { nextPage: null, lastPage: 0, total: 0 };
-      const response = await _request(this.fetch, "GET", `${this.url}/admin/oauth/clients`, {
-        headers: this.headers,
-        noResolveJson: true,
-        query: {
-          page: (_b = (_a2 = params === null || params === void 0 ? void 0 : params.page) === null || _a2 === void 0 ? void 0 : _a2.toString()) !== null && _b !== void 0 ? _b : "",
-          per_page: (_d = (_c = params === null || params === void 0 ? void 0 : params.perPage) === null || _c === void 0 ? void 0 : _c.toString()) !== null && _d !== void 0 ? _d : ""
-        },
-        xform: _noResolveJsonResponse
-      });
-      if (response.error)
-        throw response.error;
-      const clients = await response.json();
-      const total = (_e = response.headers.get("x-total-count")) !== null && _e !== void 0 ? _e : 0;
-      const links = (_g = (_f = response.headers.get("link")) === null || _f === void 0 ? void 0 : _f.split(",")) !== null && _g !== void 0 ? _g : [];
-      if (links.length > 0) {
-        links.forEach((link) => {
-          const page = parseInt(link.split(";")[0].split("=")[1].substring(0, 1));
-          const rel = JSON.parse(link.split(";")[1].split("=")[1]);
-          pagination[`${rel}Page`] = page;
+  _listOAuthClients(params) {
+    return __async(this, null, function* () {
+      var _a2, _b, _c, _d, _e, _f, _g;
+      try {
+        const pagination = { nextPage: null, lastPage: 0, total: 0 };
+        const response = yield _request(this.fetch, "GET", `${this.url}/admin/oauth/clients`, {
+          headers: this.headers,
+          noResolveJson: true,
+          query: {
+            page: (_b = (_a2 = params === null || params === void 0 ? void 0 : params.page) === null || _a2 === void 0 ? void 0 : _a2.toString()) !== null && _b !== void 0 ? _b : "",
+            per_page: (_d = (_c = params === null || params === void 0 ? void 0 : params.perPage) === null || _c === void 0 ? void 0 : _c.toString()) !== null && _d !== void 0 ? _d : ""
+          },
+          xform: _noResolveJsonResponse
         });
-        pagination.total = parseInt(total);
+        if (response.error)
+          throw response.error;
+        const clients = yield response.json();
+        const total = (_e = response.headers.get("x-total-count")) !== null && _e !== void 0 ? _e : 0;
+        const links = (_g = (_f = response.headers.get("link")) === null || _f === void 0 ? void 0 : _f.split(",")) !== null && _g !== void 0 ? _g : [];
+        if (links.length > 0) {
+          links.forEach((link) => {
+            const page = parseInt(link.split(";")[0].split("=")[1].substring(0, 1));
+            const rel = JSON.parse(link.split(";")[1].split("=")[1]);
+            pagination[`${rel}Page`] = page;
+          });
+          pagination.total = parseInt(total);
+        }
+        return { data: Object.assign(Object.assign({}, clients), pagination), error: null };
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: { clients: [] }, error };
+        }
+        throw error;
       }
-      return { data: Object.assign(Object.assign({}, clients), pagination), error: null };
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: { clients: [] }, error };
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Creates a new OAuth client.
@@ -8008,21 +8069,23 @@ var GoTrueAdminApi = class {
    *
    * This function should only be called on a server. Never expose your `service_role` key in the browser.
    */
-  async _createOAuthClient(params) {
-    try {
-      return await _request(this.fetch, "POST", `${this.url}/admin/oauth/clients`, {
-        body: params,
-        headers: this.headers,
-        xform: (client) => {
-          return { data: client, error: null };
+  _createOAuthClient(params) {
+    return __async(this, null, function* () {
+      try {
+        return yield _request(this.fetch, "POST", `${this.url}/admin/oauth/clients`, {
+          body: params,
+          headers: this.headers,
+          xform: (client) => {
+            return { data: client, error: null };
+          }
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: null, error };
         }
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: null, error };
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Gets details of a specific OAuth client.
@@ -8030,20 +8093,22 @@ var GoTrueAdminApi = class {
    *
    * This function should only be called on a server. Never expose your `service_role` key in the browser.
    */
-  async _getOAuthClient(clientId) {
-    try {
-      return await _request(this.fetch, "GET", `${this.url}/admin/oauth/clients/${clientId}`, {
-        headers: this.headers,
-        xform: (client) => {
-          return { data: client, error: null };
+  _getOAuthClient(clientId) {
+    return __async(this, null, function* () {
+      try {
+        return yield _request(this.fetch, "GET", `${this.url}/admin/oauth/clients/${clientId}`, {
+          headers: this.headers,
+          xform: (client) => {
+            return { data: client, error: null };
+          }
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: null, error };
         }
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: null, error };
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Updates an existing OAuth client.
@@ -8051,21 +8116,23 @@ var GoTrueAdminApi = class {
    *
    * This function should only be called on a server. Never expose your `service_role` key in the browser.
    */
-  async _updateOAuthClient(clientId, params) {
-    try {
-      return await _request(this.fetch, "PUT", `${this.url}/admin/oauth/clients/${clientId}`, {
-        body: params,
-        headers: this.headers,
-        xform: (client) => {
-          return { data: client, error: null };
+  _updateOAuthClient(clientId, params) {
+    return __async(this, null, function* () {
+      try {
+        return yield _request(this.fetch, "PUT", `${this.url}/admin/oauth/clients/${clientId}`, {
+          body: params,
+          headers: this.headers,
+          xform: (client) => {
+            return { data: client, error: null };
+          }
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: null, error };
         }
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: null, error };
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Deletes an OAuth client.
@@ -8073,19 +8140,21 @@ var GoTrueAdminApi = class {
    *
    * This function should only be called on a server. Never expose your `service_role` key in the browser.
    */
-  async _deleteOAuthClient(clientId) {
-    try {
-      await _request(this.fetch, "DELETE", `${this.url}/admin/oauth/clients/${clientId}`, {
-        headers: this.headers,
-        noResolveJson: true
-      });
-      return { data: null, error: null };
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: null, error };
+  _deleteOAuthClient(clientId) {
+    return __async(this, null, function* () {
+      try {
+        yield _request(this.fetch, "DELETE", `${this.url}/admin/oauth/clients/${clientId}`, {
+          headers: this.headers,
+          noResolveJson: true
+        });
+        return { data: null, error: null };
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: null, error };
+        }
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Regenerates the secret for an OAuth client.
@@ -8093,20 +8162,22 @@ var GoTrueAdminApi = class {
    *
    * This function should only be called on a server. Never expose your `service_role` key in the browser.
    */
-  async _regenerateOAuthClientSecret(clientId) {
-    try {
-      return await _request(this.fetch, "POST", `${this.url}/admin/oauth/clients/${clientId}/regenerate_secret`, {
-        headers: this.headers,
-        xform: (client) => {
-          return { data: client, error: null };
+  _regenerateOAuthClientSecret(clientId) {
+    return __async(this, null, function* () {
+      try {
+        return yield _request(this.fetch, "POST", `${this.url}/admin/oauth/clients/${clientId}/regenerate_secret`, {
+          headers: this.headers,
+          xform: (client) => {
+            return { data: client, error: null };
+          }
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: null, error };
         }
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: null, error };
+        throw error;
       }
-      throw error;
-    }
+    });
   }
 };
 
@@ -8142,87 +8213,91 @@ var NavigatorLockAcquireTimeoutError = class extends LockAcquireTimeoutError {
 };
 var ProcessLockAcquireTimeoutError = class extends LockAcquireTimeoutError {
 };
-async function navigatorLock(name, acquireTimeout, fn) {
-  if (internals.debug) {
-    console.log("@supabase/gotrue-js: navigatorLock: acquire lock", name, acquireTimeout);
-  }
-  const abortController = new globalThis.AbortController();
-  if (acquireTimeout > 0) {
-    setTimeout(() => {
-      abortController.abort();
-      if (internals.debug) {
-        console.log("@supabase/gotrue-js: navigatorLock acquire timed out", name);
-      }
-    }, acquireTimeout);
-  }
-  return await Promise.resolve().then(() => globalThis.navigator.locks.request(name, acquireTimeout === 0 ? {
-    mode: "exclusive",
-    ifAvailable: true
-  } : {
-    mode: "exclusive",
-    signal: abortController.signal
-  }, async (lock) => {
-    if (lock) {
-      if (internals.debug) {
-        console.log("@supabase/gotrue-js: navigatorLock: acquired", name, lock.name);
-      }
-      try {
-        return await fn();
-      } finally {
+function navigatorLock(name, acquireTimeout, fn) {
+  return __async(this, null, function* () {
+    if (internals.debug) {
+      console.log("@supabase/gotrue-js: navigatorLock: acquire lock", name, acquireTimeout);
+    }
+    const abortController = new globalThis.AbortController();
+    if (acquireTimeout > 0) {
+      setTimeout(() => {
+        abortController.abort();
         if (internals.debug) {
-          console.log("@supabase/gotrue-js: navigatorLock: released", name, lock.name);
+          console.log("@supabase/gotrue-js: navigatorLock acquire timed out", name);
         }
-      }
-    } else {
-      if (acquireTimeout === 0) {
+      }, acquireTimeout);
+    }
+    return yield Promise.resolve().then(() => globalThis.navigator.locks.request(name, acquireTimeout === 0 ? {
+      mode: "exclusive",
+      ifAvailable: true
+    } : {
+      mode: "exclusive",
+      signal: abortController.signal
+    }, (lock) => __async(null, null, function* () {
+      if (lock) {
         if (internals.debug) {
-          console.log("@supabase/gotrue-js: navigatorLock: not immediately available", name);
+          console.log("@supabase/gotrue-js: navigatorLock: acquired", name, lock.name);
         }
-        throw new NavigatorLockAcquireTimeoutError(`Acquiring an exclusive Navigator LockManager lock "${name}" immediately failed`);
-      } else {
-        if (internals.debug) {
-          try {
-            const result = await globalThis.navigator.locks.query();
-            console.log("@supabase/gotrue-js: Navigator LockManager state", JSON.stringify(result, null, "  "));
-          } catch (e) {
-            console.warn("@supabase/gotrue-js: Error when querying Navigator LockManager state", e);
+        try {
+          return yield fn();
+        } finally {
+          if (internals.debug) {
+            console.log("@supabase/gotrue-js: navigatorLock: released", name, lock.name);
           }
         }
-        console.warn("@supabase/gotrue-js: Navigator LockManager returned a null lock when using #request without ifAvailable set to true, it appears this browser is not following the LockManager spec https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request");
-        return await fn();
+      } else {
+        if (acquireTimeout === 0) {
+          if (internals.debug) {
+            console.log("@supabase/gotrue-js: navigatorLock: not immediately available", name);
+          }
+          throw new NavigatorLockAcquireTimeoutError(`Acquiring an exclusive Navigator LockManager lock "${name}" immediately failed`);
+        } else {
+          if (internals.debug) {
+            try {
+              const result = yield globalThis.navigator.locks.query();
+              console.log("@supabase/gotrue-js: Navigator LockManager state", JSON.stringify(result, null, "  "));
+            } catch (e) {
+              console.warn("@supabase/gotrue-js: Error when querying Navigator LockManager state", e);
+            }
+          }
+          console.warn("@supabase/gotrue-js: Navigator LockManager returned a null lock when using #request without ifAvailable set to true, it appears this browser is not following the LockManager spec https://developer.mozilla.org/en-US/docs/Web/API/LockManager/request");
+          return yield fn();
+        }
       }
-    }
-  }));
+    })));
+  });
 }
 var PROCESS_LOCKS = {};
-async function processLock(name, acquireTimeout, fn) {
-  var _a2;
-  const previousOperation = (_a2 = PROCESS_LOCKS[name]) !== null && _a2 !== void 0 ? _a2 : Promise.resolve();
-  const currentOperation = Promise.race([
-    previousOperation.catch(() => {
+function processLock(name, acquireTimeout, fn) {
+  return __async(this, null, function* () {
+    var _a2;
+    const previousOperation = (_a2 = PROCESS_LOCKS[name]) !== null && _a2 !== void 0 ? _a2 : Promise.resolve();
+    const currentOperation = Promise.race([
+      previousOperation.catch(() => {
+        return null;
+      }),
+      acquireTimeout >= 0 ? new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new ProcessLockAcquireTimeoutError(`Acquring process lock with name "${name}" timed out`));
+        }, acquireTimeout);
+      }) : null
+    ].filter((x) => x)).catch((e) => {
+      if (e && e.isAcquireTimeout) {
+        throw e;
+      }
       return null;
-    }),
-    acquireTimeout >= 0 ? new Promise((_, reject) => {
-      setTimeout(() => {
-        reject(new ProcessLockAcquireTimeoutError(`Acquring process lock with name "${name}" timed out`));
-      }, acquireTimeout);
-    }) : null
-  ].filter((x) => x)).catch((e) => {
-    if (e && e.isAcquireTimeout) {
+    }).then(() => __async(null, null, function* () {
+      return yield fn();
+    }));
+    PROCESS_LOCKS[name] = currentOperation.catch((e) => __async(null, null, function* () {
+      if (e && e.isAcquireTimeout) {
+        yield previousOperation;
+        return null;
+      }
       throw e;
-    }
-    return null;
-  }).then(async () => {
-    return await fn();
+    }));
+    return yield currentOperation;
   });
-  PROCESS_LOCKS[name] = currentOperation.catch(async (e) => {
-    if (e && e.isAcquireTimeout) {
-      await previousOperation;
-      return null;
-    }
-    throw e;
-  });
-  return await currentOperation;
 }
 
 // node_modules/@supabase/auth-js/dist/module/lib/polyfills.js
@@ -8633,63 +8708,67 @@ function browserSupportsWebAuthn() {
   var _a2, _b;
   return !!(isBrowser() && "PublicKeyCredential" in window && window.PublicKeyCredential && "credentials" in navigator && typeof ((_a2 = navigator === null || navigator === void 0 ? void 0 : navigator.credentials) === null || _a2 === void 0 ? void 0 : _a2.create) === "function" && typeof ((_b = navigator === null || navigator === void 0 ? void 0 : navigator.credentials) === null || _b === void 0 ? void 0 : _b.get) === "function");
 }
-async function createCredential(options) {
-  try {
-    const response = await navigator.credentials.create(
-      /** we assert the type here until typescript types are updated */
-      options
-    );
-    if (!response) {
-      return {
-        data: null,
-        error: new WebAuthnUnknownError("Empty credential response", response)
-      };
-    }
-    if (!(response instanceof PublicKeyCredential)) {
-      return {
-        data: null,
-        error: new WebAuthnUnknownError("Browser returned unexpected credential type", response)
-      };
-    }
-    return { data: response, error: null };
-  } catch (err) {
-    return {
-      data: null,
-      error: identifyRegistrationError({
-        error: err,
+function createCredential(options) {
+  return __async(this, null, function* () {
+    try {
+      const response = yield navigator.credentials.create(
+        /** we assert the type here until typescript types are updated */
         options
-      })
-    };
-  }
+      );
+      if (!response) {
+        return {
+          data: null,
+          error: new WebAuthnUnknownError("Empty credential response", response)
+        };
+      }
+      if (!(response instanceof PublicKeyCredential)) {
+        return {
+          data: null,
+          error: new WebAuthnUnknownError("Browser returned unexpected credential type", response)
+        };
+      }
+      return { data: response, error: null };
+    } catch (err) {
+      return {
+        data: null,
+        error: identifyRegistrationError({
+          error: err,
+          options
+        })
+      };
+    }
+  });
 }
-async function getCredential(options) {
-  try {
-    const response = await navigator.credentials.get(
-      /** we assert the type here until typescript types are updated */
-      options
-    );
-    if (!response) {
-      return {
-        data: null,
-        error: new WebAuthnUnknownError("Empty credential response", response)
-      };
-    }
-    if (!(response instanceof PublicKeyCredential)) {
-      return {
-        data: null,
-        error: new WebAuthnUnknownError("Browser returned unexpected credential type", response)
-      };
-    }
-    return { data: response, error: null };
-  } catch (err) {
-    return {
-      data: null,
-      error: identifyAuthenticationError({
-        error: err,
+function getCredential(options) {
+  return __async(this, null, function* () {
+    try {
+      const response = yield navigator.credentials.get(
+        /** we assert the type here until typescript types are updated */
         options
-      })
-    };
-  }
+      );
+      if (!response) {
+        return {
+          data: null,
+          error: new WebAuthnUnknownError("Empty credential response", response)
+        };
+      }
+      if (!(response instanceof PublicKeyCredential)) {
+        return {
+          data: null,
+          error: new WebAuthnUnknownError("Browser returned unexpected credential type", response)
+        };
+      }
+      return { data: response, error: null };
+    } catch (err) {
+      return {
+        data: null,
+        error: identifyAuthenticationError({
+          error: err,
+          options
+        })
+      };
+    }
+  });
 }
 var DEFAULT_CREATION_OPTIONS = {
   hints: ["security-key"],
@@ -8761,8 +8840,10 @@ var WebAuthnApi = class {
    * @returns {Promise<AuthMFAEnrollWebauthnResponse>} Enrolled factor details or error
    * @see {@link https://w3c.github.io/webauthn/#sctn-registering-a-new-credential W3C WebAuthn Spec - Registering a New Credential}
    */
-  async _enroll(params) {
-    return this.client.mfa.enroll(Object.assign(Object.assign({}, params), { factorType: "webauthn" }));
+  _enroll(params) {
+    return __async(this, null, function* () {
+      return this.client.mfa.enroll(Object.assign(Object.assign({}, params), { factorType: "webauthn" }));
+    });
   }
   /**
    * Challenge for WebAuthn credential creation or authentication.
@@ -8778,75 +8859,77 @@ var WebAuthnApi = class {
    * @see {@link https://w3c.github.io/webauthn/#sctn-credential-creation W3C WebAuthn Spec - Credential Creation}
    * @see {@link https://w3c.github.io/webauthn/#sctn-verifying-assertion W3C WebAuthn Spec - Verifying Assertion}
    */
-  async _challenge({ factorId, webauthn, friendlyName, signal }, overrides) {
-    try {
-      const { data: challengeResponse, error: challengeError } = await this.client.mfa.challenge({
-        factorId,
-        webauthn
-      });
-      if (!challengeResponse) {
-        return { data: null, error: challengeError };
-      }
-      const abortSignal = signal !== null && signal !== void 0 ? signal : webAuthnAbortService.createNewAbortSignal();
-      if (challengeResponse.webauthn.type === "create") {
-        const { user } = challengeResponse.webauthn.credential_options.publicKey;
-        if (!user.name) {
-          user.name = `${user.id}:${friendlyName}`;
+  _challenge(_0, _1) {
+    return __async(this, arguments, function* ({ factorId, webauthn, friendlyName, signal }, overrides) {
+      try {
+        const { data: challengeResponse, error: challengeError } = yield this.client.mfa.challenge({
+          factorId,
+          webauthn
+        });
+        if (!challengeResponse) {
+          return { data: null, error: challengeError };
         }
-        if (!user.displayName) {
-          user.displayName = user.name;
-        }
-      }
-      switch (challengeResponse.webauthn.type) {
-        case "create": {
-          const options = mergeCredentialCreationOptions(challengeResponse.webauthn.credential_options.publicKey, overrides === null || overrides === void 0 ? void 0 : overrides.create);
-          const { data, error } = await createCredential({
-            publicKey: options,
-            signal: abortSignal
-          });
-          if (data) {
-            return {
-              data: {
-                factorId,
-                challengeId: challengeResponse.id,
-                webauthn: {
-                  type: challengeResponse.webauthn.type,
-                  credential_response: data
-                }
-              },
-              error: null
-            };
+        const abortSignal = signal !== null && signal !== void 0 ? signal : webAuthnAbortService.createNewAbortSignal();
+        if (challengeResponse.webauthn.type === "create") {
+          const { user } = challengeResponse.webauthn.credential_options.publicKey;
+          if (!user.name) {
+            user.name = `${user.id}:${friendlyName}`;
           }
+          if (!user.displayName) {
+            user.displayName = user.name;
+          }
+        }
+        switch (challengeResponse.webauthn.type) {
+          case "create": {
+            const options = mergeCredentialCreationOptions(challengeResponse.webauthn.credential_options.publicKey, overrides === null || overrides === void 0 ? void 0 : overrides.create);
+            const { data, error } = yield createCredential({
+              publicKey: options,
+              signal: abortSignal
+            });
+            if (data) {
+              return {
+                data: {
+                  factorId,
+                  challengeId: challengeResponse.id,
+                  webauthn: {
+                    type: challengeResponse.webauthn.type,
+                    credential_response: data
+                  }
+                },
+                error: null
+              };
+            }
+            return { data: null, error };
+          }
+          case "request": {
+            const options = mergeCredentialRequestOptions(challengeResponse.webauthn.credential_options.publicKey, overrides === null || overrides === void 0 ? void 0 : overrides.request);
+            const { data, error } = yield getCredential(Object.assign(Object.assign({}, challengeResponse.webauthn.credential_options), { publicKey: options, signal: abortSignal }));
+            if (data) {
+              return {
+                data: {
+                  factorId,
+                  challengeId: challengeResponse.id,
+                  webauthn: {
+                    type: challengeResponse.webauthn.type,
+                    credential_response: data
+                  }
+                },
+                error: null
+              };
+            }
+            return { data: null, error };
+          }
+        }
+      } catch (error) {
+        if (isAuthError(error)) {
           return { data: null, error };
         }
-        case "request": {
-          const options = mergeCredentialRequestOptions(challengeResponse.webauthn.credential_options.publicKey, overrides === null || overrides === void 0 ? void 0 : overrides.request);
-          const { data, error } = await getCredential(Object.assign(Object.assign({}, challengeResponse.webauthn.credential_options), { publicKey: options, signal: abortSignal }));
-          if (data) {
-            return {
-              data: {
-                factorId,
-                challengeId: challengeResponse.id,
-                webauthn: {
-                  type: challengeResponse.webauthn.type,
-                  credential_response: data
-                }
-              },
-              error: null
-            };
-          }
-          return { data: null, error };
-        }
+        return {
+          data: null,
+          error: new AuthUnknownError("Unexpected error in challenge", error)
+        };
       }
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: null, error };
-      }
-      return {
-        data: null,
-        error: new AuthUnknownError("Unexpected error in challenge", error)
-      };
-    }
+    });
   }
   /**
    * Verify a WebAuthn credential with the server.
@@ -8860,11 +8943,13 @@ var WebAuthnApi = class {
    * @returns {Promise<AuthMFAVerifyResponse>} Verification result with session or error
    * @see {@link https://w3c.github.io/webauthn/#sctn-verifying-assertion W3C WebAuthn Spec - Verifying an Authentication Assertion}
    * */
-  async _verify({ challengeId, factorId, webauthn }) {
-    return this.client.mfa.verify({
-      factorId,
-      challengeId,
-      webauthn
+  _verify(_0) {
+    return __async(this, arguments, function* ({ challengeId, factorId, webauthn }) {
+      return this.client.mfa.verify({
+        factorId,
+        challengeId,
+        webauthn
+      });
     });
   }
   /**
@@ -8883,48 +8968,50 @@ var WebAuthnApi = class {
    * @see {@link https://w3c.github.io/webauthn/#sctn-authentication W3C WebAuthn Spec - Authentication Ceremony}
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialRequestOptions MDN - PublicKeyCredentialRequestOptions}
    */
-  async _authenticate({ factorId, webauthn: { rpId = typeof window !== "undefined" ? window.location.hostname : void 0, rpOrigins = typeof window !== "undefined" ? [window.location.origin] : void 0, signal } = {} }, overrides) {
-    if (!rpId) {
-      return {
-        data: null,
-        error: new AuthError("rpId is required for WebAuthn authentication")
-      };
-    }
-    try {
-      if (!browserSupportsWebAuthn()) {
+  _authenticate(_0, _1) {
+    return __async(this, arguments, function* ({ factorId, webauthn: { rpId = typeof window !== "undefined" ? window.location.hostname : void 0, rpOrigins = typeof window !== "undefined" ? [window.location.origin] : void 0, signal } = {} }, overrides) {
+      if (!rpId) {
         return {
           data: null,
-          error: new AuthUnknownError("Browser does not support WebAuthn", null)
+          error: new AuthError("rpId is required for WebAuthn authentication")
         };
       }
-      const { data: challengeResponse, error: challengeError } = await this.challenge({
-        factorId,
-        webauthn: { rpId, rpOrigins },
-        signal
-      }, { request: overrides });
-      if (!challengeResponse) {
-        return { data: null, error: challengeError };
-      }
-      const { webauthn } = challengeResponse;
-      return this._verify({
-        factorId,
-        challengeId: challengeResponse.challengeId,
-        webauthn: {
-          type: webauthn.type,
-          rpId,
-          rpOrigins,
-          credential_response: webauthn.credential_response
+      try {
+        if (!browserSupportsWebAuthn()) {
+          return {
+            data: null,
+            error: new AuthUnknownError("Browser does not support WebAuthn", null)
+          };
         }
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: null, error };
+        const { data: challengeResponse, error: challengeError } = yield this.challenge({
+          factorId,
+          webauthn: { rpId, rpOrigins },
+          signal
+        }, { request: overrides });
+        if (!challengeResponse) {
+          return { data: null, error: challengeError };
+        }
+        const { webauthn } = challengeResponse;
+        return this._verify({
+          factorId,
+          challengeId: challengeResponse.challengeId,
+          webauthn: {
+            type: webauthn.type,
+            rpId,
+            rpOrigins,
+            credential_response: webauthn.credential_response
+          }
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: null, error };
+        }
+        return {
+          data: null,
+          error: new AuthUnknownError("Unexpected error in authenticate", error)
+        };
       }
-      return {
-        data: null,
-        error: new AuthUnknownError("Unexpected error in authenticate", error)
-      };
-    }
+    });
   }
   /**
    * Complete WebAuthn registration flow.
@@ -8941,60 +9028,62 @@ var WebAuthnApi = class {
    * @see {@link https://w3c.github.io/webauthn/#sctn-registering-a-new-credential W3C WebAuthn Spec - Registration Ceremony}
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions MDN - PublicKeyCredentialCreationOptions}
    */
-  async _register({ friendlyName, webauthn: { rpId = typeof window !== "undefined" ? window.location.hostname : void 0, rpOrigins = typeof window !== "undefined" ? [window.location.origin] : void 0, signal } = {} }, overrides) {
-    if (!rpId) {
-      return {
-        data: null,
-        error: new AuthError("rpId is required for WebAuthn registration")
-      };
-    }
-    try {
-      if (!browserSupportsWebAuthn()) {
+  _register(_0, _1) {
+    return __async(this, arguments, function* ({ friendlyName, webauthn: { rpId = typeof window !== "undefined" ? window.location.hostname : void 0, rpOrigins = typeof window !== "undefined" ? [window.location.origin] : void 0, signal } = {} }, overrides) {
+      if (!rpId) {
         return {
           data: null,
-          error: new AuthUnknownError("Browser does not support WebAuthn", null)
+          error: new AuthError("rpId is required for WebAuthn registration")
         };
       }
-      const { data: factor, error: enrollError } = await this._enroll({
-        friendlyName
-      });
-      if (!factor) {
-        await this.client.mfa.listFactors().then((factors) => {
-          var _a2;
-          return (_a2 = factors.data) === null || _a2 === void 0 ? void 0 : _a2.all.find((v) => v.factor_type === "webauthn" && v.friendly_name === friendlyName && v.status !== "unverified");
-        }).then((factor2) => factor2 ? this.client.mfa.unenroll({ factorId: factor2 === null || factor2 === void 0 ? void 0 : factor2.id }) : void 0);
-        return { data: null, error: enrollError };
-      }
-      const { data: challengeResponse, error: challengeError } = await this._challenge({
-        factorId: factor.id,
-        friendlyName: factor.friendly_name,
-        webauthn: { rpId, rpOrigins },
-        signal
-      }, {
-        create: overrides
-      });
-      if (!challengeResponse) {
-        return { data: null, error: challengeError };
-      }
-      return this._verify({
-        factorId: factor.id,
-        challengeId: challengeResponse.challengeId,
-        webauthn: {
-          rpId,
-          rpOrigins,
-          type: challengeResponse.webauthn.type,
-          credential_response: challengeResponse.webauthn.credential_response
+      try {
+        if (!browserSupportsWebAuthn()) {
+          return {
+            data: null,
+            error: new AuthUnknownError("Browser does not support WebAuthn", null)
+          };
         }
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return { data: null, error };
+        const { data: factor, error: enrollError } = yield this._enroll({
+          friendlyName
+        });
+        if (!factor) {
+          yield this.client.mfa.listFactors().then((factors) => {
+            var _a2;
+            return (_a2 = factors.data) === null || _a2 === void 0 ? void 0 : _a2.all.find((v) => v.factor_type === "webauthn" && v.friendly_name === friendlyName && v.status !== "unverified");
+          }).then((factor2) => factor2 ? this.client.mfa.unenroll({ factorId: factor2 === null || factor2 === void 0 ? void 0 : factor2.id }) : void 0);
+          return { data: null, error: enrollError };
+        }
+        const { data: challengeResponse, error: challengeError } = yield this._challenge({
+          factorId: factor.id,
+          friendlyName: factor.friendly_name,
+          webauthn: { rpId, rpOrigins },
+          signal
+        }, {
+          create: overrides
+        });
+        if (!challengeResponse) {
+          return { data: null, error: challengeError };
+        }
+        return this._verify({
+          factorId: factor.id,
+          challengeId: challengeResponse.challengeId,
+          webauthn: {
+            rpId,
+            rpOrigins,
+            type: challengeResponse.webauthn.type,
+            credential_response: challengeResponse.webauthn.credential_response
+          }
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return { data: null, error };
+        }
+        return {
+          data: null,
+          error: new AuthUnknownError("Unexpected error in register", error)
+        };
       }
-      return {
-        data: null,
-        error: new AuthUnknownError("Unexpected error in register", error)
-      };
-    }
+    });
   }
 };
 
@@ -9012,8 +9101,10 @@ var DEFAULT_OPTIONS = {
   hasCustomAuthorizationHeader: false,
   throwOnError: false
 };
-async function lockNoOp(name, acquireTimeout, fn) {
-  return await fn();
+function lockNoOp(name, acquireTimeout, fn) {
+  return __async(this, null, function* () {
+    return yield fn();
+  });
 }
 var GLOBAL_JWKS = {};
 var GoTrueClient = class _GoTrueClient {
@@ -9146,10 +9237,10 @@ var GoTrueClient = class _GoTrueClient {
       } catch (e) {
         console.error("Failed to create a new BroadcastChannel, multi-tab state changes will not be available", e);
       }
-      (_c = this.broadcastChannel) === null || _c === void 0 ? void 0 : _c.addEventListener("message", async (event) => {
+      (_c = this.broadcastChannel) === null || _c === void 0 ? void 0 : _c.addEventListener("message", (event) => __async(this, null, function* () {
         this._debug("received broadcast notification from other tab or client", event);
-        await this._notifyAllSubscribers(event.data.event, event.data.session, false);
-      });
+        yield this._notifyAllSubscribers(event.data.event, event.data.session, false);
+      }));
     }
     this.initialize();
   }
@@ -9184,16 +9275,18 @@ var GoTrueClient = class _GoTrueClient {
    * This method is automatically called when instantiating the client, but should also be called
    * manually when checking for an error from an auth redirect (oauth, magiclink, password recovery, etc).
    */
-  async initialize() {
-    if (this.initializePromise) {
-      return await this.initializePromise;
-    }
-    this.initializePromise = (async () => {
-      return await this._acquireLock(-1, async () => {
-        return await this._initialize();
-      });
-    })();
-    return await this.initializePromise;
+  initialize() {
+    return __async(this, null, function* () {
+      if (this.initializePromise) {
+        return yield this.initializePromise;
+      }
+      this.initializePromise = (() => __async(this, null, function* () {
+        return yield this._acquireLock(-1, () => __async(this, null, function* () {
+          return yield this._initialize();
+        }));
+      }))();
+      return yield this.initializePromise;
+    });
   }
   /**
    * IMPORTANT:
@@ -9201,91 +9294,95 @@ var GoTrueClient = class _GoTrueClient {
    * 2. Never return a session from this method as it would be cached over
    *    the whole lifetime of the client
    */
-  async _initialize() {
-    var _a2;
-    try {
-      let params = {};
-      let callbackUrlType = "none";
-      if (isBrowser()) {
-        params = parseParametersFromURL(window.location.href);
-        if (this._isImplicitGrantCallback(params)) {
-          callbackUrlType = "implicit";
-        } else if (await this._isPKCECallback(params)) {
-          callbackUrlType = "pkce";
+  _initialize() {
+    return __async(this, null, function* () {
+      var _a2;
+      try {
+        let params = {};
+        let callbackUrlType = "none";
+        if (isBrowser()) {
+          params = parseParametersFromURL(window.location.href);
+          if (this._isImplicitGrantCallback(params)) {
+            callbackUrlType = "implicit";
+          } else if (yield this._isPKCECallback(params)) {
+            callbackUrlType = "pkce";
+          }
         }
-      }
-      if (isBrowser() && this.detectSessionInUrl && callbackUrlType !== "none") {
-        const { data, error } = await this._getSessionFromURL(params, callbackUrlType);
-        if (error) {
-          this._debug("#_initialize()", "error detecting session from URL", error);
-          if (isAuthImplicitGrantRedirectError(error)) {
-            const errorCode = (_a2 = error.details) === null || _a2 === void 0 ? void 0 : _a2.code;
-            if (errorCode === "identity_already_exists" || errorCode === "identity_not_found" || errorCode === "single_identity_not_deletable") {
-              return { error };
+        if (isBrowser() && this.detectSessionInUrl && callbackUrlType !== "none") {
+          const { data, error } = yield this._getSessionFromURL(params, callbackUrlType);
+          if (error) {
+            this._debug("#_initialize()", "error detecting session from URL", error);
+            if (isAuthImplicitGrantRedirectError(error)) {
+              const errorCode = (_a2 = error.details) === null || _a2 === void 0 ? void 0 : _a2.code;
+              if (errorCode === "identity_already_exists" || errorCode === "identity_not_found" || errorCode === "single_identity_not_deletable") {
+                return { error };
+              }
             }
+            yield this._removeSession();
+            return { error };
           }
-          await this._removeSession();
-          return { error };
+          const { session, redirectType } = data;
+          this._debug("#_initialize()", "detected session in URL", session, "redirect type", redirectType);
+          yield this._saveSession(session);
+          setTimeout(() => __async(this, null, function* () {
+            if (redirectType === "recovery") {
+              yield this._notifyAllSubscribers("PASSWORD_RECOVERY", session);
+            } else {
+              yield this._notifyAllSubscribers("SIGNED_IN", session);
+            }
+          }), 0);
+          return { error: null };
         }
-        const { session, redirectType } = data;
-        this._debug("#_initialize()", "detected session in URL", session, "redirect type", redirectType);
-        await this._saveSession(session);
-        setTimeout(async () => {
-          if (redirectType === "recovery") {
-            await this._notifyAllSubscribers("PASSWORD_RECOVERY", session);
-          } else {
-            await this._notifyAllSubscribers("SIGNED_IN", session);
-          }
-        }, 0);
+        yield this._recoverAndRefresh();
         return { error: null };
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ error });
+        }
+        return this._returnResult({
+          error: new AuthUnknownError("Unexpected error during initialization", error)
+        });
+      } finally {
+        yield this._handleVisibilityChange();
+        this._debug("#_initialize()", "end");
       }
-      await this._recoverAndRefresh();
-      return { error: null };
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ error });
-      }
-      return this._returnResult({
-        error: new AuthUnknownError("Unexpected error during initialization", error)
-      });
-    } finally {
-      await this._handleVisibilityChange();
-      this._debug("#_initialize()", "end");
-    }
+    });
   }
   /**
    * Creates a new anonymous user.
    *
    * @returns A session where the is_anonymous claim in the access token JWT set to true
    */
-  async signInAnonymously(credentials) {
-    var _a2, _b, _c;
-    try {
-      const res = await _request(this.fetch, "POST", `${this.url}/signup`, {
-        headers: this.headers,
-        body: {
-          data: (_b = (_a2 = credentials === null || credentials === void 0 ? void 0 : credentials.options) === null || _a2 === void 0 ? void 0 : _a2.data) !== null && _b !== void 0 ? _b : {},
-          gotrue_meta_security: { captcha_token: (_c = credentials === null || credentials === void 0 ? void 0 : credentials.options) === null || _c === void 0 ? void 0 : _c.captchaToken }
-        },
-        xform: _sessionResponse
-      });
-      const { data, error } = res;
-      if (error || !data) {
-        return this._returnResult({ data: { user: null, session: null }, error });
+  signInAnonymously(credentials) {
+    return __async(this, null, function* () {
+      var _a2, _b, _c;
+      try {
+        const res = yield _request(this.fetch, "POST", `${this.url}/signup`, {
+          headers: this.headers,
+          body: {
+            data: (_b = (_a2 = credentials === null || credentials === void 0 ? void 0 : credentials.options) === null || _a2 === void 0 ? void 0 : _a2.data) !== null && _b !== void 0 ? _b : {},
+            gotrue_meta_security: { captcha_token: (_c = credentials === null || credentials === void 0 ? void 0 : credentials.options) === null || _c === void 0 ? void 0 : _c.captchaToken }
+          },
+          xform: _sessionResponse
+        });
+        const { data, error } = res;
+        if (error || !data) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
+        const session = data.session;
+        const user = data.user;
+        if (data.session) {
+          yield this._saveSession(data.session);
+          yield this._notifyAllSubscribers("SIGNED_IN", session);
+        }
+        return this._returnResult({ data: { user, session }, error: null });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
+        throw error;
       }
-      const session = data.session;
-      const user = data.user;
-      if (data.session) {
-        await this._saveSession(data.session);
-        await this._notifyAllSubscribers("SIGNED_IN", session);
-      }
-      return this._returnResult({ data: { user, session }, error: null });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Creates a new user.
@@ -9297,64 +9394,66 @@ var GoTrueClient = class _GoTrueClient {
    * @returns A logged-in session if the server has "autoconfirm" ON
    * @returns A user if the server has "autoconfirm" OFF
    */
-  async signUp(credentials) {
-    var _a2, _b, _c;
-    try {
-      let res;
-      if ("email" in credentials) {
-        const { email, password, options } = credentials;
-        let codeChallenge = null;
-        let codeChallengeMethod = null;
-        if (this.flowType === "pkce") {
-          ;
-          [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(this.storage, this.storageKey);
+  signUp(credentials) {
+    return __async(this, null, function* () {
+      var _a2, _b, _c;
+      try {
+        let res;
+        if ("email" in credentials) {
+          const { email, password, options } = credentials;
+          let codeChallenge = null;
+          let codeChallengeMethod = null;
+          if (this.flowType === "pkce") {
+            ;
+            [codeChallenge, codeChallengeMethod] = yield getCodeChallengeAndMethod(this.storage, this.storageKey);
+          }
+          res = yield _request(this.fetch, "POST", `${this.url}/signup`, {
+            headers: this.headers,
+            redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo,
+            body: {
+              email,
+              password,
+              data: (_a2 = options === null || options === void 0 ? void 0 : options.data) !== null && _a2 !== void 0 ? _a2 : {},
+              gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken },
+              code_challenge: codeChallenge,
+              code_challenge_method: codeChallengeMethod
+            },
+            xform: _sessionResponse
+          });
+        } else if ("phone" in credentials) {
+          const { phone, password, options } = credentials;
+          res = yield _request(this.fetch, "POST", `${this.url}/signup`, {
+            headers: this.headers,
+            body: {
+              phone,
+              password,
+              data: (_b = options === null || options === void 0 ? void 0 : options.data) !== null && _b !== void 0 ? _b : {},
+              channel: (_c = options === null || options === void 0 ? void 0 : options.channel) !== null && _c !== void 0 ? _c : "sms",
+              gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+            },
+            xform: _sessionResponse
+          });
+        } else {
+          throw new AuthInvalidCredentialsError("You must provide either an email or phone number and a password");
         }
-        res = await _request(this.fetch, "POST", `${this.url}/signup`, {
-          headers: this.headers,
-          redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo,
-          body: {
-            email,
-            password,
-            data: (_a2 = options === null || options === void 0 ? void 0 : options.data) !== null && _a2 !== void 0 ? _a2 : {},
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken },
-            code_challenge: codeChallenge,
-            code_challenge_method: codeChallengeMethod
-          },
-          xform: _sessionResponse
-        });
-      } else if ("phone" in credentials) {
-        const { phone, password, options } = credentials;
-        res = await _request(this.fetch, "POST", `${this.url}/signup`, {
-          headers: this.headers,
-          body: {
-            phone,
-            password,
-            data: (_b = options === null || options === void 0 ? void 0 : options.data) !== null && _b !== void 0 ? _b : {},
-            channel: (_c = options === null || options === void 0 ? void 0 : options.channel) !== null && _c !== void 0 ? _c : "sms",
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
-          },
-          xform: _sessionResponse
-        });
-      } else {
-        throw new AuthInvalidCredentialsError("You must provide either an email or phone number and a password");
+        const { data, error } = res;
+        if (error || !data) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
+        const session = data.session;
+        const user = data.user;
+        if (data.session) {
+          yield this._saveSession(data.session);
+          yield this._notifyAllSubscribers("SIGNED_IN", session);
+        }
+        return this._returnResult({ data: { user, session }, error: null });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
+        throw error;
       }
-      const { data, error } = res;
-      if (error || !data) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      }
-      const session = data.session;
-      const user = data.user;
-      if (data.session) {
-        await this._saveSession(data.session);
-        await this._notifyAllSubscribers("SIGNED_IN", session);
-      }
-      return this._returnResult({ data: { user, session }, error: null });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Log in an existing user with an email and password or phone and password.
@@ -9364,76 +9463,82 @@ var GoTrueClient = class _GoTrueClient {
    * email/phone and password combination is wrong or that the account can only
    * be accessed via social login.
    */
-  async signInWithPassword(credentials) {
-    try {
-      let res;
-      if ("email" in credentials) {
-        const { email, password, options } = credentials;
-        res = await _request(this.fetch, "POST", `${this.url}/token?grant_type=password`, {
-          headers: this.headers,
-          body: {
-            email,
-            password,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
-          },
-          xform: _sessionResponsePassword
+  signInWithPassword(credentials) {
+    return __async(this, null, function* () {
+      try {
+        let res;
+        if ("email" in credentials) {
+          const { email, password, options } = credentials;
+          res = yield _request(this.fetch, "POST", `${this.url}/token?grant_type=password`, {
+            headers: this.headers,
+            body: {
+              email,
+              password,
+              gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+            },
+            xform: _sessionResponsePassword
+          });
+        } else if ("phone" in credentials) {
+          const { phone, password, options } = credentials;
+          res = yield _request(this.fetch, "POST", `${this.url}/token?grant_type=password`, {
+            headers: this.headers,
+            body: {
+              phone,
+              password,
+              gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+            },
+            xform: _sessionResponsePassword
+          });
+        } else {
+          throw new AuthInvalidCredentialsError("You must provide either an email or phone number and a password");
+        }
+        const { data, error } = res;
+        if (error) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        } else if (!data || !data.session || !data.user) {
+          const invalidTokenError = new AuthInvalidTokenResponseError();
+          return this._returnResult({ data: { user: null, session: null }, error: invalidTokenError });
+        }
+        if (data.session) {
+          yield this._saveSession(data.session);
+          yield this._notifyAllSubscribers("SIGNED_IN", data.session);
+        }
+        return this._returnResult({
+          data: Object.assign({ user: data.user, session: data.session }, data.weak_password ? { weakPassword: data.weak_password } : null),
+          error
         });
-      } else if ("phone" in credentials) {
-        const { phone, password, options } = credentials;
-        res = await _request(this.fetch, "POST", `${this.url}/token?grant_type=password`, {
-          headers: this.headers,
-          body: {
-            phone,
-            password,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
-          },
-          xform: _sessionResponsePassword
-        });
-      } else {
-        throw new AuthInvalidCredentialsError("You must provide either an email or phone number and a password");
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
+        throw error;
       }
-      const { data, error } = res;
-      if (error) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      } else if (!data || !data.session || !data.user) {
-        const invalidTokenError = new AuthInvalidTokenResponseError();
-        return this._returnResult({ data: { user: null, session: null }, error: invalidTokenError });
-      }
-      if (data.session) {
-        await this._saveSession(data.session);
-        await this._notifyAllSubscribers("SIGNED_IN", data.session);
-      }
-      return this._returnResult({
-        data: Object.assign({ user: data.user, session: data.session }, data.weak_password ? { weakPassword: data.weak_password } : null),
-        error
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Log in an existing user via a third-party provider.
    * This method supports the PKCE flow.
    */
-  async signInWithOAuth(credentials) {
-    var _a2, _b, _c, _d;
-    return await this._handleProviderSignIn(credentials.provider, {
-      redirectTo: (_a2 = credentials.options) === null || _a2 === void 0 ? void 0 : _a2.redirectTo,
-      scopes: (_b = credentials.options) === null || _b === void 0 ? void 0 : _b.scopes,
-      queryParams: (_c = credentials.options) === null || _c === void 0 ? void 0 : _c.queryParams,
-      skipBrowserRedirect: (_d = credentials.options) === null || _d === void 0 ? void 0 : _d.skipBrowserRedirect
+  signInWithOAuth(credentials) {
+    return __async(this, null, function* () {
+      var _a2, _b, _c, _d;
+      return yield this._handleProviderSignIn(credentials.provider, {
+        redirectTo: (_a2 = credentials.options) === null || _a2 === void 0 ? void 0 : _a2.redirectTo,
+        scopes: (_b = credentials.options) === null || _b === void 0 ? void 0 : _b.scopes,
+        queryParams: (_c = credentials.options) === null || _c === void 0 ? void 0 : _c.queryParams,
+        skipBrowserRedirect: (_d = credentials.options) === null || _d === void 0 ? void 0 : _d.skipBrowserRedirect
+      });
     });
   }
   /**
    * Log in an existing user by exchanging an Auth Code issued during the PKCE flow.
    */
-  async exchangeCodeForSession(authCode) {
-    await this.initializePromise;
-    return this._acquireLock(-1, async () => {
-      return this._exchangeCodeForSession(authCode);
+  exchangeCodeForSession(authCode) {
+    return __async(this, null, function* () {
+      yield this.initializePromise;
+      return this._acquireLock(-1, () => __async(this, null, function* () {
+        return this._exchangeCodeForSession(authCode);
+      }));
     });
   }
   /**
@@ -9443,282 +9548,292 @@ var GoTrueClient = class _GoTrueClient {
    * With slight variation on Solana's side.
    * @reference https://eips.ethereum.org/EIPS/eip-4361
    */
-  async signInWithWeb3(credentials) {
-    const { chain } = credentials;
-    switch (chain) {
-      case "ethereum":
-        return await this.signInWithEthereum(credentials);
-      case "solana":
-        return await this.signInWithSolana(credentials);
-      default:
-        throw new Error(`@supabase/auth-js: Unsupported chain "${chain}"`);
-    }
+  signInWithWeb3(credentials) {
+    return __async(this, null, function* () {
+      const { chain } = credentials;
+      switch (chain) {
+        case "ethereum":
+          return yield this.signInWithEthereum(credentials);
+        case "solana":
+          return yield this.signInWithSolana(credentials);
+        default:
+          throw new Error(`@supabase/auth-js: Unsupported chain "${chain}"`);
+      }
+    });
   }
-  async signInWithEthereum(credentials) {
-    var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
-    let message;
-    let signature;
-    if ("message" in credentials) {
-      message = credentials.message;
-      signature = credentials.signature;
-    } else {
-      const { chain, wallet, statement, options } = credentials;
-      let resolvedWallet;
-      if (!isBrowser()) {
-        if (typeof wallet !== "object" || !(options === null || options === void 0 ? void 0 : options.url)) {
-          throw new Error("@supabase/auth-js: Both wallet and url must be specified in non-browser environments.");
-        }
-        resolvedWallet = wallet;
-      } else if (typeof wallet === "object") {
-        resolvedWallet = wallet;
+  signInWithEthereum(credentials) {
+    return __async(this, null, function* () {
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+      let message;
+      let signature;
+      if ("message" in credentials) {
+        message = credentials.message;
+        signature = credentials.signature;
       } else {
-        const windowAny = window;
-        if ("ethereum" in windowAny && typeof windowAny.ethereum === "object" && "request" in windowAny.ethereum && typeof windowAny.ethereum.request === "function") {
-          resolvedWallet = windowAny.ethereum;
+        const { chain, wallet, statement, options } = credentials;
+        let resolvedWallet;
+        if (!isBrowser()) {
+          if (typeof wallet !== "object" || !(options === null || options === void 0 ? void 0 : options.url)) {
+            throw new Error("@supabase/auth-js: Both wallet and url must be specified in non-browser environments.");
+          }
+          resolvedWallet = wallet;
+        } else if (typeof wallet === "object") {
+          resolvedWallet = wallet;
         } else {
-          throw new Error(`@supabase/auth-js: No compatible Ethereum wallet interface on the window object (window.ethereum) detected. Make sure the user already has a wallet installed and connected for this app. Prefer passing the wallet interface object directly to signInWithWeb3({ chain: 'ethereum', wallet: resolvedUserWallet }) instead.`);
+          const windowAny = window;
+          if ("ethereum" in windowAny && typeof windowAny.ethereum === "object" && "request" in windowAny.ethereum && typeof windowAny.ethereum.request === "function") {
+            resolvedWallet = windowAny.ethereum;
+          } else {
+            throw new Error(`@supabase/auth-js: No compatible Ethereum wallet interface on the window object (window.ethereum) detected. Make sure the user already has a wallet installed and connected for this app. Prefer passing the wallet interface object directly to signInWithWeb3({ chain: 'ethereum', wallet: resolvedUserWallet }) instead.`);
+          }
         }
-      }
-      const url = new URL((_a2 = options === null || options === void 0 ? void 0 : options.url) !== null && _a2 !== void 0 ? _a2 : window.location.href);
-      const accounts = await resolvedWallet.request({
-        method: "eth_requestAccounts"
-      }).then((accs) => accs).catch(() => {
-        throw new Error(`@supabase/auth-js: Wallet method eth_requestAccounts is missing or invalid`);
-      });
-      if (!accounts || accounts.length === 0) {
-        throw new Error(`@supabase/auth-js: No accounts available. Please ensure the wallet is connected.`);
-      }
-      const address = getAddress(accounts[0]);
-      let chainId = (_b = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _b === void 0 ? void 0 : _b.chainId;
-      if (!chainId) {
-        const chainIdHex = await resolvedWallet.request({
-          method: "eth_chainId"
+        const url = new URL((_a2 = options === null || options === void 0 ? void 0 : options.url) !== null && _a2 !== void 0 ? _a2 : window.location.href);
+        const accounts = yield resolvedWallet.request({
+          method: "eth_requestAccounts"
+        }).then((accs) => accs).catch(() => {
+          throw new Error(`@supabase/auth-js: Wallet method eth_requestAccounts is missing or invalid`);
         });
-        chainId = fromHex(chainIdHex);
-      }
-      const siweMessage = {
-        domain: url.host,
-        address,
-        statement,
-        uri: url.href,
-        version: "1",
-        chainId,
-        nonce: (_c = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _c === void 0 ? void 0 : _c.nonce,
-        issuedAt: (_e = (_d = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _d === void 0 ? void 0 : _d.issuedAt) !== null && _e !== void 0 ? _e : /* @__PURE__ */ new Date(),
-        expirationTime: (_f = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _f === void 0 ? void 0 : _f.expirationTime,
-        notBefore: (_g = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _g === void 0 ? void 0 : _g.notBefore,
-        requestId: (_h = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _h === void 0 ? void 0 : _h.requestId,
-        resources: (_j = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _j === void 0 ? void 0 : _j.resources
-      };
-      message = createSiweMessage(siweMessage);
-      signature = await resolvedWallet.request({
-        method: "personal_sign",
-        params: [toHex(message), address]
-      });
-    }
-    try {
-      const { data, error } = await _request(this.fetch, "POST", `${this.url}/token?grant_type=web3`, {
-        headers: this.headers,
-        body: Object.assign({
-          chain: "ethereum",
-          message,
-          signature
-        }, ((_k = credentials.options) === null || _k === void 0 ? void 0 : _k.captchaToken) ? { gotrue_meta_security: { captcha_token: (_l = credentials.options) === null || _l === void 0 ? void 0 : _l.captchaToken } } : null),
-        xform: _sessionResponse
-      });
-      if (error) {
-        throw error;
-      }
-      if (!data || !data.session || !data.user) {
-        const invalidTokenError = new AuthInvalidTokenResponseError();
-        return this._returnResult({ data: { user: null, session: null }, error: invalidTokenError });
-      }
-      if (data.session) {
-        await this._saveSession(data.session);
-        await this._notifyAllSubscribers("SIGNED_IN", data.session);
-      }
-      return this._returnResult({ data: Object.assign({}, data), error });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      }
-      throw error;
-    }
-  }
-  async signInWithSolana(credentials) {
-    var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
-    let message;
-    let signature;
-    if ("message" in credentials) {
-      message = credentials.message;
-      signature = credentials.signature;
-    } else {
-      const { chain, wallet, statement, options } = credentials;
-      let resolvedWallet;
-      if (!isBrowser()) {
-        if (typeof wallet !== "object" || !(options === null || options === void 0 ? void 0 : options.url)) {
-          throw new Error("@supabase/auth-js: Both wallet and url must be specified in non-browser environments.");
+        if (!accounts || accounts.length === 0) {
+          throw new Error(`@supabase/auth-js: No accounts available. Please ensure the wallet is connected.`);
         }
-        resolvedWallet = wallet;
-      } else if (typeof wallet === "object") {
-        resolvedWallet = wallet;
-      } else {
-        const windowAny = window;
-        if ("solana" in windowAny && typeof windowAny.solana === "object" && ("signIn" in windowAny.solana && typeof windowAny.solana.signIn === "function" || "signMessage" in windowAny.solana && typeof windowAny.solana.signMessage === "function")) {
-          resolvedWallet = windowAny.solana;
-        } else {
-          throw new Error(`@supabase/auth-js: No compatible Solana wallet interface on the window object (window.solana) detected. Make sure the user already has a wallet installed and connected for this app. Prefer passing the wallet interface object directly to signInWithWeb3({ chain: 'solana', wallet: resolvedUserWallet }) instead.`);
+        const address = getAddress(accounts[0]);
+        let chainId = (_b = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _b === void 0 ? void 0 : _b.chainId;
+        if (!chainId) {
+          const chainIdHex = yield resolvedWallet.request({
+            method: "eth_chainId"
+          });
+          chainId = fromHex(chainIdHex);
         }
-      }
-      const url = new URL((_a2 = options === null || options === void 0 ? void 0 : options.url) !== null && _a2 !== void 0 ? _a2 : window.location.href);
-      if ("signIn" in resolvedWallet && resolvedWallet.signIn) {
-        const output = await resolvedWallet.signIn(Object.assign(Object.assign(Object.assign({ issuedAt: (/* @__PURE__ */ new Date()).toISOString() }, options === null || options === void 0 ? void 0 : options.signInWithSolana), {
-          // non-overridable properties
-          version: "1",
+        const siweMessage = {
           domain: url.host,
-          uri: url.href
-        }), statement ? { statement } : null));
-        let outputToProcess;
-        if (Array.isArray(output) && output[0] && typeof output[0] === "object") {
-          outputToProcess = output[0];
-        } else if (output && typeof output === "object" && "signedMessage" in output && "signature" in output) {
-          outputToProcess = output;
-        } else {
-          throw new Error("@supabase/auth-js: Wallet method signIn() returned unrecognized value");
-        }
-        if ("signedMessage" in outputToProcess && "signature" in outputToProcess && (typeof outputToProcess.signedMessage === "string" || outputToProcess.signedMessage instanceof Uint8Array) && outputToProcess.signature instanceof Uint8Array) {
-          message = typeof outputToProcess.signedMessage === "string" ? outputToProcess.signedMessage : new TextDecoder().decode(outputToProcess.signedMessage);
-          signature = outputToProcess.signature;
-        } else {
-          throw new Error("@supabase/auth-js: Wallet method signIn() API returned object without signedMessage and signature fields");
-        }
-      } else {
-        if (!("signMessage" in resolvedWallet) || typeof resolvedWallet.signMessage !== "function" || !("publicKey" in resolvedWallet) || typeof resolvedWallet !== "object" || !resolvedWallet.publicKey || !("toBase58" in resolvedWallet.publicKey) || typeof resolvedWallet.publicKey.toBase58 !== "function") {
-          throw new Error("@supabase/auth-js: Wallet does not have a compatible signMessage() and publicKey.toBase58() API");
-        }
-        message = [
-          `${url.host} wants you to sign in with your Solana account:`,
-          resolvedWallet.publicKey.toBase58(),
-          ...statement ? ["", statement, ""] : [""],
-          "Version: 1",
-          `URI: ${url.href}`,
-          `Issued At: ${(_c = (_b = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _b === void 0 ? void 0 : _b.issuedAt) !== null && _c !== void 0 ? _c : (/* @__PURE__ */ new Date()).toISOString()}`,
-          ...((_d = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _d === void 0 ? void 0 : _d.notBefore) ? [`Not Before: ${options.signInWithSolana.notBefore}`] : [],
-          ...((_e = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _e === void 0 ? void 0 : _e.expirationTime) ? [`Expiration Time: ${options.signInWithSolana.expirationTime}`] : [],
-          ...((_f = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _f === void 0 ? void 0 : _f.chainId) ? [`Chain ID: ${options.signInWithSolana.chainId}`] : [],
-          ...((_g = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _g === void 0 ? void 0 : _g.nonce) ? [`Nonce: ${options.signInWithSolana.nonce}`] : [],
-          ...((_h = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _h === void 0 ? void 0 : _h.requestId) ? [`Request ID: ${options.signInWithSolana.requestId}`] : [],
-          ...((_k = (_j = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _j === void 0 ? void 0 : _j.resources) === null || _k === void 0 ? void 0 : _k.length) ? [
-            "Resources",
-            ...options.signInWithSolana.resources.map((resource) => `- ${resource}`)
-          ] : []
-        ].join("\n");
-        const maybeSignature = await resolvedWallet.signMessage(new TextEncoder().encode(message), "utf8");
-        if (!maybeSignature || !(maybeSignature instanceof Uint8Array)) {
-          throw new Error("@supabase/auth-js: Wallet signMessage() API returned an recognized value");
-        }
-        signature = maybeSignature;
+          address,
+          statement,
+          uri: url.href,
+          version: "1",
+          chainId,
+          nonce: (_c = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _c === void 0 ? void 0 : _c.nonce,
+          issuedAt: (_e = (_d = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _d === void 0 ? void 0 : _d.issuedAt) !== null && _e !== void 0 ? _e : /* @__PURE__ */ new Date(),
+          expirationTime: (_f = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _f === void 0 ? void 0 : _f.expirationTime,
+          notBefore: (_g = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _g === void 0 ? void 0 : _g.notBefore,
+          requestId: (_h = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _h === void 0 ? void 0 : _h.requestId,
+          resources: (_j = options === null || options === void 0 ? void 0 : options.signInWithEthereum) === null || _j === void 0 ? void 0 : _j.resources
+        };
+        message = createSiweMessage(siweMessage);
+        signature = yield resolvedWallet.request({
+          method: "personal_sign",
+          params: [toHex(message), address]
+        });
       }
-    }
-    try {
-      const { data, error } = await _request(this.fetch, "POST", `${this.url}/token?grant_type=web3`, {
-        headers: this.headers,
-        body: Object.assign({ chain: "solana", message, signature: bytesToBase64URL(signature) }, ((_l = credentials.options) === null || _l === void 0 ? void 0 : _l.captchaToken) ? { gotrue_meta_security: { captcha_token: (_m = credentials.options) === null || _m === void 0 ? void 0 : _m.captchaToken } } : null),
-        xform: _sessionResponse
-      });
-      if (error) {
+      try {
+        const { data, error } = yield _request(this.fetch, "POST", `${this.url}/token?grant_type=web3`, {
+          headers: this.headers,
+          body: Object.assign({
+            chain: "ethereum",
+            message,
+            signature
+          }, ((_k = credentials.options) === null || _k === void 0 ? void 0 : _k.captchaToken) ? { gotrue_meta_security: { captcha_token: (_l = credentials.options) === null || _l === void 0 ? void 0 : _l.captchaToken } } : null),
+          xform: _sessionResponse
+        });
+        if (error) {
+          throw error;
+        }
+        if (!data || !data.session || !data.user) {
+          const invalidTokenError = new AuthInvalidTokenResponseError();
+          return this._returnResult({ data: { user: null, session: null }, error: invalidTokenError });
+        }
+        if (data.session) {
+          yield this._saveSession(data.session);
+          yield this._notifyAllSubscribers("SIGNED_IN", data.session);
+        }
+        return this._returnResult({ data: Object.assign({}, data), error });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
         throw error;
       }
-      if (!data || !data.session || !data.user) {
-        const invalidTokenError = new AuthInvalidTokenResponseError();
-        return this._returnResult({ data: { user: null, session: null }, error: invalidTokenError });
-      }
-      if (data.session) {
-        await this._saveSession(data.session);
-        await this._notifyAllSubscribers("SIGNED_IN", data.session);
-      }
-      return this._returnResult({ data: Object.assign({}, data), error });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      }
-      throw error;
-    }
+    });
   }
-  async _exchangeCodeForSession(authCode) {
-    const storageItem = await getItemAsync(this.storage, `${this.storageKey}-code-verifier`);
-    const [codeVerifier, redirectType] = (storageItem !== null && storageItem !== void 0 ? storageItem : "").split("/");
-    try {
-      const { data, error } = await _request(this.fetch, "POST", `${this.url}/token?grant_type=pkce`, {
-        headers: this.headers,
-        body: {
-          auth_code: authCode,
-          code_verifier: codeVerifier
-        },
-        xform: _sessionResponse
-      });
-      await removeItemAsync(this.storage, `${this.storageKey}-code-verifier`);
-      if (error) {
+  signInWithSolana(credentials) {
+    return __async(this, null, function* () {
+      var _a2, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+      let message;
+      let signature;
+      if ("message" in credentials) {
+        message = credentials.message;
+        signature = credentials.signature;
+      } else {
+        const { chain, wallet, statement, options } = credentials;
+        let resolvedWallet;
+        if (!isBrowser()) {
+          if (typeof wallet !== "object" || !(options === null || options === void 0 ? void 0 : options.url)) {
+            throw new Error("@supabase/auth-js: Both wallet and url must be specified in non-browser environments.");
+          }
+          resolvedWallet = wallet;
+        } else if (typeof wallet === "object") {
+          resolvedWallet = wallet;
+        } else {
+          const windowAny = window;
+          if ("solana" in windowAny && typeof windowAny.solana === "object" && ("signIn" in windowAny.solana && typeof windowAny.solana.signIn === "function" || "signMessage" in windowAny.solana && typeof windowAny.solana.signMessage === "function")) {
+            resolvedWallet = windowAny.solana;
+          } else {
+            throw new Error(`@supabase/auth-js: No compatible Solana wallet interface on the window object (window.solana) detected. Make sure the user already has a wallet installed and connected for this app. Prefer passing the wallet interface object directly to signInWithWeb3({ chain: 'solana', wallet: resolvedUserWallet }) instead.`);
+          }
+        }
+        const url = new URL((_a2 = options === null || options === void 0 ? void 0 : options.url) !== null && _a2 !== void 0 ? _a2 : window.location.href);
+        if ("signIn" in resolvedWallet && resolvedWallet.signIn) {
+          const output = yield resolvedWallet.signIn(Object.assign(Object.assign(Object.assign({ issuedAt: (/* @__PURE__ */ new Date()).toISOString() }, options === null || options === void 0 ? void 0 : options.signInWithSolana), {
+            // non-overridable properties
+            version: "1",
+            domain: url.host,
+            uri: url.href
+          }), statement ? { statement } : null));
+          let outputToProcess;
+          if (Array.isArray(output) && output[0] && typeof output[0] === "object") {
+            outputToProcess = output[0];
+          } else if (output && typeof output === "object" && "signedMessage" in output && "signature" in output) {
+            outputToProcess = output;
+          } else {
+            throw new Error("@supabase/auth-js: Wallet method signIn() returned unrecognized value");
+          }
+          if ("signedMessage" in outputToProcess && "signature" in outputToProcess && (typeof outputToProcess.signedMessage === "string" || outputToProcess.signedMessage instanceof Uint8Array) && outputToProcess.signature instanceof Uint8Array) {
+            message = typeof outputToProcess.signedMessage === "string" ? outputToProcess.signedMessage : new TextDecoder().decode(outputToProcess.signedMessage);
+            signature = outputToProcess.signature;
+          } else {
+            throw new Error("@supabase/auth-js: Wallet method signIn() API returned object without signedMessage and signature fields");
+          }
+        } else {
+          if (!("signMessage" in resolvedWallet) || typeof resolvedWallet.signMessage !== "function" || !("publicKey" in resolvedWallet) || typeof resolvedWallet !== "object" || !resolvedWallet.publicKey || !("toBase58" in resolvedWallet.publicKey) || typeof resolvedWallet.publicKey.toBase58 !== "function") {
+            throw new Error("@supabase/auth-js: Wallet does not have a compatible signMessage() and publicKey.toBase58() API");
+          }
+          message = [
+            `${url.host} wants you to sign in with your Solana account:`,
+            resolvedWallet.publicKey.toBase58(),
+            ...statement ? ["", statement, ""] : [""],
+            "Version: 1",
+            `URI: ${url.href}`,
+            `Issued At: ${(_c = (_b = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _b === void 0 ? void 0 : _b.issuedAt) !== null && _c !== void 0 ? _c : (/* @__PURE__ */ new Date()).toISOString()}`,
+            ...((_d = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _d === void 0 ? void 0 : _d.notBefore) ? [`Not Before: ${options.signInWithSolana.notBefore}`] : [],
+            ...((_e = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _e === void 0 ? void 0 : _e.expirationTime) ? [`Expiration Time: ${options.signInWithSolana.expirationTime}`] : [],
+            ...((_f = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _f === void 0 ? void 0 : _f.chainId) ? [`Chain ID: ${options.signInWithSolana.chainId}`] : [],
+            ...((_g = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _g === void 0 ? void 0 : _g.nonce) ? [`Nonce: ${options.signInWithSolana.nonce}`] : [],
+            ...((_h = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _h === void 0 ? void 0 : _h.requestId) ? [`Request ID: ${options.signInWithSolana.requestId}`] : [],
+            ...((_k = (_j = options === null || options === void 0 ? void 0 : options.signInWithSolana) === null || _j === void 0 ? void 0 : _j.resources) === null || _k === void 0 ? void 0 : _k.length) ? [
+              "Resources",
+              ...options.signInWithSolana.resources.map((resource) => `- ${resource}`)
+            ] : []
+          ].join("\n");
+          const maybeSignature = yield resolvedWallet.signMessage(new TextEncoder().encode(message), "utf8");
+          if (!maybeSignature || !(maybeSignature instanceof Uint8Array)) {
+            throw new Error("@supabase/auth-js: Wallet signMessage() API returned an recognized value");
+          }
+          signature = maybeSignature;
+        }
+      }
+      try {
+        const { data, error } = yield _request(this.fetch, "POST", `${this.url}/token?grant_type=web3`, {
+          headers: this.headers,
+          body: Object.assign({ chain: "solana", message, signature: bytesToBase64URL(signature) }, ((_l = credentials.options) === null || _l === void 0 ? void 0 : _l.captchaToken) ? { gotrue_meta_security: { captcha_token: (_m = credentials.options) === null || _m === void 0 ? void 0 : _m.captchaToken } } : null),
+          xform: _sessionResponse
+        });
+        if (error) {
+          throw error;
+        }
+        if (!data || !data.session || !data.user) {
+          const invalidTokenError = new AuthInvalidTokenResponseError();
+          return this._returnResult({ data: { user: null, session: null }, error: invalidTokenError });
+        }
+        if (data.session) {
+          yield this._saveSession(data.session);
+          yield this._notifyAllSubscribers("SIGNED_IN", data.session);
+        }
+        return this._returnResult({ data: Object.assign({}, data), error });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
         throw error;
       }
-      if (!data || !data.session || !data.user) {
-        const invalidTokenError = new AuthInvalidTokenResponseError();
-        return this._returnResult({
-          data: { user: null, session: null, redirectType: null },
-          error: invalidTokenError
+    });
+  }
+  _exchangeCodeForSession(authCode) {
+    return __async(this, null, function* () {
+      const storageItem = yield getItemAsync(this.storage, `${this.storageKey}-code-verifier`);
+      const [codeVerifier, redirectType] = (storageItem !== null && storageItem !== void 0 ? storageItem : "").split("/");
+      try {
+        const { data, error } = yield _request(this.fetch, "POST", `${this.url}/token?grant_type=pkce`, {
+          headers: this.headers,
+          body: {
+            auth_code: authCode,
+            code_verifier: codeVerifier
+          },
+          xform: _sessionResponse
         });
+        yield removeItemAsync(this.storage, `${this.storageKey}-code-verifier`);
+        if (error) {
+          throw error;
+        }
+        if (!data || !data.session || !data.user) {
+          const invalidTokenError = new AuthInvalidTokenResponseError();
+          return this._returnResult({
+            data: { user: null, session: null, redirectType: null },
+            error: invalidTokenError
+          });
+        }
+        if (data.session) {
+          yield this._saveSession(data.session);
+          yield this._notifyAllSubscribers("SIGNED_IN", data.session);
+        }
+        return this._returnResult({ data: Object.assign(Object.assign({}, data), { redirectType: redirectType !== null && redirectType !== void 0 ? redirectType : null }), error });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({
+            data: { user: null, session: null, redirectType: null },
+            error
+          });
+        }
+        throw error;
       }
-      if (data.session) {
-        await this._saveSession(data.session);
-        await this._notifyAllSubscribers("SIGNED_IN", data.session);
-      }
-      return this._returnResult({ data: Object.assign(Object.assign({}, data), { redirectType: redirectType !== null && redirectType !== void 0 ? redirectType : null }), error });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({
-          data: { user: null, session: null, redirectType: null },
-          error
-        });
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Allows signing in with an OIDC ID token. The authentication provider used
    * should be enabled and configured.
    */
-  async signInWithIdToken(credentials) {
-    try {
-      const { options, provider, token, access_token, nonce } = credentials;
-      const res = await _request(this.fetch, "POST", `${this.url}/token?grant_type=id_token`, {
-        headers: this.headers,
-        body: {
-          provider,
-          id_token: token,
-          access_token,
-          nonce,
-          gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
-        },
-        xform: _sessionResponse
-      });
-      const { data, error } = res;
-      if (error) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      } else if (!data || !data.session || !data.user) {
-        const invalidTokenError = new AuthInvalidTokenResponseError();
-        return this._returnResult({ data: { user: null, session: null }, error: invalidTokenError });
+  signInWithIdToken(credentials) {
+    return __async(this, null, function* () {
+      try {
+        const { options, provider, token, access_token, nonce } = credentials;
+        const res = yield _request(this.fetch, "POST", `${this.url}/token?grant_type=id_token`, {
+          headers: this.headers,
+          body: {
+            provider,
+            id_token: token,
+            access_token,
+            nonce,
+            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+          },
+          xform: _sessionResponse
+        });
+        const { data, error } = res;
+        if (error) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        } else if (!data || !data.session || !data.user) {
+          const invalidTokenError = new AuthInvalidTokenResponseError();
+          return this._returnResult({ data: { user: null, session: null }, error: invalidTokenError });
+        }
+        if (data.session) {
+          yield this._saveSession(data.session);
+          yield this._notifyAllSubscribers("SIGNED_IN", data.session);
+        }
+        return this._returnResult({ data, error });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
+        throw error;
       }
-      if (data.session) {
-        await this._saveSession(data.session);
-        await this._notifyAllSubscribers("SIGNED_IN", data.session);
-      }
-      return this._returnResult({ data, error });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Log in a user using magiclink or a one-time password (OTP).
@@ -9737,94 +9852,98 @@ var GoTrueClient = class _GoTrueClient {
    * at this time.
    * This method supports PKCE when an email is passed.
    */
-  async signInWithOtp(credentials) {
-    var _a2, _b, _c, _d, _e;
-    try {
-      if ("email" in credentials) {
-        const { email, options } = credentials;
-        let codeChallenge = null;
-        let codeChallengeMethod = null;
-        if (this.flowType === "pkce") {
-          ;
-          [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(this.storage, this.storageKey);
-        }
-        const { error } = await _request(this.fetch, "POST", `${this.url}/otp`, {
-          headers: this.headers,
-          body: {
-            email,
-            data: (_a2 = options === null || options === void 0 ? void 0 : options.data) !== null && _a2 !== void 0 ? _a2 : {},
-            create_user: (_b = options === null || options === void 0 ? void 0 : options.shouldCreateUser) !== null && _b !== void 0 ? _b : true,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken },
-            code_challenge: codeChallenge,
-            code_challenge_method: codeChallengeMethod
-          },
-          redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo
-        });
-        return this._returnResult({ data: { user: null, session: null }, error });
-      }
-      if ("phone" in credentials) {
-        const { phone, options } = credentials;
-        const { data, error } = await _request(this.fetch, "POST", `${this.url}/otp`, {
-          headers: this.headers,
-          body: {
-            phone,
-            data: (_c = options === null || options === void 0 ? void 0 : options.data) !== null && _c !== void 0 ? _c : {},
-            create_user: (_d = options === null || options === void 0 ? void 0 : options.shouldCreateUser) !== null && _d !== void 0 ? _d : true,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken },
-            channel: (_e = options === null || options === void 0 ? void 0 : options.channel) !== null && _e !== void 0 ? _e : "sms"
+  signInWithOtp(credentials) {
+    return __async(this, null, function* () {
+      var _a2, _b, _c, _d, _e;
+      try {
+        if ("email" in credentials) {
+          const { email, options } = credentials;
+          let codeChallenge = null;
+          let codeChallengeMethod = null;
+          if (this.flowType === "pkce") {
+            ;
+            [codeChallenge, codeChallengeMethod] = yield getCodeChallengeAndMethod(this.storage, this.storageKey);
           }
-        });
-        return this._returnResult({
-          data: { user: null, session: null, messageId: data === null || data === void 0 ? void 0 : data.message_id },
-          error
-        });
+          const { error } = yield _request(this.fetch, "POST", `${this.url}/otp`, {
+            headers: this.headers,
+            body: {
+              email,
+              data: (_a2 = options === null || options === void 0 ? void 0 : options.data) !== null && _a2 !== void 0 ? _a2 : {},
+              create_user: (_b = options === null || options === void 0 ? void 0 : options.shouldCreateUser) !== null && _b !== void 0 ? _b : true,
+              gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken },
+              code_challenge: codeChallenge,
+              code_challenge_method: codeChallengeMethod
+            },
+            redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo
+          });
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
+        if ("phone" in credentials) {
+          const { phone, options } = credentials;
+          const { data, error } = yield _request(this.fetch, "POST", `${this.url}/otp`, {
+            headers: this.headers,
+            body: {
+              phone,
+              data: (_c = options === null || options === void 0 ? void 0 : options.data) !== null && _c !== void 0 ? _c : {},
+              create_user: (_d = options === null || options === void 0 ? void 0 : options.shouldCreateUser) !== null && _d !== void 0 ? _d : true,
+              gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken },
+              channel: (_e = options === null || options === void 0 ? void 0 : options.channel) !== null && _e !== void 0 ? _e : "sms"
+            }
+          });
+          return this._returnResult({
+            data: { user: null, session: null, messageId: data === null || data === void 0 ? void 0 : data.message_id },
+            error
+          });
+        }
+        throw new AuthInvalidCredentialsError("You must provide either an email or phone number.");
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
+        throw error;
       }
-      throw new AuthInvalidCredentialsError("You must provide either an email or phone number.");
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Log in a user given a User supplied OTP or TokenHash received through mobile or email.
    */
-  async verifyOtp(params) {
-    var _a2, _b;
-    try {
-      let redirectTo = void 0;
-      let captchaToken = void 0;
-      if ("options" in params) {
-        redirectTo = (_a2 = params.options) === null || _a2 === void 0 ? void 0 : _a2.redirectTo;
-        captchaToken = (_b = params.options) === null || _b === void 0 ? void 0 : _b.captchaToken;
-      }
-      const { data, error } = await _request(this.fetch, "POST", `${this.url}/verify`, {
-        headers: this.headers,
-        body: Object.assign(Object.assign({}, params), { gotrue_meta_security: { captcha_token: captchaToken } }),
-        redirectTo,
-        xform: _sessionResponse
-      });
-      if (error) {
+  verifyOtp(params) {
+    return __async(this, null, function* () {
+      var _a2, _b;
+      try {
+        let redirectTo = void 0;
+        let captchaToken = void 0;
+        if ("options" in params) {
+          redirectTo = (_a2 = params.options) === null || _a2 === void 0 ? void 0 : _a2.redirectTo;
+          captchaToken = (_b = params.options) === null || _b === void 0 ? void 0 : _b.captchaToken;
+        }
+        const { data, error } = yield _request(this.fetch, "POST", `${this.url}/verify`, {
+          headers: this.headers,
+          body: Object.assign(Object.assign({}, params), { gotrue_meta_security: { captcha_token: captchaToken } }),
+          redirectTo,
+          xform: _sessionResponse
+        });
+        if (error) {
+          throw error;
+        }
+        if (!data) {
+          const tokenVerificationError = new Error("An error occurred on token verification.");
+          throw tokenVerificationError;
+        }
+        const session = data.session;
+        const user = data.user;
+        if (session === null || session === void 0 ? void 0 : session.access_token) {
+          yield this._saveSession(session);
+          yield this._notifyAllSubscribers(params.type == "recovery" ? "PASSWORD_RECOVERY" : "SIGNED_IN", session);
+        }
+        return this._returnResult({ data: { user, session }, error: null });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
         throw error;
       }
-      if (!data) {
-        const tokenVerificationError = new Error("An error occurred on token verification.");
-        throw tokenVerificationError;
-      }
-      const session = data.session;
-      const user = data.user;
-      if (session === null || session === void 0 ? void 0 : session.access_token) {
-        await this._saveSession(session);
-        await this._notifyAllSubscribers(params.type == "recovery" ? "PASSWORD_RECOVERY" : "SIGNED_IN", session);
-      }
-      return this._returnResult({ data: { user, session }, error: null });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Attempts a single-sign on using an enterprise Identity Provider. A
@@ -9840,102 +9959,110 @@ var GoTrueClient = class _GoTrueClient {
    * If you have built an organization-specific login page, you can use the
    * organization's SSO Identity Provider UUID directly instead.
    */
-  async signInWithSSO(params) {
-    var _a2, _b, _c, _d, _e;
-    try {
-      let codeChallenge = null;
-      let codeChallengeMethod = null;
-      if (this.flowType === "pkce") {
-        ;
-        [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(this.storage, this.storageKey);
+  signInWithSSO(params) {
+    return __async(this, null, function* () {
+      var _a2, _b, _c, _d, _e;
+      try {
+        let codeChallenge = null;
+        let codeChallengeMethod = null;
+        if (this.flowType === "pkce") {
+          ;
+          [codeChallenge, codeChallengeMethod] = yield getCodeChallengeAndMethod(this.storage, this.storageKey);
+        }
+        const result = yield _request(this.fetch, "POST", `${this.url}/sso`, {
+          body: Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, "providerId" in params ? { provider_id: params.providerId } : null), "domain" in params ? { domain: params.domain } : null), { redirect_to: (_b = (_a2 = params.options) === null || _a2 === void 0 ? void 0 : _a2.redirectTo) !== null && _b !== void 0 ? _b : void 0 }), ((_c = params === null || params === void 0 ? void 0 : params.options) === null || _c === void 0 ? void 0 : _c.captchaToken) ? { gotrue_meta_security: { captcha_token: params.options.captchaToken } } : null), { skip_http_redirect: true, code_challenge: codeChallenge, code_challenge_method: codeChallengeMethod }),
+          headers: this.headers,
+          xform: _ssoResponse
+        });
+        if (((_d = result.data) === null || _d === void 0 ? void 0 : _d.url) && isBrowser() && !((_e = params.options) === null || _e === void 0 ? void 0 : _e.skipBrowserRedirect)) {
+          window.location.assign(result.data.url);
+        }
+        return this._returnResult(result);
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: null, error });
+        }
+        throw error;
       }
-      const result = await _request(this.fetch, "POST", `${this.url}/sso`, {
-        body: Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, "providerId" in params ? { provider_id: params.providerId } : null), "domain" in params ? { domain: params.domain } : null), { redirect_to: (_b = (_a2 = params.options) === null || _a2 === void 0 ? void 0 : _a2.redirectTo) !== null && _b !== void 0 ? _b : void 0 }), ((_c = params === null || params === void 0 ? void 0 : params.options) === null || _c === void 0 ? void 0 : _c.captchaToken) ? { gotrue_meta_security: { captcha_token: params.options.captchaToken } } : null), { skip_http_redirect: true, code_challenge: codeChallenge, code_challenge_method: codeChallengeMethod }),
-        headers: this.headers,
-        xform: _ssoResponse
-      });
-      if (((_d = result.data) === null || _d === void 0 ? void 0 : _d.url) && isBrowser() && !((_e = params.options) === null || _e === void 0 ? void 0 : _e.skipBrowserRedirect)) {
-        window.location.assign(result.data.url);
-      }
-      return this._returnResult(result);
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Sends a reauthentication OTP to the user's email or phone number.
    * Requires the user to be signed-in.
    */
-  async reauthenticate() {
-    await this.initializePromise;
-    return await this._acquireLock(-1, async () => {
-      return await this._reauthenticate();
+  reauthenticate() {
+    return __async(this, null, function* () {
+      yield this.initializePromise;
+      return yield this._acquireLock(-1, () => __async(this, null, function* () {
+        return yield this._reauthenticate();
+      }));
     });
   }
-  async _reauthenticate() {
-    try {
-      return await this._useSession(async (result) => {
-        const { data: { session }, error: sessionError } = result;
-        if (sessionError)
-          throw sessionError;
-        if (!session)
-          throw new AuthSessionMissingError();
-        const { error } = await _request(this.fetch, "GET", `${this.url}/reauthenticate`, {
-          headers: this.headers,
-          jwt: session.access_token
-        });
-        return this._returnResult({ data: { user: null, session: null }, error });
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null, session: null }, error });
+  _reauthenticate() {
+    return __async(this, null, function* () {
+      try {
+        return yield this._useSession((result) => __async(this, null, function* () {
+          const { data: { session }, error: sessionError } = result;
+          if (sessionError)
+            throw sessionError;
+          if (!session)
+            throw new AuthSessionMissingError();
+          const { error } = yield _request(this.fetch, "GET", `${this.url}/reauthenticate`, {
+            headers: this.headers,
+            jwt: session.access_token
+          });
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }));
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Resends an existing signup confirmation email, email change email, SMS OTP or phone change OTP.
    */
-  async resend(credentials) {
-    try {
-      const endpoint = `${this.url}/resend`;
-      if ("email" in credentials) {
-        const { email, type, options } = credentials;
-        const { error } = await _request(this.fetch, "POST", endpoint, {
-          headers: this.headers,
-          body: {
-            email,
-            type,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
-          },
-          redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo
-        });
-        return this._returnResult({ data: { user: null, session: null }, error });
-      } else if ("phone" in credentials) {
-        const { phone, type, options } = credentials;
-        const { data, error } = await _request(this.fetch, "POST", endpoint, {
-          headers: this.headers,
-          body: {
-            phone,
-            type,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
-          }
-        });
-        return this._returnResult({
-          data: { user: null, session: null, messageId: data === null || data === void 0 ? void 0 : data.message_id },
-          error
-        });
+  resend(credentials) {
+    return __async(this, null, function* () {
+      try {
+        const endpoint = `${this.url}/resend`;
+        if ("email" in credentials) {
+          const { email, type, options } = credentials;
+          const { error } = yield _request(this.fetch, "POST", endpoint, {
+            headers: this.headers,
+            body: {
+              email,
+              type,
+              gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+            },
+            redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo
+          });
+          return this._returnResult({ data: { user: null, session: null }, error });
+        } else if ("phone" in credentials) {
+          const { phone, type, options } = credentials;
+          const { data, error } = yield _request(this.fetch, "POST", endpoint, {
+            headers: this.headers,
+            body: {
+              phone,
+              type,
+              gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+            }
+          });
+          return this._returnResult({
+            data: { user: null, session: null, messageId: data === null || data === void 0 ? void 0 : data.message_id },
+            error
+          });
+        }
+        throw new AuthInvalidCredentialsError("You must provide either an email or phone number and a type");
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { user: null, session: null }, error });
+        }
+        throw error;
       }
-      throw new AuthInvalidCredentialsError("You must provide either an email or phone number and a type");
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null, session: null }, error });
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Returns the session, refreshing it if necessary.
@@ -9948,61 +10075,65 @@ var GoTrueClient = class _GoTrueClient {
    * against using this method and its results in such circumstances. A warning
    * will be emitted if this is detected. Use {@link #getUser()} instead.
    */
-  async getSession() {
-    await this.initializePromise;
-    const result = await this._acquireLock(-1, async () => {
-      return this._useSession(async (result2) => {
-        return result2;
-      });
+  getSession() {
+    return __async(this, null, function* () {
+      yield this.initializePromise;
+      const result = yield this._acquireLock(-1, () => __async(this, null, function* () {
+        return this._useSession((result2) => __async(this, null, function* () {
+          return result2;
+        }));
+      }));
+      return result;
     });
-    return result;
   }
   /**
    * Acquires a global lock based on the storage key.
    */
-  async _acquireLock(acquireTimeout, fn) {
-    this._debug("#_acquireLock", "begin", acquireTimeout);
-    try {
-      if (this.lockAcquired) {
-        const last = this.pendingInLock.length ? this.pendingInLock[this.pendingInLock.length - 1] : Promise.resolve();
-        const result = (async () => {
-          await last;
-          return await fn();
-        })();
-        this.pendingInLock.push((async () => {
-          try {
-            await result;
-          } catch (e) {
-          }
-        })());
-        return result;
-      }
-      return await this.lock(`lock:${this.storageKey}`, acquireTimeout, async () => {
-        this._debug("#_acquireLock", "lock acquired for storage key", this.storageKey);
-        try {
-          this.lockAcquired = true;
-          const result = fn();
-          this.pendingInLock.push((async () => {
+  _acquireLock(acquireTimeout, fn) {
+    return __async(this, null, function* () {
+      this._debug("#_acquireLock", "begin", acquireTimeout);
+      try {
+        if (this.lockAcquired) {
+          const last = this.pendingInLock.length ? this.pendingInLock[this.pendingInLock.length - 1] : Promise.resolve();
+          const result = (() => __async(this, null, function* () {
+            yield last;
+            return yield fn();
+          }))();
+          this.pendingInLock.push((() => __async(this, null, function* () {
             try {
-              await result;
+              yield result;
             } catch (e) {
             }
-          })());
-          await result;
-          while (this.pendingInLock.length) {
-            const waitOn = [...this.pendingInLock];
-            await Promise.all(waitOn);
-            this.pendingInLock.splice(0, waitOn.length);
-          }
-          return await result;
-        } finally {
-          this._debug("#_acquireLock", "lock released for storage key", this.storageKey);
-          this.lockAcquired = false;
+          }))());
+          return result;
         }
-      });
-    } finally {
-      this._debug("#_acquireLock", "end");
-    }
+        return yield this.lock(`lock:${this.storageKey}`, acquireTimeout, () => __async(this, null, function* () {
+          this._debug("#_acquireLock", "lock acquired for storage key", this.storageKey);
+          try {
+            this.lockAcquired = true;
+            const result = fn();
+            this.pendingInLock.push((() => __async(this, null, function* () {
+              try {
+                yield result;
+              } catch (e) {
+              }
+            }))());
+            yield result;
+            while (this.pendingInLock.length) {
+              const waitOn = [...this.pendingInLock];
+              yield Promise.all(waitOn);
+              this.pendingInLock.splice(0, waitOn.length);
+            }
+            return yield result;
+          } finally {
+            this._debug("#_acquireLock", "lock released for storage key", this.storageKey);
+            this.lockAcquired = false;
+          }
+        }));
+      } finally {
+        this._debug("#_acquireLock", "end");
+      }
+    });
   }
   /**
    * Use instead of {@link #getSession} inside the library. It is
@@ -10010,68 +10141,72 @@ var GoTrueClient = class _GoTrueClient {
    * processing afterwards that requires only one client operating on the
    * session at once across multiple tabs or processes.
    */
-  async _useSession(fn) {
-    this._debug("#_useSession", "begin");
-    try {
-      const result = await this.__loadSession();
-      return await fn(result);
-    } finally {
-      this._debug("#_useSession", "end");
-    }
+  _useSession(fn) {
+    return __async(this, null, function* () {
+      this._debug("#_useSession", "begin");
+      try {
+        const result = yield this.__loadSession();
+        return yield fn(result);
+      } finally {
+        this._debug("#_useSession", "end");
+      }
+    });
   }
   /**
    * NEVER USE DIRECTLY!
    *
    * Always use {@link #_useSession}.
    */
-  async __loadSession() {
-    this._debug("#__loadSession()", "begin");
-    if (!this.lockAcquired) {
-      this._debug("#__loadSession()", "used outside of an acquired lock!", new Error().stack);
-    }
-    try {
-      let currentSession = null;
-      const maybeSession = await getItemAsync(this.storage, this.storageKey);
-      this._debug("#getSession()", "session from storage", maybeSession);
-      if (maybeSession !== null) {
-        if (this._isValidSession(maybeSession)) {
-          currentSession = maybeSession;
-        } else {
-          this._debug("#getSession()", "session from storage is not valid");
-          await this._removeSession();
-        }
+  __loadSession() {
+    return __async(this, null, function* () {
+      this._debug("#__loadSession()", "begin");
+      if (!this.lockAcquired) {
+        this._debug("#__loadSession()", "used outside of an acquired lock!", new Error().stack);
       }
-      if (!currentSession) {
-        return { data: { session: null }, error: null };
-      }
-      const hasExpired = currentSession.expires_at ? currentSession.expires_at * 1e3 - Date.now() < EXPIRY_MARGIN_MS : false;
-      this._debug("#__loadSession()", `session has${hasExpired ? "" : " not"} expired`, "expires_at", currentSession.expires_at);
-      if (!hasExpired) {
-        if (this.userStorage) {
-          const maybeUser = await getItemAsync(this.userStorage, this.storageKey + "-user");
-          if (maybeUser === null || maybeUser === void 0 ? void 0 : maybeUser.user) {
-            currentSession.user = maybeUser.user;
+      try {
+        let currentSession = null;
+        const maybeSession = yield getItemAsync(this.storage, this.storageKey);
+        this._debug("#getSession()", "session from storage", maybeSession);
+        if (maybeSession !== null) {
+          if (this._isValidSession(maybeSession)) {
+            currentSession = maybeSession;
           } else {
-            currentSession.user = userNotAvailableProxy();
+            this._debug("#getSession()", "session from storage is not valid");
+            yield this._removeSession();
           }
         }
-        if (this.storage.isServer && currentSession.user && !currentSession.user.__isUserNotAvailableProxy) {
-          const suppressWarningRef = { value: this.suppressGetSessionWarning };
-          currentSession.user = insecureUserWarningProxy(currentSession.user, suppressWarningRef);
-          if (suppressWarningRef.value) {
-            this.suppressGetSessionWarning = true;
-          }
+        if (!currentSession) {
+          return { data: { session: null }, error: null };
         }
-        return { data: { session: currentSession }, error: null };
+        const hasExpired = currentSession.expires_at ? currentSession.expires_at * 1e3 - Date.now() < EXPIRY_MARGIN_MS : false;
+        this._debug("#__loadSession()", `session has${hasExpired ? "" : " not"} expired`, "expires_at", currentSession.expires_at);
+        if (!hasExpired) {
+          if (this.userStorage) {
+            const maybeUser = yield getItemAsync(this.userStorage, this.storageKey + "-user");
+            if (maybeUser === null || maybeUser === void 0 ? void 0 : maybeUser.user) {
+              currentSession.user = maybeUser.user;
+            } else {
+              currentSession.user = userNotAvailableProxy();
+            }
+          }
+          if (this.storage.isServer && currentSession.user && !currentSession.user.__isUserNotAvailableProxy) {
+            const suppressWarningRef = { value: this.suppressGetSessionWarning };
+            currentSession.user = insecureUserWarningProxy(currentSession.user, suppressWarningRef);
+            if (suppressWarningRef.value) {
+              this.suppressGetSessionWarning = true;
+            }
+          }
+          return { data: { session: currentSession }, error: null };
+        }
+        const { data: session, error } = yield this._callRefreshToken(currentSession.refresh_token);
+        if (error) {
+          return this._returnResult({ data: { session: null }, error });
+        }
+        return this._returnResult({ data: { session }, error: null });
+      } finally {
+        this._debug("#__loadSession()", "end");
       }
-      const { data: session, error } = await this._callRefreshToken(currentSession.refresh_token);
-      if (error) {
-        return this._returnResult({ data: { session: null }, error });
-      }
-      return this._returnResult({ data: { session }, error: null });
-    } finally {
-      this._debug("#__loadSession()", "end");
-    }
+    });
   }
   /**
    * Gets the current user details if there is an existing session. This method
@@ -10080,156 +10215,168 @@ var GoTrueClient = class _GoTrueClient {
    *
    * @param jwt Takes in an optional access token JWT. If no JWT is provided, the JWT from the current session is used.
    */
-  async getUser(jwt) {
-    if (jwt) {
-      return await this._getUser(jwt);
-    }
-    await this.initializePromise;
-    const result = await this._acquireLock(-1, async () => {
-      return await this._getUser();
-    });
-    return result;
-  }
-  async _getUser(jwt) {
-    try {
+  getUser(jwt) {
+    return __async(this, null, function* () {
       if (jwt) {
-        return await _request(this.fetch, "GET", `${this.url}/user`, {
-          headers: this.headers,
-          jwt,
-          xform: _userResponse
-        });
+        return yield this._getUser(jwt);
       }
-      return await this._useSession(async (result) => {
-        var _a2, _b, _c;
-        const { data, error } = result;
-        if (error) {
-          throw error;
+      yield this.initializePromise;
+      const result = yield this._acquireLock(-1, () => __async(this, null, function* () {
+        return yield this._getUser();
+      }));
+      return result;
+    });
+  }
+  _getUser(jwt) {
+    return __async(this, null, function* () {
+      try {
+        if (jwt) {
+          return yield _request(this.fetch, "GET", `${this.url}/user`, {
+            headers: this.headers,
+            jwt,
+            xform: _userResponse
+          });
         }
-        if (!((_a2 = data.session) === null || _a2 === void 0 ? void 0 : _a2.access_token) && !this.hasCustomAuthorizationHeader) {
-          return { data: { user: null }, error: new AuthSessionMissingError() };
+        return yield this._useSession((result) => __async(this, null, function* () {
+          var _a2, _b, _c;
+          const { data, error } = result;
+          if (error) {
+            throw error;
+          }
+          if (!((_a2 = data.session) === null || _a2 === void 0 ? void 0 : _a2.access_token) && !this.hasCustomAuthorizationHeader) {
+            return { data: { user: null }, error: new AuthSessionMissingError() };
+          }
+          return yield _request(this.fetch, "GET", `${this.url}/user`, {
+            headers: this.headers,
+            jwt: (_c = (_b = data.session) === null || _b === void 0 ? void 0 : _b.access_token) !== null && _c !== void 0 ? _c : void 0,
+            xform: _userResponse
+          });
+        }));
+      } catch (error) {
+        if (isAuthError(error)) {
+          if (isAuthSessionMissingError(error)) {
+            yield this._removeSession();
+            yield removeItemAsync(this.storage, `${this.storageKey}-code-verifier`);
+          }
+          return this._returnResult({ data: { user: null }, error });
         }
-        return await _request(this.fetch, "GET", `${this.url}/user`, {
-          headers: this.headers,
-          jwt: (_c = (_b = data.session) === null || _b === void 0 ? void 0 : _b.access_token) !== null && _c !== void 0 ? _c : void 0,
-          xform: _userResponse
-        });
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        if (isAuthSessionMissingError(error)) {
-          await this._removeSession();
-          await removeItemAsync(this.storage, `${this.storageKey}-code-verifier`);
-        }
-        return this._returnResult({ data: { user: null }, error });
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Updates user data for a logged in user.
    */
-  async updateUser(attributes, options = {}) {
-    await this.initializePromise;
-    return await this._acquireLock(-1, async () => {
-      return await this._updateUser(attributes, options);
+  updateUser(_0) {
+    return __async(this, arguments, function* (attributes, options = {}) {
+      yield this.initializePromise;
+      return yield this._acquireLock(-1, () => __async(this, null, function* () {
+        return yield this._updateUser(attributes, options);
+      }));
     });
   }
-  async _updateUser(attributes, options = {}) {
-    try {
-      return await this._useSession(async (result) => {
-        const { data: sessionData, error: sessionError } = result;
-        if (sessionError) {
-          throw sessionError;
+  _updateUser(_0) {
+    return __async(this, arguments, function* (attributes, options = {}) {
+      try {
+        return yield this._useSession((result) => __async(this, null, function* () {
+          const { data: sessionData, error: sessionError } = result;
+          if (sessionError) {
+            throw sessionError;
+          }
+          if (!sessionData.session) {
+            throw new AuthSessionMissingError();
+          }
+          const session = sessionData.session;
+          let codeChallenge = null;
+          let codeChallengeMethod = null;
+          if (this.flowType === "pkce" && attributes.email != null) {
+            ;
+            [codeChallenge, codeChallengeMethod] = yield getCodeChallengeAndMethod(this.storage, this.storageKey);
+          }
+          const { data, error: userError } = yield _request(this.fetch, "PUT", `${this.url}/user`, {
+            headers: this.headers,
+            redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo,
+            body: Object.assign(Object.assign({}, attributes), { code_challenge: codeChallenge, code_challenge_method: codeChallengeMethod }),
+            jwt: session.access_token,
+            xform: _userResponse
+          });
+          if (userError) {
+            throw userError;
+          }
+          session.user = data.user;
+          yield this._saveSession(session);
+          yield this._notifyAllSubscribers("USER_UPDATED", session);
+          return this._returnResult({ data: { user: session.user }, error: null });
+        }));
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { user: null }, error });
         }
-        if (!sessionData.session) {
-          throw new AuthSessionMissingError();
-        }
-        const session = sessionData.session;
-        let codeChallenge = null;
-        let codeChallengeMethod = null;
-        if (this.flowType === "pkce" && attributes.email != null) {
-          ;
-          [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(this.storage, this.storageKey);
-        }
-        const { data, error: userError } = await _request(this.fetch, "PUT", `${this.url}/user`, {
-          headers: this.headers,
-          redirectTo: options === null || options === void 0 ? void 0 : options.emailRedirectTo,
-          body: Object.assign(Object.assign({}, attributes), { code_challenge: codeChallenge, code_challenge_method: codeChallengeMethod }),
-          jwt: session.access_token,
-          xform: _userResponse
-        });
-        if (userError) {
-          throw userError;
-        }
-        session.user = data.user;
-        await this._saveSession(session);
-        await this._notifyAllSubscribers("USER_UPDATED", session);
-        return this._returnResult({ data: { user: session.user }, error: null });
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null }, error });
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Sets the session data from the current session. If the current session is expired, setSession will take care of refreshing it to obtain a new session.
    * If the refresh token or access token in the current session is invalid, an error will be thrown.
    * @param currentSession The current session that minimally contains an access token and refresh token.
    */
-  async setSession(currentSession) {
-    await this.initializePromise;
-    return await this._acquireLock(-1, async () => {
-      return await this._setSession(currentSession);
+  setSession(currentSession) {
+    return __async(this, null, function* () {
+      yield this.initializePromise;
+      return yield this._acquireLock(-1, () => __async(this, null, function* () {
+        return yield this._setSession(currentSession);
+      }));
     });
   }
-  async _setSession(currentSession) {
-    try {
-      if (!currentSession.access_token || !currentSession.refresh_token) {
-        throw new AuthSessionMissingError();
-      }
-      const timeNow = Date.now() / 1e3;
-      let expiresAt2 = timeNow;
-      let hasExpired = true;
-      let session = null;
-      const { payload } = decodeJWT(currentSession.access_token);
-      if (payload.exp) {
-        expiresAt2 = payload.exp;
-        hasExpired = expiresAt2 <= timeNow;
-      }
-      if (hasExpired) {
-        const { data: refreshedSession, error } = await this._callRefreshToken(currentSession.refresh_token);
-        if (error) {
-          return this._returnResult({ data: { user: null, session: null }, error });
+  _setSession(currentSession) {
+    return __async(this, null, function* () {
+      try {
+        if (!currentSession.access_token || !currentSession.refresh_token) {
+          throw new AuthSessionMissingError();
         }
-        if (!refreshedSession) {
-          return { data: { user: null, session: null }, error: null };
+        const timeNow = Date.now() / 1e3;
+        let expiresAt2 = timeNow;
+        let hasExpired = true;
+        let session = null;
+        const { payload } = decodeJWT(currentSession.access_token);
+        if (payload.exp) {
+          expiresAt2 = payload.exp;
+          hasExpired = expiresAt2 <= timeNow;
         }
-        session = refreshedSession;
-      } else {
-        const { data, error } = await this._getUser(currentSession.access_token);
-        if (error) {
-          throw error;
+        if (hasExpired) {
+          const { data: refreshedSession, error } = yield this._callRefreshToken(currentSession.refresh_token);
+          if (error) {
+            return this._returnResult({ data: { user: null, session: null }, error });
+          }
+          if (!refreshedSession) {
+            return { data: { user: null, session: null }, error: null };
+          }
+          session = refreshedSession;
+        } else {
+          const { data, error } = yield this._getUser(currentSession.access_token);
+          if (error) {
+            throw error;
+          }
+          session = {
+            access_token: currentSession.access_token,
+            refresh_token: currentSession.refresh_token,
+            user: data.user,
+            token_type: "bearer",
+            expires_in: expiresAt2 - timeNow,
+            expires_at: expiresAt2
+          };
+          yield this._saveSession(session);
+          yield this._notifyAllSubscribers("SIGNED_IN", session);
         }
-        session = {
-          access_token: currentSession.access_token,
-          refresh_token: currentSession.refresh_token,
-          user: data.user,
-          token_type: "bearer",
-          expires_in: expiresAt2 - timeNow,
-          expires_at: expiresAt2
-        };
-        await this._saveSession(session);
-        await this._notifyAllSubscribers("SIGNED_IN", session);
+        return this._returnResult({ data: { user: session.user, session }, error: null });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { session: null, user: null }, error });
+        }
+        throw error;
       }
-      return this._returnResult({ data: { user: session.user, session }, error: null });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { session: null, user: null }, error });
-      }
-      throw error;
-    }
+    });
   }
   /**
    * Returns a new session, regardless of expiry status.
@@ -10237,122 +10384,128 @@ var GoTrueClient = class _GoTrueClient {
    * If the current session's refresh token is invalid, an error will be thrown.
    * @param currentSession The current session. If passed in, it must contain a refresh token.
    */
-  async refreshSession(currentSession) {
-    await this.initializePromise;
-    return await this._acquireLock(-1, async () => {
-      return await this._refreshSession(currentSession);
+  refreshSession(currentSession) {
+    return __async(this, null, function* () {
+      yield this.initializePromise;
+      return yield this._acquireLock(-1, () => __async(this, null, function* () {
+        return yield this._refreshSession(currentSession);
+      }));
     });
   }
-  async _refreshSession(currentSession) {
-    try {
-      return await this._useSession(async (result) => {
-        var _a2;
-        if (!currentSession) {
-          const { data, error: error2 } = result;
-          if (error2) {
-            throw error2;
+  _refreshSession(currentSession) {
+    return __async(this, null, function* () {
+      try {
+        return yield this._useSession((result) => __async(this, null, function* () {
+          var _a2;
+          if (!currentSession) {
+            const { data, error: error2 } = result;
+            if (error2) {
+              throw error2;
+            }
+            currentSession = (_a2 = data.session) !== null && _a2 !== void 0 ? _a2 : void 0;
           }
-          currentSession = (_a2 = data.session) !== null && _a2 !== void 0 ? _a2 : void 0;
-        }
-        if (!(currentSession === null || currentSession === void 0 ? void 0 : currentSession.refresh_token)) {
-          throw new AuthSessionMissingError();
-        }
-        const { data: session, error } = await this._callRefreshToken(currentSession.refresh_token);
-        if (error) {
+          if (!(currentSession === null || currentSession === void 0 ? void 0 : currentSession.refresh_token)) {
+            throw new AuthSessionMissingError();
+          }
+          const { data: session, error } = yield this._callRefreshToken(currentSession.refresh_token);
+          if (error) {
+            return this._returnResult({ data: { user: null, session: null }, error });
+          }
+          if (!session) {
+            return this._returnResult({ data: { user: null, session: null }, error: null });
+          }
+          return this._returnResult({ data: { user: session.user, session }, error: null });
+        }));
+      } catch (error) {
+        if (isAuthError(error)) {
           return this._returnResult({ data: { user: null, session: null }, error });
         }
-        if (!session) {
-          return this._returnResult({ data: { user: null, session: null }, error: null });
-        }
-        return this._returnResult({ data: { user: session.user, session }, error: null });
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { user: null, session: null }, error });
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Gets the session data from a URL string
    */
-  async _getSessionFromURL(params, callbackUrlType) {
-    try {
-      if (!isBrowser())
-        throw new AuthImplicitGrantRedirectError("No browser detected.");
-      if (params.error || params.error_description || params.error_code) {
-        throw new AuthImplicitGrantRedirectError(params.error_description || "Error in URL with unspecified error_description", {
-          error: params.error || "unspecified_error",
-          code: params.error_code || "unspecified_code"
-        });
-      }
-      switch (callbackUrlType) {
-        case "implicit":
-          if (this.flowType === "pkce") {
-            throw new AuthPKCEGrantCodeExchangeError("Not a valid PKCE flow url.");
-          }
-          break;
-        case "pkce":
-          if (this.flowType === "implicit") {
-            throw new AuthImplicitGrantRedirectError("Not a valid implicit grant flow url.");
-          }
-          break;
-        default:
-      }
-      if (callbackUrlType === "pkce") {
-        this._debug("#_initialize()", "begin", "is PKCE flow", true);
-        if (!params.code)
-          throw new AuthPKCEGrantCodeExchangeError("No code detected.");
-        const { data: data2, error: error2 } = await this._exchangeCodeForSession(params.code);
-        if (error2)
-          throw error2;
-        const url = new URL(window.location.href);
-        url.searchParams.delete("code");
-        window.history.replaceState(window.history.state, "", url.toString());
-        return { data: { session: data2.session, redirectType: null }, error: null };
-      }
-      const { provider_token, provider_refresh_token, access_token, refresh_token, expires_in, expires_at, token_type } = params;
-      if (!access_token || !expires_in || !refresh_token || !token_type) {
-        throw new AuthImplicitGrantRedirectError("No session defined in URL");
-      }
-      const timeNow = Math.round(Date.now() / 1e3);
-      const expiresIn = parseInt(expires_in);
-      let expiresAt2 = timeNow + expiresIn;
-      if (expires_at) {
-        expiresAt2 = parseInt(expires_at);
-      }
-      const actuallyExpiresIn = expiresAt2 - timeNow;
-      if (actuallyExpiresIn * 1e3 <= AUTO_REFRESH_TICK_DURATION_MS) {
-        console.warn(`@supabase/gotrue-js: Session as retrieved from URL expires in ${actuallyExpiresIn}s, should have been closer to ${expiresIn}s`);
-      }
-      const issuedAt = expiresAt2 - expiresIn;
-      if (timeNow - issuedAt >= 120) {
-        console.warn("@supabase/gotrue-js: Session as retrieved from URL was issued over 120s ago, URL could be stale", issuedAt, expiresAt2, timeNow);
-      } else if (timeNow - issuedAt < 0) {
-        console.warn("@supabase/gotrue-js: Session as retrieved from URL was issued in the future? Check the device clock for skew", issuedAt, expiresAt2, timeNow);
-      }
-      const { data, error } = await this._getUser(access_token);
-      if (error)
+  _getSessionFromURL(params, callbackUrlType) {
+    return __async(this, null, function* () {
+      try {
+        if (!isBrowser())
+          throw new AuthImplicitGrantRedirectError("No browser detected.");
+        if (params.error || params.error_description || params.error_code) {
+          throw new AuthImplicitGrantRedirectError(params.error_description || "Error in URL with unspecified error_description", {
+            error: params.error || "unspecified_error",
+            code: params.error_code || "unspecified_code"
+          });
+        }
+        switch (callbackUrlType) {
+          case "implicit":
+            if (this.flowType === "pkce") {
+              throw new AuthPKCEGrantCodeExchangeError("Not a valid PKCE flow url.");
+            }
+            break;
+          case "pkce":
+            if (this.flowType === "implicit") {
+              throw new AuthImplicitGrantRedirectError("Not a valid implicit grant flow url.");
+            }
+            break;
+          default:
+        }
+        if (callbackUrlType === "pkce") {
+          this._debug("#_initialize()", "begin", "is PKCE flow", true);
+          if (!params.code)
+            throw new AuthPKCEGrantCodeExchangeError("No code detected.");
+          const { data: data2, error: error2 } = yield this._exchangeCodeForSession(params.code);
+          if (error2)
+            throw error2;
+          const url = new URL(window.location.href);
+          url.searchParams.delete("code");
+          window.history.replaceState(window.history.state, "", url.toString());
+          return { data: { session: data2.session, redirectType: null }, error: null };
+        }
+        const { provider_token, provider_refresh_token, access_token, refresh_token, expires_in, expires_at, token_type } = params;
+        if (!access_token || !expires_in || !refresh_token || !token_type) {
+          throw new AuthImplicitGrantRedirectError("No session defined in URL");
+        }
+        const timeNow = Math.round(Date.now() / 1e3);
+        const expiresIn = parseInt(expires_in);
+        let expiresAt2 = timeNow + expiresIn;
+        if (expires_at) {
+          expiresAt2 = parseInt(expires_at);
+        }
+        const actuallyExpiresIn = expiresAt2 - timeNow;
+        if (actuallyExpiresIn * 1e3 <= AUTO_REFRESH_TICK_DURATION_MS) {
+          console.warn(`@supabase/gotrue-js: Session as retrieved from URL expires in ${actuallyExpiresIn}s, should have been closer to ${expiresIn}s`);
+        }
+        const issuedAt = expiresAt2 - expiresIn;
+        if (timeNow - issuedAt >= 120) {
+          console.warn("@supabase/gotrue-js: Session as retrieved from URL was issued over 120s ago, URL could be stale", issuedAt, expiresAt2, timeNow);
+        } else if (timeNow - issuedAt < 0) {
+          console.warn("@supabase/gotrue-js: Session as retrieved from URL was issued in the future? Check the device clock for skew", issuedAt, expiresAt2, timeNow);
+        }
+        const { data, error } = yield this._getUser(access_token);
+        if (error)
+          throw error;
+        const session = {
+          provider_token,
+          provider_refresh_token,
+          access_token,
+          expires_in: expiresIn,
+          expires_at: expiresAt2,
+          refresh_token,
+          token_type,
+          user: data.user
+        };
+        window.location.hash = "";
+        this._debug("#_getSessionFromURL()", "clearing window.location.hash");
+        return this._returnResult({ data: { session, redirectType: params.type }, error: null });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { session: null, redirectType: null }, error });
+        }
         throw error;
-      const session = {
-        provider_token,
-        provider_refresh_token,
-        access_token,
-        expires_in: expiresIn,
-        expires_at: expiresAt2,
-        refresh_token,
-        token_type,
-        user: data.user
-      };
-      window.location.hash = "";
-      this._debug("#_getSessionFromURL()", "clearing window.location.hash");
-      return this._returnResult({ data: { session, redirectType: params.type }, error: null });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { session: null, redirectType: null }, error });
       }
-      throw error;
-    }
+    });
   }
   /**
    * Checks if the current URL contains parameters given by an implicit oauth grant flow (https://www.rfc-editor.org/rfc/rfc6749.html#section-4.2)
@@ -10363,9 +10516,11 @@ var GoTrueClient = class _GoTrueClient {
   /**
    * Checks if the current URL and backing storage contain parameters given by a PKCE flow
    */
-  async _isPKCECallback(params) {
-    const currentStorageContent = await getItemAsync(this.storage, `${this.storageKey}-code-verifier`);
-    return !!(params.code && currentStorageContent);
+  _isPKCECallback(params) {
+    return __async(this, null, function* () {
+      const currentStorageContent = yield getItemAsync(this.storage, `${this.storageKey}-code-verifier`);
+      return !!(params.code && currentStorageContent);
+    });
   }
   /**
    * Inside a browser context, `signOut()` will remove the logged in user from the browser session and log them out - removing all items from localstorage and then trigger a `"SIGNED_OUT"` event.
@@ -10375,33 +10530,37 @@ var GoTrueClient = class _GoTrueClient {
    *
    * If using `others` scope, no `SIGNED_OUT` event is fired!
    */
-  async signOut(options = { scope: "global" }) {
-    await this.initializePromise;
-    return await this._acquireLock(-1, async () => {
-      return await this._signOut(options);
+  signOut() {
+    return __async(this, arguments, function* (options = { scope: "global" }) {
+      yield this.initializePromise;
+      return yield this._acquireLock(-1, () => __async(this, null, function* () {
+        return yield this._signOut(options);
+      }));
     });
   }
-  async _signOut({ scope } = { scope: "global" }) {
-    return await this._useSession(async (result) => {
-      var _a2;
-      const { data, error: sessionError } = result;
-      if (sessionError) {
-        return this._returnResult({ error: sessionError });
-      }
-      const accessToken = (_a2 = data.session) === null || _a2 === void 0 ? void 0 : _a2.access_token;
-      if (accessToken) {
-        const { error } = await this.admin.signOut(accessToken, scope);
-        if (error) {
-          if (!(isAuthApiError(error) && (error.status === 404 || error.status === 401 || error.status === 403))) {
-            return this._returnResult({ error });
+  _signOut() {
+    return __async(this, arguments, function* ({ scope } = { scope: "global" }) {
+      return yield this._useSession((result) => __async(this, null, function* () {
+        var _a2;
+        const { data, error: sessionError } = result;
+        if (sessionError) {
+          return this._returnResult({ error: sessionError });
+        }
+        const accessToken = (_a2 = data.session) === null || _a2 === void 0 ? void 0 : _a2.access_token;
+        if (accessToken) {
+          const { error } = yield this.admin.signOut(accessToken, scope);
+          if (error) {
+            if (!(isAuthApiError(error) && (error.status === 404 || error.status === 401 || error.status === 403))) {
+              return this._returnResult({ error });
+            }
           }
         }
-      }
-      if (scope !== "others") {
-        await this._removeSession();
-        await removeItemAsync(this.storage, `${this.storageKey}-code-verifier`);
-      }
-      return this._returnResult({ error: null });
+        if (scope !== "others") {
+          yield this._removeSession();
+          yield removeItemAsync(this.storage, `${this.storageKey}-code-verifier`);
+        }
+        return this._returnResult({ error: null });
+      }));
     });
   }
   onAuthStateChange(callback) {
@@ -10416,28 +10575,30 @@ var GoTrueClient = class _GoTrueClient {
     };
     this._debug("#onAuthStateChange()", "registered callback with id", id);
     this.stateChangeEmitters.set(id, subscription);
-    (async () => {
-      await this.initializePromise;
-      await this._acquireLock(-1, async () => {
+    (() => __async(this, null, function* () {
+      yield this.initializePromise;
+      yield this._acquireLock(-1, () => __async(this, null, function* () {
         this._emitInitialSession(id);
-      });
-    })();
+      }));
+    }))();
     return { data: { subscription } };
   }
-  async _emitInitialSession(id) {
-    return await this._useSession(async (result) => {
-      var _a2, _b;
-      try {
-        const { data: { session }, error } = result;
-        if (error)
-          throw error;
-        await ((_a2 = this.stateChangeEmitters.get(id)) === null || _a2 === void 0 ? void 0 : _a2.callback("INITIAL_SESSION", session));
-        this._debug("INITIAL_SESSION", "callback id", id, "session", session);
-      } catch (err) {
-        await ((_b = this.stateChangeEmitters.get(id)) === null || _b === void 0 ? void 0 : _b.callback("INITIAL_SESSION", null));
-        this._debug("INITIAL_SESSION", "callback id", id, "error", err);
-        console.error(err);
-      }
+  _emitInitialSession(id) {
+    return __async(this, null, function* () {
+      return yield this._useSession((result) => __async(this, null, function* () {
+        var _a2, _b;
+        try {
+          const { data: { session }, error } = result;
+          if (error)
+            throw error;
+          yield (_a2 = this.stateChangeEmitters.get(id)) === null || _a2 === void 0 ? void 0 : _a2.callback("INITIAL_SESSION", session);
+          this._debug("INITIAL_SESSION", "callback id", id, "session", session);
+        } catch (err) {
+          yield (_b = this.stateChangeEmitters.get(id)) === null || _b === void 0 ? void 0 : _b.callback("INITIAL_SESSION", null);
+          this._debug("INITIAL_SESSION", "callback id", id, "error", err);
+          console.error(err);
+        }
+      }));
     });
   }
   /**
@@ -10447,384 +10608,410 @@ var GoTrueClient = class _GoTrueClient {
    * @param options.redirectTo The URL to send the user to after they click the password reset link.
    * @param options.captchaToken Verification token received when the user completes the captcha on the site.
    */
-  async resetPasswordForEmail(email, options = {}) {
-    let codeChallenge = null;
-    let codeChallengeMethod = null;
-    if (this.flowType === "pkce") {
-      ;
-      [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(
-        this.storage,
-        this.storageKey,
-        true
-        // isPasswordRecovery
-      );
-    }
-    try {
-      return await _request(this.fetch, "POST", `${this.url}/recover`, {
-        body: {
-          email,
-          code_challenge: codeChallenge,
-          code_challenge_method: codeChallengeMethod,
-          gotrue_meta_security: { captcha_token: options.captchaToken }
-        },
-        headers: this.headers,
-        redirectTo: options.redirectTo
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
+  resetPasswordForEmail(_0) {
+    return __async(this, arguments, function* (email, options = {}) {
+      let codeChallenge = null;
+      let codeChallengeMethod = null;
+      if (this.flowType === "pkce") {
+        ;
+        [codeChallenge, codeChallengeMethod] = yield getCodeChallengeAndMethod(
+          this.storage,
+          this.storageKey,
+          true
+          // isPasswordRecovery
+        );
       }
-      throw error;
-    }
+      try {
+        return yield _request(this.fetch, "POST", `${this.url}/recover`, {
+          body: {
+            email,
+            code_challenge: codeChallenge,
+            code_challenge_method: codeChallengeMethod,
+            gotrue_meta_security: { captcha_token: options.captchaToken }
+          },
+          headers: this.headers,
+          redirectTo: options.redirectTo
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: null, error });
+        }
+        throw error;
+      }
+    });
   }
   /**
    * Gets all the identities linked to a user.
    */
-  async getUserIdentities() {
-    var _a2;
-    try {
-      const { data, error } = await this.getUser();
-      if (error)
-        throw error;
-      return this._returnResult({ data: { identities: (_a2 = data.user.identities) !== null && _a2 !== void 0 ? _a2 : [] }, error: null });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
-      }
-      throw error;
-    }
-  }
-  async linkIdentity(credentials) {
-    if ("token" in credentials) {
-      return this.linkIdentityIdToken(credentials);
-    }
-    return this.linkIdentityOAuth(credentials);
-  }
-  async linkIdentityOAuth(credentials) {
-    var _a2;
-    try {
-      const { data, error } = await this._useSession(async (result) => {
-        var _a3, _b, _c, _d, _e;
-        const { data: data2, error: error2 } = result;
-        if (error2)
-          throw error2;
-        const url = await this._getUrlForProvider(`${this.url}/user/identities/authorize`, credentials.provider, {
-          redirectTo: (_a3 = credentials.options) === null || _a3 === void 0 ? void 0 : _a3.redirectTo,
-          scopes: (_b = credentials.options) === null || _b === void 0 ? void 0 : _b.scopes,
-          queryParams: (_c = credentials.options) === null || _c === void 0 ? void 0 : _c.queryParams,
-          skipBrowserRedirect: true
-        });
-        return await _request(this.fetch, "GET", url, {
-          headers: this.headers,
-          jwt: (_e = (_d = data2.session) === null || _d === void 0 ? void 0 : _d.access_token) !== null && _e !== void 0 ? _e : void 0
-        });
-      });
-      if (error)
-        throw error;
-      if (isBrowser() && !((_a2 = credentials.options) === null || _a2 === void 0 ? void 0 : _a2.skipBrowserRedirect)) {
-        window.location.assign(data === null || data === void 0 ? void 0 : data.url);
-      }
-      return this._returnResult({
-        data: { provider: credentials.provider, url: data === null || data === void 0 ? void 0 : data.url },
-        error: null
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { provider: credentials.provider, url: null }, error });
-      }
-      throw error;
-    }
-  }
-  async linkIdentityIdToken(credentials) {
-    return await this._useSession(async (result) => {
+  getUserIdentities() {
+    return __async(this, null, function* () {
       var _a2;
       try {
-        const { error: sessionError, data: { session } } = result;
-        if (sessionError)
-          throw sessionError;
-        const { options, provider, token, access_token, nonce } = credentials;
-        const res = await _request(this.fetch, "POST", `${this.url}/token?grant_type=id_token`, {
-          headers: this.headers,
-          jwt: (_a2 = session === null || session === void 0 ? void 0 : session.access_token) !== null && _a2 !== void 0 ? _a2 : void 0,
-          body: {
-            provider,
-            id_token: token,
-            access_token,
-            nonce,
-            link_identity: true,
-            gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
-          },
-          xform: _sessionResponse
-        });
-        const { data, error } = res;
-        if (error) {
-          return this._returnResult({ data: { user: null, session: null }, error });
-        } else if (!data || !data.session || !data.user) {
-          return this._returnResult({
-            data: { user: null, session: null },
-            error: new AuthInvalidTokenResponseError()
-          });
-        }
-        if (data.session) {
-          await this._saveSession(data.session);
-          await this._notifyAllSubscribers("USER_UPDATED", data.session);
-        }
-        return this._returnResult({ data, error });
+        const { data, error } = yield this.getUser();
+        if (error)
+          throw error;
+        return this._returnResult({ data: { identities: (_a2 = data.user.identities) !== null && _a2 !== void 0 ? _a2 : [] }, error: null });
       } catch (error) {
         if (isAuthError(error)) {
-          return this._returnResult({ data: { user: null, session: null }, error });
+          return this._returnResult({ data: null, error });
         }
         throw error;
       }
+    });
+  }
+  linkIdentity(credentials) {
+    return __async(this, null, function* () {
+      if ("token" in credentials) {
+        return this.linkIdentityIdToken(credentials);
+      }
+      return this.linkIdentityOAuth(credentials);
+    });
+  }
+  linkIdentityOAuth(credentials) {
+    return __async(this, null, function* () {
+      var _a2;
+      try {
+        const { data, error } = yield this._useSession((result) => __async(this, null, function* () {
+          var _a3, _b, _c, _d, _e;
+          const { data: data2, error: error2 } = result;
+          if (error2)
+            throw error2;
+          const url = yield this._getUrlForProvider(`${this.url}/user/identities/authorize`, credentials.provider, {
+            redirectTo: (_a3 = credentials.options) === null || _a3 === void 0 ? void 0 : _a3.redirectTo,
+            scopes: (_b = credentials.options) === null || _b === void 0 ? void 0 : _b.scopes,
+            queryParams: (_c = credentials.options) === null || _c === void 0 ? void 0 : _c.queryParams,
+            skipBrowserRedirect: true
+          });
+          return yield _request(this.fetch, "GET", url, {
+            headers: this.headers,
+            jwt: (_e = (_d = data2.session) === null || _d === void 0 ? void 0 : _d.access_token) !== null && _e !== void 0 ? _e : void 0
+          });
+        }));
+        if (error)
+          throw error;
+        if (isBrowser() && !((_a2 = credentials.options) === null || _a2 === void 0 ? void 0 : _a2.skipBrowserRedirect)) {
+          window.location.assign(data === null || data === void 0 ? void 0 : data.url);
+        }
+        return this._returnResult({
+          data: { provider: credentials.provider, url: data === null || data === void 0 ? void 0 : data.url },
+          error: null
+        });
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { provider: credentials.provider, url: null }, error });
+        }
+        throw error;
+      }
+    });
+  }
+  linkIdentityIdToken(credentials) {
+    return __async(this, null, function* () {
+      return yield this._useSession((result) => __async(this, null, function* () {
+        var _a2;
+        try {
+          const { error: sessionError, data: { session } } = result;
+          if (sessionError)
+            throw sessionError;
+          const { options, provider, token, access_token, nonce } = credentials;
+          const res = yield _request(this.fetch, "POST", `${this.url}/token?grant_type=id_token`, {
+            headers: this.headers,
+            jwt: (_a2 = session === null || session === void 0 ? void 0 : session.access_token) !== null && _a2 !== void 0 ? _a2 : void 0,
+            body: {
+              provider,
+              id_token: token,
+              access_token,
+              nonce,
+              link_identity: true,
+              gotrue_meta_security: { captcha_token: options === null || options === void 0 ? void 0 : options.captchaToken }
+            },
+            xform: _sessionResponse
+          });
+          const { data, error } = res;
+          if (error) {
+            return this._returnResult({ data: { user: null, session: null }, error });
+          } else if (!data || !data.session || !data.user) {
+            return this._returnResult({
+              data: { user: null, session: null },
+              error: new AuthInvalidTokenResponseError()
+            });
+          }
+          if (data.session) {
+            yield this._saveSession(data.session);
+            yield this._notifyAllSubscribers("USER_UPDATED", data.session);
+          }
+          return this._returnResult({ data, error });
+        } catch (error) {
+          if (isAuthError(error)) {
+            return this._returnResult({ data: { user: null, session: null }, error });
+          }
+          throw error;
+        }
+      }));
     });
   }
   /**
    * Unlinks an identity from a user by deleting it. The user will no longer be able to sign in with that identity once it's unlinked.
    */
-  async unlinkIdentity(identity) {
-    try {
-      return await this._useSession(async (result) => {
-        var _a2, _b;
-        const { data, error } = result;
-        if (error) {
-          throw error;
+  unlinkIdentity(identity) {
+    return __async(this, null, function* () {
+      try {
+        return yield this._useSession((result) => __async(this, null, function* () {
+          var _a2, _b;
+          const { data, error } = result;
+          if (error) {
+            throw error;
+          }
+          return yield _request(this.fetch, "DELETE", `${this.url}/user/identities/${identity.identity_id}`, {
+            headers: this.headers,
+            jwt: (_b = (_a2 = data.session) === null || _a2 === void 0 ? void 0 : _a2.access_token) !== null && _b !== void 0 ? _b : void 0
+          });
+        }));
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: null, error });
         }
-        return await _request(this.fetch, "DELETE", `${this.url}/user/identities/${identity.identity_id}`, {
-          headers: this.headers,
-          jwt: (_b = (_a2 = data.session) === null || _a2 === void 0 ? void 0 : _a2.access_token) !== null && _b !== void 0 ? _b : void 0
-        });
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Generates a new JWT.
    * @param refreshToken A valid refresh token that was returned on login.
    */
-  async _refreshAccessToken(refreshToken) {
-    const debugName = `#_refreshAccessToken(${refreshToken.substring(0, 5)}...)`;
-    this._debug(debugName, "begin");
-    try {
-      const startedAt = Date.now();
-      return await retryable(async (attempt) => {
-        if (attempt > 0) {
-          await sleep(200 * Math.pow(2, attempt - 1));
-        }
-        this._debug(debugName, "refreshing attempt", attempt);
-        return await _request(this.fetch, "POST", `${this.url}/token?grant_type=refresh_token`, {
-          body: { refresh_token: refreshToken },
-          headers: this.headers,
-          xform: _sessionResponse
+  _refreshAccessToken(refreshToken) {
+    return __async(this, null, function* () {
+      const debugName = `#_refreshAccessToken(${refreshToken.substring(0, 5)}...)`;
+      this._debug(debugName, "begin");
+      try {
+        const startedAt = Date.now();
+        return yield retryable((attempt) => __async(this, null, function* () {
+          if (attempt > 0) {
+            yield sleep(200 * Math.pow(2, attempt - 1));
+          }
+          this._debug(debugName, "refreshing attempt", attempt);
+          return yield _request(this.fetch, "POST", `${this.url}/token?grant_type=refresh_token`, {
+            body: { refresh_token: refreshToken },
+            headers: this.headers,
+            xform: _sessionResponse
+          });
+        }), (attempt, error) => {
+          const nextBackOffInterval = 200 * Math.pow(2, attempt);
+          return error && isAuthRetryableFetchError(error) && // retryable only if the request can be sent before the backoff overflows the tick duration
+          Date.now() + nextBackOffInterval - startedAt < AUTO_REFRESH_TICK_DURATION_MS;
         });
-      }, (attempt, error) => {
-        const nextBackOffInterval = 200 * Math.pow(2, attempt);
-        return error && isAuthRetryableFetchError(error) && // retryable only if the request can be sent before the backoff overflows the tick duration
-        Date.now() + nextBackOffInterval - startedAt < AUTO_REFRESH_TICK_DURATION_MS;
-      });
-    } catch (error) {
-      this._debug(debugName, "error", error);
-      if (isAuthError(error)) {
-        return this._returnResult({ data: { session: null, user: null }, error });
+      } catch (error) {
+        this._debug(debugName, "error", error);
+        if (isAuthError(error)) {
+          return this._returnResult({ data: { session: null, user: null }, error });
+        }
+        throw error;
+      } finally {
+        this._debug(debugName, "end");
       }
-      throw error;
-    } finally {
-      this._debug(debugName, "end");
-    }
+    });
   }
   _isValidSession(maybeSession) {
     const isValidSession = typeof maybeSession === "object" && maybeSession !== null && "access_token" in maybeSession && "refresh_token" in maybeSession && "expires_at" in maybeSession;
     return isValidSession;
   }
-  async _handleProviderSignIn(provider, options) {
-    const url = await this._getUrlForProvider(`${this.url}/authorize`, provider, {
-      redirectTo: options.redirectTo,
-      scopes: options.scopes,
-      queryParams: options.queryParams
+  _handleProviderSignIn(provider, options) {
+    return __async(this, null, function* () {
+      const url = yield this._getUrlForProvider(`${this.url}/authorize`, provider, {
+        redirectTo: options.redirectTo,
+        scopes: options.scopes,
+        queryParams: options.queryParams
+      });
+      this._debug("#_handleProviderSignIn()", "provider", provider, "options", options, "url", url);
+      if (isBrowser() && !options.skipBrowserRedirect) {
+        window.location.assign(url);
+      }
+      return { data: { provider, url }, error: null };
     });
-    this._debug("#_handleProviderSignIn()", "provider", provider, "options", options, "url", url);
-    if (isBrowser() && !options.skipBrowserRedirect) {
-      window.location.assign(url);
-    }
-    return { data: { provider, url }, error: null };
   }
   /**
    * Recovers the session from LocalStorage and refreshes the token
    * Note: this method is async to accommodate for AsyncStorage e.g. in React native.
    */
-  async _recoverAndRefresh() {
-    var _a2, _b;
-    const debugName = "#_recoverAndRefresh()";
-    this._debug(debugName, "begin");
-    try {
-      const currentSession = await getItemAsync(this.storage, this.storageKey);
-      if (currentSession && this.userStorage) {
-        let maybeUser = await getItemAsync(this.userStorage, this.storageKey + "-user");
-        if (!this.storage.isServer && Object.is(this.storage, this.userStorage) && !maybeUser) {
-          maybeUser = { user: currentSession.user };
-          await setItemAsync(this.userStorage, this.storageKey + "-user", maybeUser);
-        }
-        currentSession.user = (_a2 = maybeUser === null || maybeUser === void 0 ? void 0 : maybeUser.user) !== null && _a2 !== void 0 ? _a2 : userNotAvailableProxy();
-      } else if (currentSession && !currentSession.user) {
-        if (!currentSession.user) {
-          const separateUser = await getItemAsync(this.storage, this.storageKey + "-user");
-          if (separateUser && (separateUser === null || separateUser === void 0 ? void 0 : separateUser.user)) {
-            currentSession.user = separateUser.user;
-            await removeItemAsync(this.storage, this.storageKey + "-user");
-            await setItemAsync(this.storage, this.storageKey, currentSession);
-          } else {
-            currentSession.user = userNotAvailableProxy();
+  _recoverAndRefresh() {
+    return __async(this, null, function* () {
+      var _a2, _b;
+      const debugName = "#_recoverAndRefresh()";
+      this._debug(debugName, "begin");
+      try {
+        const currentSession = yield getItemAsync(this.storage, this.storageKey);
+        if (currentSession && this.userStorage) {
+          let maybeUser = yield getItemAsync(this.userStorage, this.storageKey + "-user");
+          if (!this.storage.isServer && Object.is(this.storage, this.userStorage) && !maybeUser) {
+            maybeUser = { user: currentSession.user };
+            yield setItemAsync(this.userStorage, this.storageKey + "-user", maybeUser);
           }
-        }
-      }
-      this._debug(debugName, "session from storage", currentSession);
-      if (!this._isValidSession(currentSession)) {
-        this._debug(debugName, "session is not valid");
-        if (currentSession !== null) {
-          await this._removeSession();
-        }
-        return;
-      }
-      const expiresWithMargin = ((_b = currentSession.expires_at) !== null && _b !== void 0 ? _b : Infinity) * 1e3 - Date.now() < EXPIRY_MARGIN_MS;
-      this._debug(debugName, `session has${expiresWithMargin ? "" : " not"} expired with margin of ${EXPIRY_MARGIN_MS}s`);
-      if (expiresWithMargin) {
-        if (this.autoRefreshToken && currentSession.refresh_token) {
-          const { error } = await this._callRefreshToken(currentSession.refresh_token);
-          if (error) {
-            console.error(error);
-            if (!isAuthRetryableFetchError(error)) {
-              this._debug(debugName, "refresh failed with a non-retryable error, removing the session", error);
-              await this._removeSession();
+          currentSession.user = (_a2 = maybeUser === null || maybeUser === void 0 ? void 0 : maybeUser.user) !== null && _a2 !== void 0 ? _a2 : userNotAvailableProxy();
+        } else if (currentSession && !currentSession.user) {
+          if (!currentSession.user) {
+            const separateUser = yield getItemAsync(this.storage, this.storageKey + "-user");
+            if (separateUser && (separateUser === null || separateUser === void 0 ? void 0 : separateUser.user)) {
+              currentSession.user = separateUser.user;
+              yield removeItemAsync(this.storage, this.storageKey + "-user");
+              yield setItemAsync(this.storage, this.storageKey, currentSession);
+            } else {
+              currentSession.user = userNotAvailableProxy();
             }
           }
         }
-      } else if (currentSession.user && currentSession.user.__isUserNotAvailableProxy === true) {
-        try {
-          const { data, error: userError } = await this._getUser(currentSession.access_token);
-          if (!userError && (data === null || data === void 0 ? void 0 : data.user)) {
-            currentSession.user = data.user;
-            await this._saveSession(currentSession);
-            await this._notifyAllSubscribers("SIGNED_IN", currentSession);
-          } else {
-            this._debug(debugName, "could not get user data, skipping SIGNED_IN notification");
+        this._debug(debugName, "session from storage", currentSession);
+        if (!this._isValidSession(currentSession)) {
+          this._debug(debugName, "session is not valid");
+          if (currentSession !== null) {
+            yield this._removeSession();
           }
-        } catch (getUserError) {
-          console.error("Error getting user data:", getUserError);
-          this._debug(debugName, "error getting user data, skipping SIGNED_IN notification", getUserError);
+          return;
         }
-      } else {
-        await this._notifyAllSubscribers("SIGNED_IN", currentSession);
+        const expiresWithMargin = ((_b = currentSession.expires_at) !== null && _b !== void 0 ? _b : Infinity) * 1e3 - Date.now() < EXPIRY_MARGIN_MS;
+        this._debug(debugName, `session has${expiresWithMargin ? "" : " not"} expired with margin of ${EXPIRY_MARGIN_MS}s`);
+        if (expiresWithMargin) {
+          if (this.autoRefreshToken && currentSession.refresh_token) {
+            const { error } = yield this._callRefreshToken(currentSession.refresh_token);
+            if (error) {
+              console.error(error);
+              if (!isAuthRetryableFetchError(error)) {
+                this._debug(debugName, "refresh failed with a non-retryable error, removing the session", error);
+                yield this._removeSession();
+              }
+            }
+          }
+        } else if (currentSession.user && currentSession.user.__isUserNotAvailableProxy === true) {
+          try {
+            const { data, error: userError } = yield this._getUser(currentSession.access_token);
+            if (!userError && (data === null || data === void 0 ? void 0 : data.user)) {
+              currentSession.user = data.user;
+              yield this._saveSession(currentSession);
+              yield this._notifyAllSubscribers("SIGNED_IN", currentSession);
+            } else {
+              this._debug(debugName, "could not get user data, skipping SIGNED_IN notification");
+            }
+          } catch (getUserError) {
+            console.error("Error getting user data:", getUserError);
+            this._debug(debugName, "error getting user data, skipping SIGNED_IN notification", getUserError);
+          }
+        } else {
+          yield this._notifyAllSubscribers("SIGNED_IN", currentSession);
+        }
+      } catch (err) {
+        this._debug(debugName, "error", err);
+        console.error(err);
+        return;
+      } finally {
+        this._debug(debugName, "end");
       }
-    } catch (err) {
-      this._debug(debugName, "error", err);
-      console.error(err);
-      return;
-    } finally {
-      this._debug(debugName, "end");
-    }
+    });
   }
-  async _callRefreshToken(refreshToken) {
-    var _a2, _b;
-    if (!refreshToken) {
-      throw new AuthSessionMissingError();
-    }
-    if (this.refreshingDeferred) {
-      return this.refreshingDeferred.promise;
-    }
-    const debugName = `#_callRefreshToken(${refreshToken.substring(0, 5)}...)`;
-    this._debug(debugName, "begin");
-    try {
-      this.refreshingDeferred = new Deferred();
-      const { data, error } = await this._refreshAccessToken(refreshToken);
-      if (error)
-        throw error;
-      if (!data.session)
+  _callRefreshToken(refreshToken) {
+    return __async(this, null, function* () {
+      var _a2, _b;
+      if (!refreshToken) {
         throw new AuthSessionMissingError();
-      await this._saveSession(data.session);
-      await this._notifyAllSubscribers("TOKEN_REFRESHED", data.session);
-      const result = { data: data.session, error: null };
-      this.refreshingDeferred.resolve(result);
-      return result;
-    } catch (error) {
-      this._debug(debugName, "error", error);
-      if (isAuthError(error)) {
-        const result = { data: null, error };
-        if (!isAuthRetryableFetchError(error)) {
-          await this._removeSession();
-        }
-        (_a2 = this.refreshingDeferred) === null || _a2 === void 0 ? void 0 : _a2.resolve(result);
+      }
+      if (this.refreshingDeferred) {
+        return this.refreshingDeferred.promise;
+      }
+      const debugName = `#_callRefreshToken(${refreshToken.substring(0, 5)}...)`;
+      this._debug(debugName, "begin");
+      try {
+        this.refreshingDeferred = new Deferred();
+        const { data, error } = yield this._refreshAccessToken(refreshToken);
+        if (error)
+          throw error;
+        if (!data.session)
+          throw new AuthSessionMissingError();
+        yield this._saveSession(data.session);
+        yield this._notifyAllSubscribers("TOKEN_REFRESHED", data.session);
+        const result = { data: data.session, error: null };
+        this.refreshingDeferred.resolve(result);
         return result;
+      } catch (error) {
+        this._debug(debugName, "error", error);
+        if (isAuthError(error)) {
+          const result = { data: null, error };
+          if (!isAuthRetryableFetchError(error)) {
+            yield this._removeSession();
+          }
+          (_a2 = this.refreshingDeferred) === null || _a2 === void 0 ? void 0 : _a2.resolve(result);
+          return result;
+        }
+        (_b = this.refreshingDeferred) === null || _b === void 0 ? void 0 : _b.reject(error);
+        throw error;
+      } finally {
+        this.refreshingDeferred = null;
+        this._debug(debugName, "end");
       }
-      (_b = this.refreshingDeferred) === null || _b === void 0 ? void 0 : _b.reject(error);
-      throw error;
-    } finally {
-      this.refreshingDeferred = null;
-      this._debug(debugName, "end");
-    }
+    });
   }
-  async _notifyAllSubscribers(event, session, broadcast = true) {
-    const debugName = `#_notifyAllSubscribers(${event})`;
-    this._debug(debugName, "begin", session, `broadcast = ${broadcast}`);
-    try {
-      if (this.broadcastChannel && broadcast) {
-        this.broadcastChannel.postMessage({ event, session });
-      }
-      const errors = [];
-      const promises = Array.from(this.stateChangeEmitters.values()).map(async (x) => {
-        try {
-          await x.callback(event, session);
-        } catch (e) {
-          errors.push(e);
+  _notifyAllSubscribers(event, session, broadcast = true) {
+    return __async(this, null, function* () {
+      const debugName = `#_notifyAllSubscribers(${event})`;
+      this._debug(debugName, "begin", session, `broadcast = ${broadcast}`);
+      try {
+        if (this.broadcastChannel && broadcast) {
+          this.broadcastChannel.postMessage({ event, session });
         }
-      });
-      await Promise.all(promises);
-      if (errors.length > 0) {
-        for (let i = 0; i < errors.length; i += 1) {
-          console.error(errors[i]);
+        const errors = [];
+        const promises = Array.from(this.stateChangeEmitters.values()).map((x) => __async(this, null, function* () {
+          try {
+            yield x.callback(event, session);
+          } catch (e) {
+            errors.push(e);
+          }
+        }));
+        yield Promise.all(promises);
+        if (errors.length > 0) {
+          for (let i = 0; i < errors.length; i += 1) {
+            console.error(errors[i]);
+          }
+          throw errors[0];
         }
-        throw errors[0];
+      } finally {
+        this._debug(debugName, "end");
       }
-    } finally {
-      this._debug(debugName, "end");
-    }
+    });
   }
   /**
    * set currentSession and currentUser
    * process to _startAutoRefreshToken if possible
    */
-  async _saveSession(session) {
-    this._debug("#_saveSession()", session);
-    this.suppressGetSessionWarning = true;
-    const sessionToProcess = Object.assign({}, session);
-    const userIsProxy = sessionToProcess.user && sessionToProcess.user.__isUserNotAvailableProxy === true;
-    if (this.userStorage) {
-      if (!userIsProxy && sessionToProcess.user) {
-        await setItemAsync(this.userStorage, this.storageKey + "-user", {
-          user: sessionToProcess.user
-        });
-      } else if (userIsProxy) {
+  _saveSession(session) {
+    return __async(this, null, function* () {
+      this._debug("#_saveSession()", session);
+      this.suppressGetSessionWarning = true;
+      const sessionToProcess = Object.assign({}, session);
+      const userIsProxy = sessionToProcess.user && sessionToProcess.user.__isUserNotAvailableProxy === true;
+      if (this.userStorage) {
+        if (!userIsProxy && sessionToProcess.user) {
+          yield setItemAsync(this.userStorage, this.storageKey + "-user", {
+            user: sessionToProcess.user
+          });
+        } else if (userIsProxy) {
+        }
+        const mainSessionData = Object.assign({}, sessionToProcess);
+        delete mainSessionData.user;
+        const clonedMainSessionData = deepClone(mainSessionData);
+        yield setItemAsync(this.storage, this.storageKey, clonedMainSessionData);
+      } else {
+        const clonedSession = deepClone(sessionToProcess);
+        yield setItemAsync(this.storage, this.storageKey, clonedSession);
       }
-      const mainSessionData = Object.assign({}, sessionToProcess);
-      delete mainSessionData.user;
-      const clonedMainSessionData = deepClone(mainSessionData);
-      await setItemAsync(this.storage, this.storageKey, clonedMainSessionData);
-    } else {
-      const clonedSession = deepClone(sessionToProcess);
-      await setItemAsync(this.storage, this.storageKey, clonedSession);
-    }
+    });
   }
-  async _removeSession() {
-    this._debug("#_removeSession()");
-    await removeItemAsync(this.storage, this.storageKey);
-    await removeItemAsync(this.storage, this.storageKey + "-code-verifier");
-    await removeItemAsync(this.storage, this.storageKey + "-user");
-    if (this.userStorage) {
-      await removeItemAsync(this.userStorage, this.storageKey + "-user");
-    }
-    await this._notifyAllSubscribers("SIGNED_OUT", null);
+  _removeSession() {
+    return __async(this, null, function* () {
+      this._debug("#_removeSession()");
+      yield removeItemAsync(this.storage, this.storageKey);
+      yield removeItemAsync(this.storage, this.storageKey + "-code-verifier");
+      yield removeItemAsync(this.storage, this.storageKey + "-user");
+      if (this.userStorage) {
+        yield removeItemAsync(this.userStorage, this.storageKey + "-user");
+      }
+      yield this._notifyAllSubscribers("SIGNED_OUT", null);
+    });
   }
   /**
    * Removes any registered visibilitychange callback.
@@ -10848,32 +11035,36 @@ var GoTrueClient = class _GoTrueClient {
    * This is the private implementation of {@link #startAutoRefresh}. Use this
    * within the library.
    */
-  async _startAutoRefresh() {
-    await this._stopAutoRefresh();
-    this._debug("#_startAutoRefresh()");
-    const ticker = setInterval(() => this._autoRefreshTokenTick(), AUTO_REFRESH_TICK_DURATION_MS);
-    this.autoRefreshTicker = ticker;
-    if (ticker && typeof ticker === "object" && typeof ticker.unref === "function") {
-      ticker.unref();
-    } else if (typeof Deno !== "undefined" && typeof Deno.unrefTimer === "function") {
-      Deno.unrefTimer(ticker);
-    }
-    setTimeout(async () => {
-      await this.initializePromise;
-      await this._autoRefreshTokenTick();
-    }, 0);
+  _startAutoRefresh() {
+    return __async(this, null, function* () {
+      yield this._stopAutoRefresh();
+      this._debug("#_startAutoRefresh()");
+      const ticker = setInterval(() => this._autoRefreshTokenTick(), AUTO_REFRESH_TICK_DURATION_MS);
+      this.autoRefreshTicker = ticker;
+      if (ticker && typeof ticker === "object" && typeof ticker.unref === "function") {
+        ticker.unref();
+      } else if (typeof Deno !== "undefined" && typeof Deno.unrefTimer === "function") {
+        Deno.unrefTimer(ticker);
+      }
+      setTimeout(() => __async(this, null, function* () {
+        yield this.initializePromise;
+        yield this._autoRefreshTokenTick();
+      }), 0);
+    });
   }
   /**
    * This is the private implementation of {@link #stopAutoRefresh}. Use this
    * within the library.
    */
-  async _stopAutoRefresh() {
-    this._debug("#_stopAutoRefresh()");
-    const ticker = this.autoRefreshTicker;
-    this.autoRefreshTicker = null;
-    if (ticker) {
-      clearInterval(ticker);
-    }
+  _stopAutoRefresh() {
+    return __async(this, null, function* () {
+      this._debug("#_stopAutoRefresh()");
+      const ticker = this.autoRefreshTicker;
+      this.autoRefreshTicker = null;
+      if (ticker) {
+        clearInterval(ticker);
+      }
+    });
   }
   /**
    * Starts an auto-refresh process in the background. The session is checked
@@ -10897,9 +11088,11 @@ var GoTrueClient = class _GoTrueClient {
    *
    * {@see #stopAutoRefresh}
    */
-  async startAutoRefresh() {
-    this._removeVisibilityChangedCallback();
-    await this._startAutoRefresh();
+  startAutoRefresh() {
+    return __async(this, null, function* () {
+      this._removeVisibilityChangedCallback();
+      yield this._startAutoRefresh();
+    });
   }
   /**
    * Stops an active auto refresh process running in the background (if any).
@@ -10909,93 +11102,103 @@ var GoTrueClient = class _GoTrueClient {
    *
    * See {@link #startAutoRefresh} for more details.
    */
-  async stopAutoRefresh() {
-    this._removeVisibilityChangedCallback();
-    await this._stopAutoRefresh();
+  stopAutoRefresh() {
+    return __async(this, null, function* () {
+      this._removeVisibilityChangedCallback();
+      yield this._stopAutoRefresh();
+    });
   }
   /**
    * Runs the auto refresh token tick.
    */
-  async _autoRefreshTokenTick() {
-    this._debug("#_autoRefreshTokenTick()", "begin");
-    try {
-      await this._acquireLock(0, async () => {
-        try {
-          const now = Date.now();
+  _autoRefreshTokenTick() {
+    return __async(this, null, function* () {
+      this._debug("#_autoRefreshTokenTick()", "begin");
+      try {
+        yield this._acquireLock(0, () => __async(this, null, function* () {
           try {
-            return await this._useSession(async (result) => {
-              const { data: { session } } = result;
-              if (!session || !session.refresh_token || !session.expires_at) {
-                this._debug("#_autoRefreshTokenTick()", "no session");
-                return;
-              }
-              const expiresInTicks = Math.floor((session.expires_at * 1e3 - now) / AUTO_REFRESH_TICK_DURATION_MS);
-              this._debug("#_autoRefreshTokenTick()", `access token expires in ${expiresInTicks} ticks, a tick lasts ${AUTO_REFRESH_TICK_DURATION_MS}ms, refresh threshold is ${AUTO_REFRESH_TICK_THRESHOLD} ticks`);
-              if (expiresInTicks <= AUTO_REFRESH_TICK_THRESHOLD) {
-                await this._callRefreshToken(session.refresh_token);
-              }
-            });
-          } catch (e) {
-            console.error("Auto refresh tick failed with error. This is likely a transient error.", e);
+            const now = Date.now();
+            try {
+              return yield this._useSession((result) => __async(this, null, function* () {
+                const { data: { session } } = result;
+                if (!session || !session.refresh_token || !session.expires_at) {
+                  this._debug("#_autoRefreshTokenTick()", "no session");
+                  return;
+                }
+                const expiresInTicks = Math.floor((session.expires_at * 1e3 - now) / AUTO_REFRESH_TICK_DURATION_MS);
+                this._debug("#_autoRefreshTokenTick()", `access token expires in ${expiresInTicks} ticks, a tick lasts ${AUTO_REFRESH_TICK_DURATION_MS}ms, refresh threshold is ${AUTO_REFRESH_TICK_THRESHOLD} ticks`);
+                if (expiresInTicks <= AUTO_REFRESH_TICK_THRESHOLD) {
+                  yield this._callRefreshToken(session.refresh_token);
+                }
+              }));
+            } catch (e) {
+              console.error("Auto refresh tick failed with error. This is likely a transient error.", e);
+            }
+          } finally {
+            this._debug("#_autoRefreshTokenTick()", "end");
           }
-        } finally {
-          this._debug("#_autoRefreshTokenTick()", "end");
+        }));
+      } catch (e) {
+        if (e.isAcquireTimeout || e instanceof LockAcquireTimeoutError) {
+          this._debug("auto refresh token tick lock not available");
+        } else {
+          throw e;
         }
-      });
-    } catch (e) {
-      if (e.isAcquireTimeout || e instanceof LockAcquireTimeoutError) {
-        this._debug("auto refresh token tick lock not available");
-      } else {
-        throw e;
       }
-    }
+    });
   }
   /**
    * Registers callbacks on the browser / platform, which in-turn run
    * algorithms when the browser window/tab are in foreground. On non-browser
    * platforms it assumes always foreground.
    */
-  async _handleVisibilityChange() {
-    this._debug("#_handleVisibilityChange()");
-    if (!isBrowser() || !(window === null || window === void 0 ? void 0 : window.addEventListener)) {
-      if (this.autoRefreshToken) {
-        this.startAutoRefresh();
+  _handleVisibilityChange() {
+    return __async(this, null, function* () {
+      this._debug("#_handleVisibilityChange()");
+      if (!isBrowser() || !(window === null || window === void 0 ? void 0 : window.addEventListener)) {
+        if (this.autoRefreshToken) {
+          this.startAutoRefresh();
+        }
+        return false;
       }
-      return false;
-    }
-    try {
-      this.visibilityChangedCallback = async () => await this._onVisibilityChanged(false);
-      window === null || window === void 0 ? void 0 : window.addEventListener("visibilitychange", this.visibilityChangedCallback);
-      await this._onVisibilityChanged(true);
-    } catch (error) {
-      console.error("_handleVisibilityChange", error);
-    }
+      try {
+        this.visibilityChangedCallback = () => __async(this, null, function* () {
+          return yield this._onVisibilityChanged(false);
+        });
+        window === null || window === void 0 ? void 0 : window.addEventListener("visibilitychange", this.visibilityChangedCallback);
+        yield this._onVisibilityChanged(true);
+      } catch (error) {
+        console.error("_handleVisibilityChange", error);
+      }
+    });
   }
   /**
    * Callback registered with `window.addEventListener('visibilitychange')`.
    */
-  async _onVisibilityChanged(calledFromInitialize) {
-    const methodName = `#_onVisibilityChanged(${calledFromInitialize})`;
-    this._debug(methodName, "visibilityState", document.visibilityState);
-    if (document.visibilityState === "visible") {
-      if (this.autoRefreshToken) {
-        this._startAutoRefresh();
+  _onVisibilityChanged(calledFromInitialize) {
+    return __async(this, null, function* () {
+      const methodName = `#_onVisibilityChanged(${calledFromInitialize})`;
+      this._debug(methodName, "visibilityState", document.visibilityState);
+      if (document.visibilityState === "visible") {
+        if (this.autoRefreshToken) {
+          this._startAutoRefresh();
+        }
+        if (!calledFromInitialize) {
+          yield this.initializePromise;
+          yield this._acquireLock(-1, () => __async(this, null, function* () {
+            if (document.visibilityState !== "visible") {
+              this._debug(methodName, "acquired the lock to recover the session, but the browser visibilityState is no longer visible, aborting");
+              return;
+            }
+            yield this._recoverAndRefresh();
+          }));
+        }
+      } else if (document.visibilityState === "hidden") {
+        if (this.autoRefreshToken) {
+          this._stopAutoRefresh();
+        }
       }
-      if (!calledFromInitialize) {
-        await this.initializePromise;
-        await this._acquireLock(-1, async () => {
-          if (document.visibilityState !== "visible") {
-            this._debug(methodName, "acquired the lock to recover the session, but the browser visibilityState is no longer visible, aborting");
-            return;
-          }
-          await this._recoverAndRefresh();
-        });
-      }
-    } else if (document.visibilityState === "hidden") {
-      if (this.autoRefreshToken) {
-        this._stopAutoRefresh();
-      }
-    }
+    });
   }
   /**
    * Generates the relevant login URL for a third-party provider.
@@ -11003,93 +11206,66 @@ var GoTrueClient = class _GoTrueClient {
    * @param options.scopes A space-separated list of scopes granted to the OAuth application.
    * @param options.queryParams An object of key-value pairs containing query parameters granted to the OAuth application.
    */
-  async _getUrlForProvider(url, provider, options) {
-    const urlParams = [`provider=${encodeURIComponent(provider)}`];
-    if (options === null || options === void 0 ? void 0 : options.redirectTo) {
-      urlParams.push(`redirect_to=${encodeURIComponent(options.redirectTo)}`);
-    }
-    if (options === null || options === void 0 ? void 0 : options.scopes) {
-      urlParams.push(`scopes=${encodeURIComponent(options.scopes)}`);
-    }
-    if (this.flowType === "pkce") {
-      const [codeChallenge, codeChallengeMethod] = await getCodeChallengeAndMethod(this.storage, this.storageKey);
-      const flowParams = new URLSearchParams({
-        code_challenge: `${encodeURIComponent(codeChallenge)}`,
-        code_challenge_method: `${encodeURIComponent(codeChallengeMethod)}`
-      });
-      urlParams.push(flowParams.toString());
-    }
-    if (options === null || options === void 0 ? void 0 : options.queryParams) {
-      const query = new URLSearchParams(options.queryParams);
-      urlParams.push(query.toString());
-    }
-    if (options === null || options === void 0 ? void 0 : options.skipBrowserRedirect) {
-      urlParams.push(`skip_http_redirect=${options.skipBrowserRedirect}`);
-    }
-    return `${url}?${urlParams.join("&")}`;
-  }
-  async _unenroll(params) {
-    try {
-      return await this._useSession(async (result) => {
-        var _a2;
-        const { data: sessionData, error: sessionError } = result;
-        if (sessionError) {
-          return this._returnResult({ data: null, error: sessionError });
-        }
-        return await _request(this.fetch, "DELETE", `${this.url}/factors/${params.factorId}`, {
-          headers: this.headers,
-          jwt: (_a2 = sessionData === null || sessionData === void 0 ? void 0 : sessionData.session) === null || _a2 === void 0 ? void 0 : _a2.access_token
-        });
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
+  _getUrlForProvider(url, provider, options) {
+    return __async(this, null, function* () {
+      const urlParams = [`provider=${encodeURIComponent(provider)}`];
+      if (options === null || options === void 0 ? void 0 : options.redirectTo) {
+        urlParams.push(`redirect_to=${encodeURIComponent(options.redirectTo)}`);
       }
-      throw error;
-    }
-  }
-  async _enroll(params) {
-    try {
-      return await this._useSession(async (result) => {
-        var _a2, _b;
-        const { data: sessionData, error: sessionError } = result;
-        if (sessionError) {
-          return this._returnResult({ data: null, error: sessionError });
-        }
-        const body = Object.assign({ friendly_name: params.friendlyName, factor_type: params.factorType }, params.factorType === "phone" ? { phone: params.phone } : params.factorType === "totp" ? { issuer: params.issuer } : {});
-        const { data, error } = await _request(this.fetch, "POST", `${this.url}/factors`, {
-          body,
-          headers: this.headers,
-          jwt: (_a2 = sessionData === null || sessionData === void 0 ? void 0 : sessionData.session) === null || _a2 === void 0 ? void 0 : _a2.access_token
-        });
-        if (error) {
-          return this._returnResult({ data: null, error });
-        }
-        if (params.factorType === "totp" && data.type === "totp" && ((_b = data === null || data === void 0 ? void 0 : data.totp) === null || _b === void 0 ? void 0 : _b.qr_code)) {
-          data.totp.qr_code = `data:image/svg+xml;utf-8,${data.totp.qr_code}`;
-        }
-        return this._returnResult({ data, error: null });
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
+      if (options === null || options === void 0 ? void 0 : options.scopes) {
+        urlParams.push(`scopes=${encodeURIComponent(options.scopes)}`);
       }
-      throw error;
-    }
+      if (this.flowType === "pkce") {
+        const [codeChallenge, codeChallengeMethod] = yield getCodeChallengeAndMethod(this.storage, this.storageKey);
+        const flowParams = new URLSearchParams({
+          code_challenge: `${encodeURIComponent(codeChallenge)}`,
+          code_challenge_method: `${encodeURIComponent(codeChallengeMethod)}`
+        });
+        urlParams.push(flowParams.toString());
+      }
+      if (options === null || options === void 0 ? void 0 : options.queryParams) {
+        const query = new URLSearchParams(options.queryParams);
+        urlParams.push(query.toString());
+      }
+      if (options === null || options === void 0 ? void 0 : options.skipBrowserRedirect) {
+        urlParams.push(`skip_http_redirect=${options.skipBrowserRedirect}`);
+      }
+      return `${url}?${urlParams.join("&")}`;
+    });
   }
-  async _verify(params) {
-    return this._acquireLock(-1, async () => {
+  _unenroll(params) {
+    return __async(this, null, function* () {
       try {
-        return await this._useSession(async (result) => {
+        return yield this._useSession((result) => __async(this, null, function* () {
           var _a2;
           const { data: sessionData, error: sessionError } = result;
           if (sessionError) {
             return this._returnResult({ data: null, error: sessionError });
           }
-          const body = Object.assign({ challenge_id: params.challengeId }, "webauthn" in params ? {
-            webauthn: Object.assign(Object.assign({}, params.webauthn), { credential_response: params.webauthn.type === "create" ? serializeCredentialCreationResponse(params.webauthn.credential_response) : serializeCredentialRequestResponse(params.webauthn.credential_response) })
-          } : { code: params.code });
-          const { data, error } = await _request(this.fetch, "POST", `${this.url}/factors/${params.factorId}/verify`, {
+          return yield _request(this.fetch, "DELETE", `${this.url}/factors/${params.factorId}`, {
+            headers: this.headers,
+            jwt: (_a2 = sessionData === null || sessionData === void 0 ? void 0 : sessionData.session) === null || _a2 === void 0 ? void 0 : _a2.access_token
+          });
+        }));
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: null, error });
+        }
+        throw error;
+      }
+    });
+  }
+  _enroll(params) {
+    return __async(this, null, function* () {
+      try {
+        return yield this._useSession((result) => __async(this, null, function* () {
+          var _a2, _b;
+          const { data: sessionData, error: sessionError } = result;
+          if (sessionError) {
+            return this._returnResult({ data: null, error: sessionError });
+          }
+          const body = Object.assign({ friendly_name: params.friendlyName, factor_type: params.factorType }, params.factorType === "phone" ? { phone: params.phone } : params.factorType === "totp" ? { issuer: params.issuer } : {});
+          const { data, error } = yield _request(this.fetch, "POST", `${this.url}/factors`, {
             body,
             headers: this.headers,
             jwt: (_a2 = sessionData === null || sessionData === void 0 ? void 0 : sessionData.session) === null || _a2 === void 0 ? void 0 : _a2.access_token
@@ -11097,10 +11273,11 @@ var GoTrueClient = class _GoTrueClient {
           if (error) {
             return this._returnResult({ data: null, error });
           }
-          await this._saveSession(Object.assign({ expires_at: Math.round(Date.now() / 1e3) + data.expires_in }, data));
-          await this._notifyAllSubscribers("MFA_CHALLENGE_VERIFIED", data);
-          return this._returnResult({ data, error });
-        });
+          if (params.factorType === "totp" && data.type === "totp" && ((_b = data === null || data === void 0 ? void 0 : data.totp) === null || _b === void 0 ? void 0 : _b.qr_code)) {
+            data.totp.qr_code = `data:image/svg+xml;utf-8,${data.totp.qr_code}`;
+          }
+          return this._returnResult({ data, error: null });
+        }));
       } catch (error) {
         if (isAuthError(error)) {
           return this._returnResult({ data: null, error });
@@ -11109,118 +11286,160 @@ var GoTrueClient = class _GoTrueClient {
       }
     });
   }
-  async _challenge(params) {
-    return this._acquireLock(-1, async () => {
-      try {
-        return await this._useSession(async (result) => {
-          var _a2;
-          const { data: sessionData, error: sessionError } = result;
-          if (sessionError) {
-            return this._returnResult({ data: null, error: sessionError });
+  _verify(params) {
+    return __async(this, null, function* () {
+      return this._acquireLock(-1, () => __async(this, null, function* () {
+        try {
+          return yield this._useSession((result) => __async(this, null, function* () {
+            var _a2;
+            const { data: sessionData, error: sessionError } = result;
+            if (sessionError) {
+              return this._returnResult({ data: null, error: sessionError });
+            }
+            const body = Object.assign({ challenge_id: params.challengeId }, "webauthn" in params ? {
+              webauthn: Object.assign(Object.assign({}, params.webauthn), { credential_response: params.webauthn.type === "create" ? serializeCredentialCreationResponse(params.webauthn.credential_response) : serializeCredentialRequestResponse(params.webauthn.credential_response) })
+            } : { code: params.code });
+            const { data, error } = yield _request(this.fetch, "POST", `${this.url}/factors/${params.factorId}/verify`, {
+              body,
+              headers: this.headers,
+              jwt: (_a2 = sessionData === null || sessionData === void 0 ? void 0 : sessionData.session) === null || _a2 === void 0 ? void 0 : _a2.access_token
+            });
+            if (error) {
+              return this._returnResult({ data: null, error });
+            }
+            yield this._saveSession(Object.assign({ expires_at: Math.round(Date.now() / 1e3) + data.expires_in }, data));
+            yield this._notifyAllSubscribers("MFA_CHALLENGE_VERIFIED", data);
+            return this._returnResult({ data, error });
+          }));
+        } catch (error) {
+          if (isAuthError(error)) {
+            return this._returnResult({ data: null, error });
           }
-          const response = await _request(this.fetch, "POST", `${this.url}/factors/${params.factorId}/challenge`, {
-            body: params,
-            headers: this.headers,
-            jwt: (_a2 = sessionData === null || sessionData === void 0 ? void 0 : sessionData.session) === null || _a2 === void 0 ? void 0 : _a2.access_token
-          });
-          if (response.error) {
-            return response;
-          }
-          const { data } = response;
-          if (data.type !== "webauthn") {
-            return { data, error: null };
-          }
-          switch (data.webauthn.type) {
-            case "create":
-              return {
-                data: Object.assign(Object.assign({}, data), { webauthn: Object.assign(Object.assign({}, data.webauthn), { credential_options: Object.assign(Object.assign({}, data.webauthn.credential_options), { publicKey: deserializeCredentialCreationOptions(data.webauthn.credential_options.publicKey) }) }) }),
-                error: null
-              };
-            case "request":
-              return {
-                data: Object.assign(Object.assign({}, data), { webauthn: Object.assign(Object.assign({}, data.webauthn), { credential_options: Object.assign(Object.assign({}, data.webauthn.credential_options), { publicKey: deserializeCredentialRequestOptions(data.webauthn.credential_options.publicKey) }) }) }),
-                error: null
-              };
-          }
-        });
-      } catch (error) {
-        if (isAuthError(error)) {
-          return this._returnResult({ data: null, error });
+          throw error;
         }
-        throw error;
-      }
+      }));
+    });
+  }
+  _challenge(params) {
+    return __async(this, null, function* () {
+      return this._acquireLock(-1, () => __async(this, null, function* () {
+        try {
+          return yield this._useSession((result) => __async(this, null, function* () {
+            var _a2;
+            const { data: sessionData, error: sessionError } = result;
+            if (sessionError) {
+              return this._returnResult({ data: null, error: sessionError });
+            }
+            const response = yield _request(this.fetch, "POST", `${this.url}/factors/${params.factorId}/challenge`, {
+              body: params,
+              headers: this.headers,
+              jwt: (_a2 = sessionData === null || sessionData === void 0 ? void 0 : sessionData.session) === null || _a2 === void 0 ? void 0 : _a2.access_token
+            });
+            if (response.error) {
+              return response;
+            }
+            const { data } = response;
+            if (data.type !== "webauthn") {
+              return { data, error: null };
+            }
+            switch (data.webauthn.type) {
+              case "create":
+                return {
+                  data: Object.assign(Object.assign({}, data), { webauthn: Object.assign(Object.assign({}, data.webauthn), { credential_options: Object.assign(Object.assign({}, data.webauthn.credential_options), { publicKey: deserializeCredentialCreationOptions(data.webauthn.credential_options.publicKey) }) }) }),
+                  error: null
+                };
+              case "request":
+                return {
+                  data: Object.assign(Object.assign({}, data), { webauthn: Object.assign(Object.assign({}, data.webauthn), { credential_options: Object.assign(Object.assign({}, data.webauthn.credential_options), { publicKey: deserializeCredentialRequestOptions(data.webauthn.credential_options.publicKey) }) }) }),
+                  error: null
+                };
+            }
+          }));
+        } catch (error) {
+          if (isAuthError(error)) {
+            return this._returnResult({ data: null, error });
+          }
+          throw error;
+        }
+      }));
     });
   }
   /**
    * {@see GoTrueMFAApi#challengeAndVerify}
    */
-  async _challengeAndVerify(params) {
-    const { data: challengeData, error: challengeError } = await this._challenge({
-      factorId: params.factorId
-    });
-    if (challengeError) {
-      return this._returnResult({ data: null, error: challengeError });
-    }
-    return await this._verify({
-      factorId: params.factorId,
-      challengeId: challengeData.id,
-      code: params.code
+  _challengeAndVerify(params) {
+    return __async(this, null, function* () {
+      const { data: challengeData, error: challengeError } = yield this._challenge({
+        factorId: params.factorId
+      });
+      if (challengeError) {
+        return this._returnResult({ data: null, error: challengeError });
+      }
+      return yield this._verify({
+        factorId: params.factorId,
+        challengeId: challengeData.id,
+        code: params.code
+      });
     });
   }
   /**
    * {@see GoTrueMFAApi#listFactors}
    */
-  async _listFactors() {
-    var _a2;
-    const { data: { user }, error: userError } = await this.getUser();
-    if (userError) {
-      return { data: null, error: userError };
-    }
-    const data = {
-      all: [],
-      phone: [],
-      totp: [],
-      webauthn: []
-    };
-    for (const factor of (_a2 = user === null || user === void 0 ? void 0 : user.factors) !== null && _a2 !== void 0 ? _a2 : []) {
-      data.all.push(factor);
-      if (factor.status === "verified") {
-        ;
-        data[factor.factor_type].push(factor);
+  _listFactors() {
+    return __async(this, null, function* () {
+      var _a2;
+      const { data: { user }, error: userError } = yield this.getUser();
+      if (userError) {
+        return { data: null, error: userError };
       }
-    }
-    return {
-      data,
-      error: null
-    };
+      const data = {
+        all: [],
+        phone: [],
+        totp: [],
+        webauthn: []
+      };
+      for (const factor of (_a2 = user === null || user === void 0 ? void 0 : user.factors) !== null && _a2 !== void 0 ? _a2 : []) {
+        data.all.push(factor);
+        if (factor.status === "verified") {
+          ;
+          data[factor.factor_type].push(factor);
+        }
+      }
+      return {
+        data,
+        error: null
+      };
+    });
   }
   /**
    * {@see GoTrueMFAApi#getAuthenticatorAssuranceLevel}
    */
-  async _getAuthenticatorAssuranceLevel() {
-    var _a2, _b;
-    const { data: { session }, error: sessionError } = await this.getSession();
-    if (sessionError) {
-      return this._returnResult({ data: null, error: sessionError });
-    }
-    if (!session) {
-      return {
-        data: { currentLevel: null, nextLevel: null, currentAuthenticationMethods: [] },
-        error: null
-      };
-    }
-    const { payload } = decodeJWT(session.access_token);
-    let currentLevel = null;
-    if (payload.aal) {
-      currentLevel = payload.aal;
-    }
-    let nextLevel = currentLevel;
-    const verifiedFactors = (_b = (_a2 = session.user.factors) === null || _a2 === void 0 ? void 0 : _a2.filter((factor) => factor.status === "verified")) !== null && _b !== void 0 ? _b : [];
-    if (verifiedFactors.length > 0) {
-      nextLevel = "aal2";
-    }
-    const currentAuthenticationMethods = payload.amr || [];
-    return { data: { currentLevel, nextLevel, currentAuthenticationMethods }, error: null };
+  _getAuthenticatorAssuranceLevel() {
+    return __async(this, null, function* () {
+      var _a2, _b;
+      const { data: { session }, error: sessionError } = yield this.getSession();
+      if (sessionError) {
+        return this._returnResult({ data: null, error: sessionError });
+      }
+      if (!session) {
+        return {
+          data: { currentLevel: null, nextLevel: null, currentAuthenticationMethods: [] },
+          error: null
+        };
+      }
+      const { payload } = decodeJWT(session.access_token);
+      let currentLevel = null;
+      if (payload.aal) {
+        currentLevel = payload.aal;
+      }
+      let nextLevel = currentLevel;
+      const verifiedFactors = (_b = (_a2 = session.user.factors) === null || _a2 === void 0 ? void 0 : _a2.filter((factor) => factor.status === "verified")) !== null && _b !== void 0 ? _b : [];
+      if (verifiedFactors.length > 0) {
+        nextLevel = "aal2";
+      }
+      const currentAuthenticationMethods = payload.amr || [];
+      return { data: { currentLevel, nextLevel, currentAuthenticationMethods }, error: null };
+    });
   }
   /**
    * Retrieves details about an OAuth authorization request.
@@ -11230,178 +11449,190 @@ var GoTrueClient = class _GoTrueClient {
    * If the API returns a redirect_uri, it means consent was already given - the caller
    * should handle the redirect manually if needed.
    */
-  async _getAuthorizationDetails(authorizationId) {
-    try {
-      return await this._useSession(async (result) => {
-        const { data: { session }, error: sessionError } = result;
-        if (sessionError) {
-          return this._returnResult({ data: null, error: sessionError });
+  _getAuthorizationDetails(authorizationId) {
+    return __async(this, null, function* () {
+      try {
+        return yield this._useSession((result) => __async(this, null, function* () {
+          const { data: { session }, error: sessionError } = result;
+          if (sessionError) {
+            return this._returnResult({ data: null, error: sessionError });
+          }
+          if (!session) {
+            return this._returnResult({ data: null, error: new AuthSessionMissingError() });
+          }
+          return yield _request(this.fetch, "GET", `${this.url}/oauth/authorizations/${authorizationId}`, {
+            headers: this.headers,
+            jwt: session.access_token,
+            xform: (data) => ({ data, error: null })
+          });
+        }));
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: null, error });
         }
-        if (!session) {
-          return this._returnResult({ data: null, error: new AuthSessionMissingError() });
-        }
-        return await _request(this.fetch, "GET", `${this.url}/oauth/authorizations/${authorizationId}`, {
-          headers: this.headers,
-          jwt: session.access_token,
-          xform: (data) => ({ data, error: null })
-        });
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Approves an OAuth authorization request.
    * Only relevant when the OAuth 2.1 server is enabled in Supabase Auth.
    */
-  async _approveAuthorization(authorizationId, options) {
-    try {
-      return await this._useSession(async (result) => {
-        const { data: { session }, error: sessionError } = result;
-        if (sessionError) {
-          return this._returnResult({ data: null, error: sessionError });
-        }
-        if (!session) {
-          return this._returnResult({ data: null, error: new AuthSessionMissingError() });
-        }
-        const response = await _request(this.fetch, "POST", `${this.url}/oauth/authorizations/${authorizationId}/consent`, {
-          headers: this.headers,
-          jwt: session.access_token,
-          body: { action: "approve" },
-          xform: (data) => ({ data, error: null })
-        });
-        if (response.data && response.data.redirect_url) {
-          if (isBrowser() && !(options === null || options === void 0 ? void 0 : options.skipBrowserRedirect)) {
-            window.location.assign(response.data.redirect_url);
+  _approveAuthorization(authorizationId, options) {
+    return __async(this, null, function* () {
+      try {
+        return yield this._useSession((result) => __async(this, null, function* () {
+          const { data: { session }, error: sessionError } = result;
+          if (sessionError) {
+            return this._returnResult({ data: null, error: sessionError });
           }
+          if (!session) {
+            return this._returnResult({ data: null, error: new AuthSessionMissingError() });
+          }
+          const response = yield _request(this.fetch, "POST", `${this.url}/oauth/authorizations/${authorizationId}/consent`, {
+            headers: this.headers,
+            jwt: session.access_token,
+            body: { action: "approve" },
+            xform: (data) => ({ data, error: null })
+          });
+          if (response.data && response.data.redirect_url) {
+            if (isBrowser() && !(options === null || options === void 0 ? void 0 : options.skipBrowserRedirect)) {
+              window.location.assign(response.data.redirect_url);
+            }
+          }
+          return response;
+        }));
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: null, error });
         }
-        return response;
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Denies an OAuth authorization request.
    * Only relevant when the OAuth 2.1 server is enabled in Supabase Auth.
    */
-  async _denyAuthorization(authorizationId, options) {
-    try {
-      return await this._useSession(async (result) => {
-        const { data: { session }, error: sessionError } = result;
-        if (sessionError) {
-          return this._returnResult({ data: null, error: sessionError });
-        }
-        if (!session) {
-          return this._returnResult({ data: null, error: new AuthSessionMissingError() });
-        }
-        const response = await _request(this.fetch, "POST", `${this.url}/oauth/authorizations/${authorizationId}/consent`, {
-          headers: this.headers,
-          jwt: session.access_token,
-          body: { action: "deny" },
-          xform: (data) => ({ data, error: null })
-        });
-        if (response.data && response.data.redirect_url) {
-          if (isBrowser() && !(options === null || options === void 0 ? void 0 : options.skipBrowserRedirect)) {
-            window.location.assign(response.data.redirect_url);
+  _denyAuthorization(authorizationId, options) {
+    return __async(this, null, function* () {
+      try {
+        return yield this._useSession((result) => __async(this, null, function* () {
+          const { data: { session }, error: sessionError } = result;
+          if (sessionError) {
+            return this._returnResult({ data: null, error: sessionError });
           }
+          if (!session) {
+            return this._returnResult({ data: null, error: new AuthSessionMissingError() });
+          }
+          const response = yield _request(this.fetch, "POST", `${this.url}/oauth/authorizations/${authorizationId}/consent`, {
+            headers: this.headers,
+            jwt: session.access_token,
+            body: { action: "deny" },
+            xform: (data) => ({ data, error: null })
+          });
+          if (response.data && response.data.redirect_url) {
+            if (isBrowser() && !(options === null || options === void 0 ? void 0 : options.skipBrowserRedirect)) {
+              window.location.assign(response.data.redirect_url);
+            }
+          }
+          return response;
+        }));
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: null, error });
         }
-        return response;
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Lists all OAuth grants that the authenticated user has authorized.
    * Only relevant when the OAuth 2.1 server is enabled in Supabase Auth.
    */
-  async _listOAuthGrants() {
-    try {
-      return await this._useSession(async (result) => {
-        const { data: { session }, error: sessionError } = result;
-        if (sessionError) {
-          return this._returnResult({ data: null, error: sessionError });
+  _listOAuthGrants() {
+    return __async(this, null, function* () {
+      try {
+        return yield this._useSession((result) => __async(this, null, function* () {
+          const { data: { session }, error: sessionError } = result;
+          if (sessionError) {
+            return this._returnResult({ data: null, error: sessionError });
+          }
+          if (!session) {
+            return this._returnResult({ data: null, error: new AuthSessionMissingError() });
+          }
+          return yield _request(this.fetch, "GET", `${this.url}/user/oauth/grants`, {
+            headers: this.headers,
+            jwt: session.access_token,
+            xform: (data) => ({ data, error: null })
+          });
+        }));
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: null, error });
         }
-        if (!session) {
-          return this._returnResult({ data: null, error: new AuthSessionMissingError() });
-        }
-        return await _request(this.fetch, "GET", `${this.url}/user/oauth/grants`, {
-          headers: this.headers,
-          jwt: session.access_token,
-          xform: (data) => ({ data, error: null })
-        });
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
+        throw error;
       }
-      throw error;
-    }
+    });
   }
   /**
    * Revokes a user's OAuth grant for a specific client.
    * Only relevant when the OAuth 2.1 server is enabled in Supabase Auth.
    */
-  async _revokeOAuthGrant(options) {
-    try {
-      return await this._useSession(async (result) => {
-        const { data: { session }, error: sessionError } = result;
-        if (sessionError) {
-          return this._returnResult({ data: null, error: sessionError });
+  _revokeOAuthGrant(options) {
+    return __async(this, null, function* () {
+      try {
+        return yield this._useSession((result) => __async(this, null, function* () {
+          const { data: { session }, error: sessionError } = result;
+          if (sessionError) {
+            return this._returnResult({ data: null, error: sessionError });
+          }
+          if (!session) {
+            return this._returnResult({ data: null, error: new AuthSessionMissingError() });
+          }
+          return yield _request(this.fetch, "DELETE", `${this.url}/user/oauth/grants`, {
+            headers: this.headers,
+            jwt: session.access_token,
+            query: { client_id: options.clientId },
+            xform: () => ({ data: {}, error: null })
+          });
+        }));
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: null, error });
         }
-        if (!session) {
-          return this._returnResult({ data: null, error: new AuthSessionMissingError() });
-        }
-        return await _request(this.fetch, "DELETE", `${this.url}/user/oauth/grants`, {
-          headers: this.headers,
-          jwt: session.access_token,
-          query: { client_id: options.clientId },
-          xform: () => ({ data: {}, error: null })
-        });
-      });
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
+        throw error;
       }
-      throw error;
-    }
-  }
-  async fetchJwk(kid, jwks = { keys: [] }) {
-    let jwk = jwks.keys.find((key) => key.kid === kid);
-    if (jwk) {
-      return jwk;
-    }
-    const now = Date.now();
-    jwk = this.jwks.keys.find((key) => key.kid === kid);
-    if (jwk && this.jwks_cached_at + JWKS_TTL > now) {
-      return jwk;
-    }
-    const { data, error } = await _request(this.fetch, "GET", `${this.url}/.well-known/jwks.json`, {
-      headers: this.headers
     });
-    if (error) {
-      throw error;
-    }
-    if (!data.keys || data.keys.length === 0) {
-      return null;
-    }
-    this.jwks = data;
-    this.jwks_cached_at = now;
-    jwk = data.keys.find((key) => key.kid === kid);
-    if (!jwk) {
-      return null;
-    }
-    return jwk;
+  }
+  fetchJwk(_0) {
+    return __async(this, arguments, function* (kid, jwks = { keys: [] }) {
+      let jwk = jwks.keys.find((key) => key.kid === kid);
+      if (jwk) {
+        return jwk;
+      }
+      const now = Date.now();
+      jwk = this.jwks.keys.find((key) => key.kid === kid);
+      if (jwk && this.jwks_cached_at + JWKS_TTL > now) {
+        return jwk;
+      }
+      const { data, error } = yield _request(this.fetch, "GET", `${this.url}/.well-known/jwks.json`, {
+        headers: this.headers
+      });
+      if (error) {
+        throw error;
+      }
+      if (!data.keys || data.keys.length === 0) {
+        return null;
+      }
+      this.jwks = data;
+      this.jwks_cached_at = now;
+      jwk = data.keys.find((key) => key.kid === kid);
+      if (!jwk) {
+        return null;
+      }
+      return jwk;
+    });
   }
   /**
    * Extracts the JWT claims present in the access token by first verifying the
@@ -11419,25 +11650,43 @@ var GoTrueClient = class _GoTrueClient {
    * @param options Various additional options that allow you to customize the
    *                behavior of this method.
    */
-  async getClaims(jwt, options = {}) {
-    try {
-      let token = jwt;
-      if (!token) {
-        const { data, error } = await this.getSession();
-        if (error || !data.session) {
-          return this._returnResult({ data: null, error });
+  getClaims(_0) {
+    return __async(this, arguments, function* (jwt, options = {}) {
+      try {
+        let token = jwt;
+        if (!token) {
+          const { data, error } = yield this.getSession();
+          if (error || !data.session) {
+            return this._returnResult({ data: null, error });
+          }
+          token = data.session.access_token;
         }
-        token = data.session.access_token;
-      }
-      const { header, payload, signature, raw: { header: rawHeader, payload: rawPayload } } = decodeJWT(token);
-      if (!(options === null || options === void 0 ? void 0 : options.allowExpired)) {
-        validateExp(payload.exp);
-      }
-      const signingKey = !header.alg || header.alg.startsWith("HS") || !header.kid || !("crypto" in globalThis && "subtle" in globalThis.crypto) ? null : await this.fetchJwk(header.kid, (options === null || options === void 0 ? void 0 : options.keys) ? { keys: options.keys } : options === null || options === void 0 ? void 0 : options.jwks);
-      if (!signingKey) {
-        const { error } = await this.getUser(token);
-        if (error) {
-          throw error;
+        const { header, payload, signature, raw: { header: rawHeader, payload: rawPayload } } = decodeJWT(token);
+        if (!(options === null || options === void 0 ? void 0 : options.allowExpired)) {
+          validateExp(payload.exp);
+        }
+        const signingKey = !header.alg || header.alg.startsWith("HS") || !header.kid || !("crypto" in globalThis && "subtle" in globalThis.crypto) ? null : yield this.fetchJwk(header.kid, (options === null || options === void 0 ? void 0 : options.keys) ? { keys: options.keys } : options === null || options === void 0 ? void 0 : options.jwks);
+        if (!signingKey) {
+          const { error } = yield this.getUser(token);
+          if (error) {
+            throw error;
+          }
+          return {
+            data: {
+              claims: payload,
+              header,
+              signature
+            },
+            error: null
+          };
+        }
+        const algorithm = getAlgorithm(header.alg);
+        const publicKey = yield crypto.subtle.importKey("jwk", signingKey, algorithm, true, [
+          "verify"
+        ]);
+        const isValid = yield crypto.subtle.verify(algorithm, publicKey, signature, stringToUint8Array(`${rawHeader}.${rawPayload}`));
+        if (!isValid) {
+          throw new AuthInvalidJwtError("Invalid JWT signature");
         }
         return {
           data: {
@@ -11447,29 +11696,13 @@ var GoTrueClient = class _GoTrueClient {
           },
           error: null
         };
+      } catch (error) {
+        if (isAuthError(error)) {
+          return this._returnResult({ data: null, error });
+        }
+        throw error;
       }
-      const algorithm = getAlgorithm(header.alg);
-      const publicKey = await crypto.subtle.importKey("jwk", signingKey, algorithm, true, [
-        "verify"
-      ]);
-      const isValid = await crypto.subtle.verify(algorithm, publicKey, signature, stringToUint8Array(`${rawHeader}.${rawPayload}`));
-      if (!isValid) {
-        throw new AuthInvalidJwtError("Invalid JWT signature");
-      }
-      return {
-        data: {
-          claims: payload,
-          header,
-          signature
-        },
-        error: null
-      };
-    } catch (error) {
-      if (isAuthError(error)) {
-        return this._returnResult({ data: null, error });
-      }
-      throw error;
-    }
+    });
   }
 };
 GoTrueClient.nextInstanceID = {};
@@ -11649,13 +11882,15 @@ var SupabaseClient = class {
   removeAllChannels() {
     return this.realtime.removeAllChannels();
   }
-  async _getAccessToken() {
-    var _a2, _b;
-    if (this.accessToken) {
-      return await this.accessToken();
-    }
-    const { data } = await this.auth.getSession();
-    return (_b = (_a2 = data.session) === null || _a2 === void 0 ? void 0 : _a2.access_token) !== null && _b !== void 0 ? _b : this.supabaseKey;
+  _getAccessToken() {
+    return __async(this, null, function* () {
+      var _a2, _b;
+      if (this.accessToken) {
+        return yield this.accessToken();
+      }
+      const { data } = yield this.auth.getSession();
+      return (_b = (_a2 = data.session) === null || _a2 === void 0 ? void 0 : _a2.access_token) !== null && _b !== void 0 ? _b : this.supabaseKey;
+    });
   }
   _initSupabaseAuthClient({ autoRefreshToken, persistSession, detectSessionInUrl, storage, userStorage, storageKey, flowType, lock, debug, throwOnError }, headers, fetch2) {
     const authHeaders = {
